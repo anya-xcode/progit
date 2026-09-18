@@ -1,0 +1,6495 @@
+section: tries
+problems:
+  - slug: implement-trie
+    title: "Implement Trie (Prefix Tree)"
+    difficulty: Medium
+    topic: "Tries"
+    subtopic: "Theory"
+    tags: [trie, design, string]
+    sourceUrl: "https://leetcode.com/problems/implement-trie-prefix-tree/"
+    statement: |
+      A **trie** (prefix tree) stores strings character by character so that words sharing a prefix
+      share the same path from the root. Implement a class `Trie` supporting:
+
+      - `insert(word)` -- add `word` to the trie (inserting an existing word changes nothing);
+      - `search(word)` -- return whether `word` was inserted before;
+      - `starts_with(prefix)` -- return whether some inserted word begins with `prefix`
+        (a word counts as a prefix of itself).
+
+      The operations are given as text commands `insert w`, `search w` and `startsWith p`.
+    inputFormat: |
+      - Line 1: an integer `q`, the number of operations.
+      - Next `q` lines: one operation each: `insert w`, `search w` or `startsWith p`.
+    outputFormat: |
+      For every `search` and `startsWith` operation, print `true` or `false` on its own line, in
+      the order the operations appear. `insert` prints nothing.
+    constraints:
+      - "1 <= q <= 3 * 10^4"
+      - "1 <= |w|, |p| <= 2000"
+      - "words consist of lowercase English letters"
+    examples:
+      - input: |
+          6
+          insert cart
+          search car
+          startsWith car
+          insert car
+          search car
+          search carts
+        output: |
+          false
+          true
+          true
+          false
+        explanation: "\"car\" is only a prefix until it is inserted itself; \"carts\" was never inserted."
+      - input: |
+          4
+          startsWith a
+          insert a
+          startsWith a
+          search a
+        output: |
+          false
+          true
+          true
+        explanation: "Nothing starts with \"a\" in an empty trie. After inserting \"a\", it is both a stored word and a prefix of itself."
+    hints:
+      - "Each node needs links to up to 26 children and a flag saying whether a word ends there."
+      - "insert walks down the path, creating missing nodes; search and starts_with walk down without creating anything."
+      - "search needs the end-of-word flag at the final node; starts_with only needs the path to exist."
+    explanation: |
+      **Brute force: list of words -- O(total length) per query.** Store words in a list (or a set
+      for `search`) and check every word with `startswith` for prefix queries.
+
+      **Optimal: trie -- O(L) per operation, O(total inserted characters) space** (L = length of the
+      argument). Each node holds a map from character to child node and an `is_end` flag.
+      - `insert`: walk from the root, creating children as needed; set `is_end` on the last node.
+      - `search`: walk the path; if any child is missing return false; otherwise return `is_end`.
+      - `starts_with`: walk the path; return true if it exists entirely.
+
+      Children can be stored as a dictionary (compact) or an array of 26 slots (faster indexing).
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        class Trie:
+            def __init__(self) -> None:
+                # Create the root node.
+                pass
+
+            def insert(self, word: str) -> None:
+                # Add word to the trie.
+                pass
+
+            def search(self, word: str) -> bool:
+                # Return True if word was inserted.
+                pass
+
+            def starts_with(self, prefix: str) -> bool:
+                # Return True if some inserted word starts with prefix.
+                pass
+
+
+        # --- Input/output handling ---
+        def main():
+            lines = sys.stdin.read().split("\n")
+            q = int(lines[0])
+            trie = Trie()
+            out = []
+            for line in lines[1:1 + q]:
+                op, arg = line.split()
+                if op == "insert":
+                    trie.insert(arg)
+                elif op == "search":
+                    out.append("true" if trie.search(arg) else "false")
+                else:
+                    out.append("true" if trie.starts_with(arg) else "false")
+            print("\n".join(out))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        class TrieNode:
+            __slots__ = ("children", "is_end")
+
+            def __init__(self) -> None:
+                self.children = {}
+                self.is_end = False
+
+
+        class Trie:
+            def __init__(self) -> None:
+                self.root = TrieNode()
+
+            def insert(self, word: str) -> None:
+                node = self.root
+                for ch in word:
+                    if ch not in node.children:
+                        node.children[ch] = TrieNode()
+                    node = node.children[ch]
+                node.is_end = True
+
+            def _walk(self, text: str):
+                node = self.root
+                for ch in text:
+                    node = node.children.get(ch)
+                    if node is None:
+                        return None
+                return node
+
+            def search(self, word: str) -> bool:
+                node = self._walk(word)
+                return node is not None and node.is_end
+
+            def starts_with(self, prefix: str) -> bool:
+                return self._walk(prefix) is not None
+
+
+        # --- Input/output handling ---
+        def main():
+            lines = sys.stdin.read().split("\n")
+            q = int(lines[0])
+            trie = Trie()
+            out = []
+            for line in lines[1:1 + q]:
+                op, arg = line.split()
+                if op == "insert":
+                    trie.insert(arg)
+                elif op == "search":
+                    out.append("true" if trie.search(arg) else "false")
+                else:
+                    out.append("true" if trie.starts_with(arg) else "false")
+            print("\n".join(out))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          6
+          insert cart
+          search car
+          startsWith car
+          insert car
+          search car
+          search carts
+        expectedOutput: |
+          false
+          true
+          true
+          false
+        hidden: false
+      - input: |
+          4
+          startsWith a
+          insert a
+          startsWith a
+          search a
+        expectedOutput: |
+          false
+          true
+          true
+        hidden: false
+      - input: |
+          6
+          insert apple
+          search apple
+          search app
+          startsWith app
+          insert app
+          search app
+        expectedOutput: |
+          true
+          false
+          true
+          true
+        hidden: true
+      - input: |
+          5
+          insert z
+          insert z
+          search z
+          startsWith zz
+          search zz
+        expectedOutput: |
+          true
+          false
+          false
+        hidden: true
+      - input: |
+          2
+          search abc
+          startsWith abc
+        expectedOutput: |
+          false
+          false
+        hidden: true
+      - input: |
+          7
+          insert abcdefghij
+          startsWith abcdefghij
+          startsWith abcdefghijk
+          search abcde
+          insert abcde
+          search abcde
+          startsWith b
+        expectedOutput: |
+          true
+          false
+          false
+          true
+          false
+        hidden: true
+      - input: |
+          700
+          insert aa
+          insert aabbb
+          search bb
+          startsWith b
+          startsWith aaaaaa
+          startsWith a
+          insert bbba
+          insert bba
+          insert ab
+          insert a
+          startsWith a
+          insert aa
+          insert ba
+          insert baab
+          search bbaaab
+          startsWith abb
+          insert aab
+          search aaab
+          insert bbaaa
+          insert ab
+          insert abb
+          insert ba
+          search aa
+          insert aab
+          startsWith ba
+          insert ba
+          insert aa
+          startsWith b
+          insert aaaab
+          insert a
+          insert a
+          search bb
+          insert aaaaaa
+          insert bbb
+          insert baaa
+          search abaa
+          search bbaaba
+          startsWith a
+          insert ab
+          startsWith abab
+          search bb
+          search abbaa
+          insert baabb
+          search aaaa
+          search a
+          startsWith aaabb
+          startsWith aab
+          insert a
+          insert bbbb
+          insert bbaba
+          search bbbbab
+          startsWith bababa
+          startsWith aabba
+          startsWith abb
+          startsWith aaaabb
+          insert ba
+          insert bba
+          insert bb
+          insert aaabb
+          insert aaab
+          startsWith abbb
+          search aba
+          insert aaa
+          search aabbab
+          search abba
+          insert bbbabb
+          insert ab
+          search abbb
+          search ba
+          search bbba
+          startsWith b
+          search ababab
+          insert bbbba
+          insert aba
+          insert bb
+          insert aaabbb
+          search abaaaa
+          insert aaab
+          startsWith bbba
+          insert babb
+          startsWith baaaaa
+          insert bab
+          insert baab
+          insert baa
+          search aabb
+          insert bbabaa
+          search abbaaa
+          search b
+          insert aba
+          search abba
+          insert bbbab
+          insert bbab
+          insert aa
+          startsWith bb
+          insert a
+          insert abb
+          insert aaaa
+          search ababa
+          insert abbaab
+          insert a
+          search aabb
+          startsWith bba
+          insert aba
+          insert baabb
+          insert bbaaba
+          startsWith ab
+          search aaa
+          insert aaba
+          search baa
+          startsWith babaab
+          search abaa
+          insert b
+          insert a
+          startsWith aaaaa
+          insert abaaaa
+          insert abbbb
+          search abb
+          search aaabba
+          search bab
+          search babaa
+          search abaab
+          search a
+          insert babbab
+          insert bb
+          insert abb
+          insert baabbb
+          startsWith abab
+          search aababa
+          search abbbba
+          search bbb
+          startsWith aaa
+          insert bbbb
+          startsWith bba
+          search aa
+          startsWith baaba
+          insert a
+          startsWith baabaa
+          startsWith aa
+          startsWith baa
+          search abaab
+          insert aabbab
+          insert aaabb
+          startsWith aab
+          startsWith babbaa
+          search ab
+          insert bbbb
+          insert bba
+          search aab
+          insert a
+          startsWith abbbb
+          insert aaabb
+          insert ba
+          insert ab
+          search ba
+          insert b
+          startsWith baa
+          insert aa
+          insert ba
+          insert ba
+          search baabba
+          startsWith abbab
+          insert aaaa
+          search aaabb
+          startsWith ababbb
+          insert aabbba
+          insert a
+          insert abb
+          startsWith babb
+          startsWith a
+          insert bbb
+          startsWith ababab
+          search bbaa
+          insert bbb
+          insert aba
+          startsWith bbbab
+          insert bbaba
+          startsWith bbbab
+          search aa
+          insert aba
+          search bbb
+          insert bbaa
+          insert bba
+          insert ba
+          search ab
+          insert abbb
+          insert bbb
+          startsWith aaba
+          insert aabaa
+          insert baaba
+          search aaabb
+          startsWith bbbba
+          startsWith abaaa
+          startsWith a
+          search bab
+          insert aabbb
+          insert a
+          insert baabb
+          insert ab
+          startsWith aabb
+          search aabab
+          startsWith a
+          search babba
+          insert bbab
+          insert aba
+          startsWith bbabbb
+          search aabbb
+          insert babbb
+          startsWith bbabb
+          insert bbaba
+          search bba
+          startsWith aab
+          insert ba
+          search a
+          insert aabb
+          startsWith baaaa
+          search aabb
+          insert babba
+          search aa
+          search aaaaa
+          insert ab
+          insert aab
+          insert bb
+          insert a
+          insert baabb
+          insert babb
+          startsWith aa
+          search abaa
+          search bbaa
+          insert b
+          search aba
+          insert abaa
+          search abba
+          search aabbaa
+          insert aa
+          search bbabb
+          startsWith b
+          startsWith b
+          startsWith abaa
+          startsWith b
+          startsWith abbab
+          insert a
+          insert baba
+          insert bbb
+          insert ba
+          search abbbba
+          search bb
+          search ba
+          insert bab
+          startsWith baba
+          insert bababb
+          insert aaa
+          insert aab
+          insert baa
+          insert baa
+          insert b
+          insert baaaa
+          insert ab
+          insert aaba
+          startsWith abbaa
+          insert aaabba
+          startsWith abb
+          startsWith aabb
+          insert bbaab
+          insert b
+          search b
+          insert abbaaa
+          insert abaaab
+          startsWith a
+          startsWith bbbba
+          search bbba
+          insert ab
+          search ab
+          insert bbb
+          insert b
+          search babaab
+          startsWith aaba
+          insert bab
+          insert abba
+          insert babbaa
+          search bbaaaa
+          startsWith abbbaa
+          insert abbb
+          insert abba
+          search aaab
+          startsWith aab
+          startsWith aab
+          startsWith a
+          insert abaa
+          insert bbab
+          search abaabb
+          insert aaaa
+          startsWith abbbab
+          insert b
+          insert babba
+          search ababa
+          startsWith bab
+          search bbabbb
+          search ba
+          search abaaaa
+          startsWith a
+          insert b
+          search bb
+          search b
+          startsWith aabaaa
+          search bba
+          search baa
+          search bbb
+          insert a
+          insert b
+          startsWith bbaa
+          insert aaab
+          search ab
+          startsWith aabb
+          search aab
+          search baabab
+          search bba
+          startsWith b
+          search babaa
+          startsWith aab
+          insert a
+          search b
+          search a
+          insert ba
+          insert abaab
+          search aba
+          search aabb
+          insert aaabbb
+          startsWith abab
+          startsWith aba
+          insert ba
+          insert a
+          search bbbb
+          insert abb
+          insert aaa
+          startsWith ba
+          search bbaaa
+          insert a
+          insert baab
+          startsWith abbbbb
+          startsWith b
+          insert abb
+          search bab
+          insert baaab
+          startsWith ababba
+          startsWith bbbbb
+          startsWith aa
+          search abbbb
+          startsWith aaab
+          insert a
+          startsWith bbba
+          insert bb
+          insert aabab
+          insert aabab
+          startsWith aabbab
+          insert bab
+          insert abb
+          insert b
+          startsWith abbbba
+          startsWith ba
+          search aabab
+          startsWith aaaaaa
+          startsWith aaa
+          search ab
+          search baaaba
+          insert bbabb
+          insert abbbb
+          insert bba
+          insert ba
+          insert b
+          search ba
+          startsWith ba
+          insert baba
+          startsWith bba
+          insert a
+          insert ba
+          startsWith aaba
+          search ab
+          insert aaaa
+          search ababb
+          search bba
+          insert aabbab
+          insert bbabab
+          startsWith bab
+          insert a
+          insert bb
+          search bab
+          startsWith aba
+          startsWith b
+          search b
+          insert b
+          insert a
+          search aaa
+          search a
+          search a
+          insert ba
+          startsWith bab
+          insert bbba
+          startsWith bb
+          startsWith aaab
+          insert ababab
+          search bbba
+          insert baaa
+          startsWith bbba
+          insert ababbb
+          startsWith bbb
+          search ab
+          insert aabbb
+          insert aa
+          search bbabb
+          insert ab
+          insert aaa
+          search b
+          insert aaa
+          search abbbb
+          insert ababab
+          search abbbaa
+          insert aabb
+          startsWith ab
+          insert bbbabb
+          insert ababbb
+          insert b
+          startsWith a
+          insert aabb
+          insert aaaaab
+          insert bb
+          startsWith abaaa
+          insert abbba
+          search baa
+          startsWith bbbba
+          insert bb
+          search bbbb
+          insert aabbab
+          startsWith aba
+          search bb
+          insert aaaba
+          startsWith aaa
+          startsWith ab
+          startsWith a
+          search a
+          search bb
+          insert aaabaa
+          insert bba
+          insert bab
+          startsWith bbbb
+          insert b
+          startsWith a
+          search b
+          startsWith aaaa
+          insert bbabaa
+          startsWith aab
+          search ababa
+          search babb
+          insert b
+          search a
+          startsWith aaaaba
+          startsWith aa
+          startsWith baab
+          insert bba
+          search abbb
+          startsWith aaaa
+          insert ba
+          insert ababa
+          startsWith bb
+          insert b
+          startsWith baaa
+          startsWith ba
+          startsWith bba
+          insert bbb
+          insert abaaba
+          search ba
+          insert bbbabb
+          search a
+          search bbbb
+          insert aabbba
+          search babb
+          insert baaaba
+          insert abbbb
+          startsWith baa
+          insert aaaaa
+          search bbb
+          insert bab
+          insert babba
+          insert b
+          search aaaba
+          startsWith ab
+          insert aba
+          insert babb
+          search baa
+          startsWith baa
+          insert b
+          insert ababbb
+          insert a
+          insert aaaaa
+          insert bbab
+          startsWith aaabaa
+          startsWith bbbaa
+          startsWith b
+          startsWith ba
+          insert bbabaa
+          insert abbbba
+          startsWith aa
+          insert aab
+          insert aaab
+          search aa
+          insert bababb
+          insert bbbba
+          startsWith abbbaa
+          insert a
+          insert bbb
+          insert aab
+          search bbbb
+          insert ab
+          search bab
+          startsWith babbaa
+          search baaab
+          startsWith b
+          insert b
+          insert baaab
+          insert ab
+          search bbbb
+          insert aaa
+          insert b
+          search a
+          insert b
+          insert baba
+          search abbbba
+          insert a
+          search ababaa
+          search aabb
+          insert abaa
+          insert aaa
+          insert abbaaa
+          search baa
+          search abab
+          insert bbaaa
+          startsWith bb
+          insert abb
+          insert bbbaa
+          search b
+          insert bbb
+          insert bbabba
+          startsWith abbbb
+          insert bb
+          startsWith ab
+          insert a
+          insert bbbbab
+          insert baa
+          insert ababbb
+          startsWith aaabaa
+          search b
+          insert bbbaa
+          search a
+          insert ba
+          insert abbb
+          search bbabab
+          insert a
+          insert ba
+          search bbaaab
+          search bababb
+          search aaa
+          insert baba
+          search bbb
+          startsWith aaa
+          search aab
+          insert aaba
+          insert aaa
+          insert bbb
+          search abbbb
+          insert bb
+          search bbb
+          insert aabb
+          search bbb
+          search a
+          search baaabb
+          insert aabb
+          insert a
+          insert abbba
+          insert bbbaa
+          startsWith a
+          startsWith aaabb
+          insert aba
+          insert babb
+          insert aaaa
+          search aaa
+          search a
+          search bbbbb
+          insert b
+          search abba
+          startsWith bbbbb
+          search baaab
+          insert aa
+          insert aaaabb
+          insert b
+          search bb
+          insert ba
+          startsWith aab
+          startsWith bbabaa
+          insert bba
+          insert bab
+          insert bba
+          insert bbaaa
+          insert aababb
+          search ba
+          search bba
+          insert a
+          startsWith a
+          insert bbabba
+          search bbaba
+          insert ba
+          insert a
+          insert aa
+          startsWith b
+          search ba
+          insert a
+          startsWith baaa
+          search b
+          insert ab
+          startsWith bb
+          search abbb
+          insert baabb
+          insert baaa
+          insert abbbb
+          insert a
+          insert bb
+          search bba
+          search bab
+          search aaa
+          startsWith a
+          insert ab
+          search bbbbb
+          insert abaa
+          insert ba
+          insert abaaa
+          insert a
+          search baab
+          insert bbbbb
+          startsWith aa
+          search aaa
+          insert baaa
+          startsWith abb
+          insert a
+          insert b
+          insert baa
+          insert bbabab
+          insert aaa
+          insert b
+          insert baaba
+          search aa
+          insert aa
+          insert abba
+          search bbbbbb
+          startsWith abaaa
+          startsWith aaaa
+          insert baa
+          insert aabba
+          insert bbb
+          startsWith aabbab
+          insert ba
+          insert babab
+          insert b
+          startsWith baab
+          search abaabb
+          insert abab
+          insert ab
+          insert bbb
+          insert b
+          startsWith bbb
+          insert aabb
+          insert bbbb
+          insert a
+          insert bb
+          insert babb
+          search abaaa
+          insert bab
+          insert bb
+          insert aabbbb
+          insert a
+          insert bbb
+          insert aaa
+          insert ab
+          insert a
+          insert b
+          startsWith ba
+          startsWith bba
+          insert baaa
+          startsWith a
+          startsWith abbb
+          insert abb
+          insert bb
+          startsWith aa
+          startsWith baaa
+          insert abaaba
+          startsWith a
+          search babb
+          search aba
+          search baa
+          search b
+          startsWith bbab
+          startsWith a
+          insert a
+        expectedOutput: |
+          false
+          false
+          false
+          true
+          true
+          false
+          false
+          false
+          true
+          true
+          true
+          false
+          false
+          false
+          true
+          false
+          false
+          false
+          false
+          true
+          false
+          true
+          false
+          false
+          false
+          true
+          false
+          false
+          false
+          false
+          false
+          false
+          true
+          true
+          true
+          false
+          false
+          true
+          false
+          false
+          false
+          false
+          false
+          true
+          false
+          false
+          true
+          true
+          true
+          true
+          false
+          false
+          true
+          true
+          false
+          true
+          false
+          false
+          true
+          false
+          false
+          false
+          true
+          true
+          true
+          true
+          false
+          false
+          true
+          true
+          false
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          false
+          false
+          true
+          false
+          true
+          true
+          false
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          false
+          false
+          true
+          false
+          true
+          true
+          true
+          false
+          true
+          true
+          false
+          true
+          false
+          true
+          true
+          false
+          false
+          false
+          true
+          true
+          true
+          true
+          false
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          false
+          false
+          true
+          true
+          true
+          true
+          false
+          false
+          false
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          false
+          false
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          false
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+        hidden: true
+      - input: |
+          500
+          startsWith yyx
+          insert z
+          startsWith yyz
+          startsWith y
+          startsWith x
+          insert yyy
+          search zyz
+          insert y
+          search y
+          insert z
+          insert x
+          insert z
+          startsWith xy
+          insert zy
+          search x
+          startsWith zx
+          search z
+          insert yzz
+          startsWith yzzz
+          startsWith zz
+          insert y
+          startsWith yzyy
+          insert x
+          insert yx
+          startsWith x
+          insert yyz
+          search xz
+          insert xxy
+          insert zxzy
+          insert z
+          search zz
+          insert x
+          search zz
+          insert xxyz
+          startsWith xz
+          search y
+          insert zyxx
+          insert zzy
+          startsWith zxy
+          insert yxxy
+          startsWith y
+          insert yzzx
+          startsWith x
+          search yz
+          search zxy
+          startsWith zx
+          search zyx
+          insert x
+          startsWith zy
+          startsWith xz
+          insert yxyx
+          insert xz
+          insert yzy
+          search yz
+          startsWith y
+          startsWith zzx
+          insert z
+          search zxz
+          insert x
+          search zxxx
+          startsWith zy
+          insert yxz
+          insert zzxz
+          insert zyzy
+          insert yxzz
+          insert zzz
+          search zyzy
+          search z
+          insert yzx
+          startsWith xzy
+          insert zyyz
+          startsWith zyy
+          insert xx
+          search xz
+          startsWith y
+          search xy
+          insert xz
+          insert xx
+          insert xzy
+          insert zzxz
+          insert xy
+          search xyxz
+          insert y
+          search xxy
+          search x
+          startsWith yxy
+          search xxyz
+          insert zzz
+          search xyx
+          search xxyy
+          insert zxz
+          insert zzx
+          insert z
+          startsWith y
+          insert y
+          startsWith xy
+          startsWith zxxy
+          search y
+          insert y
+          startsWith zyy
+          insert y
+          search yyxy
+          insert xxz
+          startsWith z
+          insert zxy
+          insert yx
+          insert zzy
+          insert z
+          startsWith zyy
+          startsWith yz
+          startsWith y
+          startsWith y
+          search zx
+          startsWith zzzz
+          insert z
+          insert xy
+          startsWith yzxx
+          search y
+          insert zxxy
+          insert zz
+          startsWith yy
+          startsWith xxzy
+          search zyxx
+          search x
+          startsWith zzz
+          startsWith xyzy
+          startsWith y
+          search yzx
+          search x
+          insert xzy
+          insert zxy
+          insert xz
+          insert xx
+          search zz
+          insert zyy
+          insert xzz
+          insert yx
+          startsWith zx
+          insert xx
+          insert yz
+          startsWith xzzz
+          insert zyyy
+          search xxx
+          startsWith yyz
+          insert z
+          startsWith yx
+          search yy
+          insert xx
+          startsWith yyy
+          insert yy
+          insert x
+          insert zzzz
+          insert yz
+          startsWith yx
+          search yxz
+          insert yzy
+          search yxyz
+          insert zy
+          search z
+          insert zyxz
+          startsWith xzxy
+          search x
+          insert zyyy
+          search z
+          startsWith yxz
+          startsWith zyxx
+          insert zz
+          startsWith yx
+          search zzx
+          insert xxz
+          insert x
+          search xy
+          startsWith zyy
+          insert xz
+          startsWith yzxy
+          search yyz
+          insert zzz
+          startsWith x
+          insert xyz
+          insert zxzx
+          insert zyx
+          startsWith yx
+          search zzz
+          search xyy
+          insert yzxz
+          startsWith x
+          startsWith x
+          search y
+          startsWith xzzz
+          insert zzx
+          insert zxx
+          insert zyyx
+          startsWith y
+          insert z
+          insert xxzy
+          insert zzz
+          insert zxxx
+          search y
+          search zx
+          insert y
+          startsWith yz
+          startsWith xyx
+          search zy
+          insert z
+          insert z
+          search xy
+          insert x
+          insert yxzy
+          insert z
+          insert xz
+          insert zx
+          startsWith yzy
+          insert xzx
+          search yx
+          startsWith xxz
+          insert xx
+          startsWith zy
+          startsWith xy
+          startsWith yyyx
+          insert yz
+          insert zyxy
+          insert zzx
+          search yzyx
+          search xz
+          insert y
+          insert xyz
+          startsWith xxy
+          startsWith yxx
+          insert y
+          insert x
+          insert zx
+          search yy
+          startsWith z
+          insert zxy
+          search z
+          insert y
+          startsWith xxzz
+          startsWith yxx
+          insert zzy
+          search xxy
+          search x
+          insert zx
+          insert yxxx
+          insert xzzz
+          search zxxx
+          insert xy
+          startsWith zzxx
+          insert yyxx
+          search z
+          startsWith xyxz
+          insert zy
+          insert yzxy
+          insert zxy
+          startsWith xyy
+          insert zxz
+          insert yz
+          search xyz
+          startsWith z
+          insert zyyz
+          insert z
+          startsWith x
+          insert z
+          search xxzz
+          search yz
+          insert zyx
+          search zxyx
+          startsWith yyzy
+          search yzz
+          startsWith y
+          insert x
+          startsWith zz
+          search xzyz
+          insert yx
+          startsWith y
+          startsWith zx
+          startsWith zzyx
+          insert xz
+          startsWith y
+          search yyxy
+          insert yxz
+          startsWith zz
+          insert z
+          insert y
+          search yzy
+          insert yxx
+          startsWith zxy
+          insert y
+          insert yz
+          insert yy
+          insert xzzz
+          search zyy
+          search xyz
+          search z
+          startsWith xzz
+          startsWith z
+          insert x
+          startsWith yxx
+          search xz
+          startsWith zz
+          insert yxzx
+          search x
+          insert xxzx
+          insert zx
+          insert xxzz
+          insert y
+          startsWith xz
+          startsWith y
+          search x
+          startsWith zyx
+          search zzx
+          insert zzxz
+          insert z
+          insert xxz
+          search zxx
+          startsWith y
+          insert xy
+          startsWith z
+          insert yx
+          insert y
+          insert zy
+          startsWith zzz
+          startsWith z
+          search yxy
+          insert zzyz
+          insert yzy
+          insert x
+          search zxy
+          insert zyy
+          search zyzx
+          insert z
+          startsWith yzyy
+          startsWith yxx
+          insert zyxz
+          search x
+          insert zyx
+          insert y
+          search yx
+          insert yxz
+          startsWith yzy
+          insert x
+          startsWith zx
+          startsWith yyxx
+          insert yxy
+          insert zz
+          search zx
+          insert zyxy
+          startsWith y
+          insert x
+          search x
+          insert xyxz
+          insert yzx
+          startsWith xzx
+          insert z
+          insert yyz
+          search z
+          search xyy
+          startsWith yyyx
+          insert y
+          insert zz
+          startsWith z
+          insert yyz
+          startsWith zy
+          insert z
+          search yxzz
+          insert zx
+          insert zx
+          insert zyxz
+          insert yz
+          search z
+          search yzzy
+          insert zyzx
+          search y
+          startsWith xzx
+          startsWith x
+          insert zzy
+          insert z
+          startsWith yx
+          insert zzxy
+          startsWith xy
+          startsWith y
+          insert yxzz
+          startsWith x
+          insert x
+          insert x
+          insert yzy
+          search yzzz
+          insert yxy
+          startsWith xy
+          startsWith zyxx
+          startsWith x
+          insert yyxx
+          startsWith xzxz
+          insert y
+          insert zx
+          insert xx
+          insert yzxx
+          insert z
+          startsWith xyz
+          insert yx
+          insert zxyz
+          insert xzx
+          insert xxxz
+          search yxz
+          insert yy
+          insert zyy
+          search y
+          insert yyyx
+          insert zxy
+          search yzy
+          search xxx
+          insert zxxx
+          insert x
+          insert zxzx
+          startsWith yzyx
+          startsWith zxx
+          startsWith y
+          startsWith zxz
+          search x
+          insert xxz
+          insert yy
+          insert zy
+          startsWith xz
+          insert z
+          insert x
+          insert yzzx
+          search z
+          startsWith yxx
+          search zzx
+          insert z
+          insert yzx
+          startsWith y
+          search z
+          insert xzyx
+          search yzx
+          search xy
+          insert xz
+          insert zz
+          insert zyz
+          search zyz
+          startsWith yzyy
+          search x
+          insert zz
+          insert xx
+          insert x
+          search yzxx
+          insert yyz
+          insert zy
+          startsWith yx
+          search y
+          insert z
+          startsWith xxxy
+          startsWith xz
+          insert xxzz
+          search xxyy
+          search yyyz
+          search z
+          startsWith yzx
+          startsWith yy
+          insert z
+          insert y
+          startsWith xx
+          insert yyy
+          insert z
+          insert yxyy
+          search yxx
+          search yzz
+          startsWith zyz
+          insert x
+          insert y
+          startsWith yxx
+          insert x
+          insert yzy
+          insert zx
+          startsWith zz
+          startsWith zzy
+          insert xx
+          insert z
+          search zx
+          insert zzxz
+          insert y
+          insert xy
+          startsWith yxxx
+          search xyzz
+          search yyzy
+          insert xx
+          startsWith zyz
+          insert z
+          insert zyz
+          search xy
+          search x
+          insert z
+          insert yy
+          search z
+          search y
+          search xxz
+          insert y
+          search yxyy
+          insert xzzx
+          insert zzy
+          startsWith zyxy
+        expectedOutput: |
+          false
+          false
+          false
+          false
+          false
+          true
+          false
+          true
+          false
+          true
+          false
+          false
+          false
+          true
+          false
+          false
+          false
+          false
+          true
+          false
+          true
+          true
+          false
+          false
+          true
+          false
+          true
+          false
+          false
+          true
+          false
+          false
+          false
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          false
+          false
+          true
+          true
+          true
+          true
+          false
+          false
+          true
+          true
+          false
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          false
+          false
+          false
+          true
+          true
+          false
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          false
+          false
+          true
+          true
+          false
+          true
+          true
+          true
+          false
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          false
+          true
+          true
+          false
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          false
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          false
+          true
+          false
+          false
+          true
+          true
+          true
+          false
+          true
+          false
+          false
+          true
+          true
+          true
+          false
+          true
+          true
+          false
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          false
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          false
+          false
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          false
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          false
+          true
+          true
+          true
+          true
+          false
+          true
+          false
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          false
+          false
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+          true
+        hidden: true
+  - slug: implement-trie-ii
+    title: "Implement Trie II"
+    difficulty: Medium
+    topic: "Tries"
+    subtopic: "Medium Problems"
+    tags: [trie, design, string]
+    sourceUrl: "https://leetcode.com/problems/implement-trie-ii-prefix-tree/"
+    statement: |
+      Build a trie that remembers **how many times** each word was inserted. Implement a class
+      `Trie` with:
+
+      - `insert(word)` -- add one copy of `word`;
+      - `count_words_equal_to(word)` -- return how many copies of `word` are currently stored;
+      - `count_words_starting_with(prefix)` -- return how many stored copies (counting duplicates)
+        start with `prefix`;
+      - `erase(word)` -- remove one copy of `word`. It is guaranteed that at least one copy exists
+        when `erase` is called.
+
+      Operations are given as the commands `insert w`, `countWordsEqualTo w`,
+      `countWordsStartingWith p` and `erase w`.
+    inputFormat: |
+      - Line 1: an integer `q`, the number of operations.
+      - Next `q` lines: one operation each, as described above.
+    outputFormat: |
+      For every `countWordsEqualTo` and `countWordsStartingWith` operation, print the resulting
+      integer on its own line, in order. `insert` and `erase` print nothing.
+    constraints:
+      - "1 <= q <= 3 * 10^4"
+      - "1 <= |w|, |p| <= 2000"
+      - "words consist of lowercase English letters"
+      - "erase is only called for a word with at least one stored copy"
+    examples:
+      - input: |
+          7
+          insert apple
+          insert apple
+          insert app
+          countWordsEqualTo apple
+          countWordsStartingWith app
+          erase apple
+          countWordsStartingWith app
+        output: |
+          2
+          3
+          2
+        explanation: "Two copies of \"apple\" are stored. Three stored words start with \"app\" (both apples and \"app\"); after erasing one apple, two remain."
+      - input: |
+          5
+          insert dog
+          countWordsEqualTo do
+          erase dog
+          countWordsStartingWith d
+          countWordsEqualTo dog
+        output: |
+          0
+          0
+          0
+        explanation: "\"do\" is only a prefix, not a stored word. After the erase the trie is empty again."
+    hints:
+      - "Give each node two counters: how many stored words pass through it, and how many end exactly at it."
+      - "insert increments the pass counter of every node on the path and the end counter of the last node."
+      - "erase walks the same path decrementing those counters. Queries just walk the path and read a counter."
+    explanation: |
+      **Brute force: multiset of words -- O(number of distinct words * L) per prefix query.** Keep a
+      hash map `word -> count`; prefix counting scans all stored words.
+
+      **Optimal: counting trie -- O(L) per operation, O(total inserted characters) space.** Every
+      node stores `prefix_count` (stored words whose path passes through this node) and
+      `end_count` (stored words ending here).
+      - `insert`: for each character move to (or create) the child and increment its
+        `prefix_count`; finally increment `end_count`.
+      - `count_words_equal_to`: walk the path; return `end_count` of the last node, or 0 if the
+        path breaks.
+      - `count_words_starting_with`: walk the path; return `prefix_count` of the last node, or 0.
+      - `erase`: walk the path decrementing `prefix_count`, then decrement `end_count`. Nodes whose
+        count reaches 0 can optionally be deleted to free memory.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        class Trie:
+            def __init__(self) -> None:
+                # Create the root node.
+                pass
+
+            def insert(self, word: str) -> None:
+                # Add one copy of word.
+                pass
+
+            def count_words_equal_to(self, word: str) -> int:
+                # Return how many copies of word are stored.
+                pass
+
+            def count_words_starting_with(self, prefix: str) -> int:
+                # Return how many stored words (with duplicates) start with prefix.
+                pass
+
+            def erase(self, word: str) -> None:
+                # Remove one copy of word (it is guaranteed to exist).
+                pass
+
+
+        # --- Input/output handling ---
+        def main():
+            lines = sys.stdin.read().split("\n")
+            q = int(lines[0])
+            trie = Trie()
+            out = []
+            for line in lines[1:1 + q]:
+                op, arg = line.split()
+                if op == "insert":
+                    trie.insert(arg)
+                elif op == "erase":
+                    trie.erase(arg)
+                elif op == "countWordsEqualTo":
+                    out.append(str(trie.count_words_equal_to(arg)))
+                else:
+                    out.append(str(trie.count_words_starting_with(arg)))
+            print("\n".join(out))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        class TrieNode:
+            __slots__ = ("children", "prefix_count", "end_count")
+
+            def __init__(self) -> None:
+                self.children = {}
+                self.prefix_count = 0
+                self.end_count = 0
+
+
+        class Trie:
+            def __init__(self) -> None:
+                self.root = TrieNode()
+
+            def insert(self, word: str) -> None:
+                node = self.root
+                for ch in word:
+                    if ch not in node.children:
+                        node.children[ch] = TrieNode()
+                    node = node.children[ch]
+                    node.prefix_count += 1
+                node.end_count += 1
+
+            def _walk(self, text: str):
+                node = self.root
+                for ch in text:
+                    node = node.children.get(ch)
+                    if node is None:
+                        return None
+                return node
+
+            def count_words_equal_to(self, word: str) -> int:
+                node = self._walk(word)
+                return node.end_count if node else 0
+
+            def count_words_starting_with(self, prefix: str) -> int:
+                node = self._walk(prefix)
+                return node.prefix_count if node else 0
+
+            def erase(self, word: str) -> None:
+                node = self.root
+                for ch in word:
+                    node = node.children[ch]
+                    node.prefix_count -= 1
+                node.end_count -= 1
+
+
+        # --- Input/output handling ---
+        def main():
+            lines = sys.stdin.read().split("\n")
+            q = int(lines[0])
+            trie = Trie()
+            out = []
+            for line in lines[1:1 + q]:
+                op, arg = line.split()
+                if op == "insert":
+                    trie.insert(arg)
+                elif op == "erase":
+                    trie.erase(arg)
+                elif op == "countWordsEqualTo":
+                    out.append(str(trie.count_words_equal_to(arg)))
+                else:
+                    out.append(str(trie.count_words_starting_with(arg)))
+            print("\n".join(out))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          7
+          insert apple
+          insert apple
+          insert app
+          countWordsEqualTo apple
+          countWordsStartingWith app
+          erase apple
+          countWordsStartingWith app
+        expectedOutput: |
+          2
+          3
+          2
+        hidden: false
+      - input: |
+          5
+          insert dog
+          countWordsEqualTo do
+          erase dog
+          countWordsStartingWith d
+          countWordsEqualTo dog
+        expectedOutput: |
+          0
+          0
+          0
+        hidden: false
+      - input: |
+          9
+          insert a
+          insert ab
+          insert abc
+          countWordsStartingWith a
+          countWordsStartingWith ab
+          countWordsStartingWith abcd
+          erase ab
+          countWordsStartingWith a
+          countWordsEqualTo abc
+        expectedOutput: |
+          3
+          2
+          0
+          2
+          1
+        hidden: true
+      - input: |
+          11
+          insert x
+          insert x
+          insert x
+          erase x
+          countWordsEqualTo x
+          erase x
+          erase x
+          countWordsEqualTo x
+          countWordsStartingWith x
+          insert x
+          countWordsStartingWith x
+        expectedOutput: |
+          2
+          0
+          0
+          1
+        hidden: true
+      - input: |
+          2
+          countWordsEqualTo hello
+          countWordsStartingWith h
+        expectedOutput: |
+          0
+          0
+        hidden: true
+      - input: |
+          450
+          countWordsStartingWith a
+          insert ba
+          insert babab
+          erase ba
+          insert babba
+          erase babab
+          insert aa
+          erase aa
+          countWordsStartingWith bb
+          countWordsStartingWith ba
+          countWordsStartingWith ab
+          countWordsEqualTo bbba
+          insert a
+          insert baab
+          countWordsEqualTo b
+          insert bbbbb
+          countWordsEqualTo bab
+          countWordsEqualTo ab
+          countWordsEqualTo baa
+          insert abaa
+          countWordsEqualTo babb
+          insert bab
+          countWordsEqualTo aa
+          insert bbaa
+          countWordsEqualTo aba
+          countWordsStartingWith bba
+          insert bb
+          countWordsStartingWith abba
+          erase abaa
+          countWordsStartingWith a
+          erase bb
+          insert aaab
+          countWordsEqualTo baa
+          countWordsStartingWith ab
+          countWordsEqualTo babb
+          insert aaab
+          countWordsEqualTo abab
+          insert bb
+          countWordsEqualTo babb
+          countWordsEqualTo a
+          insert aba
+          countWordsStartingWith b
+          insert b
+          insert aaba
+          insert a
+          insert b
+          insert ab
+          erase bbaa
+          countWordsEqualTo bb
+          countWordsStartingWith baaa
+          countWordsStartingWith baa
+          erase bb
+          countWordsStartingWith abb
+          countWordsStartingWith aba
+          countWordsEqualTo ba
+          countWordsStartingWith bbba
+          erase b
+          countWordsEqualTo bbb
+          erase bab
+          insert bb
+          insert bbba
+          erase babba
+          erase a
+          erase aaba
+          insert b
+          insert b
+          countWordsStartingWith b
+          insert aaaa
+          countWordsEqualTo aa
+          countWordsStartingWith aaba
+          erase aaaa
+          insert a
+          insert bbba
+          countWordsEqualTo aab
+          insert b
+          erase bbba
+          countWordsEqualTo a
+          countWordsStartingWith abbb
+          insert bbaba
+          erase ab
+          erase b
+          countWordsEqualTo abba
+          countWordsEqualTo bba
+          countWordsEqualTo aabbb
+          insert b
+          insert aba
+          erase bbbbb
+          erase a
+          insert aba
+          insert b
+          countWordsEqualTo bbaab
+          insert aabbb
+          erase bb
+          countWordsEqualTo aaab
+          countWordsEqualTo ba
+          countWordsEqualTo abbba
+          countWordsEqualTo abbab
+          insert ba
+          insert abaaa
+          countWordsEqualTo bb
+          insert aa
+          insert bba
+          countWordsStartingWith b
+          countWordsEqualTo a
+          countWordsEqualTo baaba
+          countWordsEqualTo ab
+          countWordsStartingWith aabb
+          countWordsEqualTo bba
+          countWordsStartingWith aba
+          erase a
+          erase aba
+          countWordsEqualTo a
+          insert aabba
+          countWordsStartingWith abb
+          insert ababa
+          insert b
+          insert bbaab
+          countWordsEqualTo b
+          countWordsEqualTo bbaaa
+          insert aaa
+          countWordsEqualTo abab
+          erase bbaba
+          countWordsEqualTo abb
+          countWordsEqualTo bbbb
+          erase aaa
+          countWordsEqualTo bbaa
+          countWordsEqualTo bbbab
+          insert abb
+          insert ba
+          countWordsEqualTo aaa
+          countWordsStartingWith baaa
+          countWordsStartingWith b
+          countWordsEqualTo bbaa
+          countWordsStartingWith abba
+          countWordsEqualTo aabba
+          insert bba
+          insert b
+          countWordsEqualTo ba
+          insert bbbb
+          countWordsEqualTo aabb
+          countWordsEqualTo bb
+          insert bb
+          countWordsStartingWith bba
+          insert a
+          countWordsEqualTo baaa
+          insert a
+          erase abaaa
+          countWordsStartingWith babb
+          insert b
+          erase ababa
+          countWordsEqualTo b
+          countWordsEqualTo aabab
+          insert aa
+          insert bbab
+          insert bbbbb
+          insert aa
+          erase baab
+          countWordsEqualTo baab
+          insert baab
+          erase bbaab
+          insert bbbab
+          countWordsEqualTo ba
+          countWordsEqualTo babaa
+          countWordsEqualTo bbbb
+          insert bbaba
+          countWordsStartingWith b
+          erase bbab
+          erase aba
+          countWordsStartingWith b
+          erase bbbab
+          erase abb
+          countWordsEqualTo ab
+          countWordsStartingWith abba
+          countWordsEqualTo ba
+          insert bbaba
+          countWordsStartingWith b
+          insert b
+          countWordsEqualTo baab
+          erase aaab
+          countWordsEqualTo aa
+          insert b
+          countWordsStartingWith b
+          erase aba
+          insert abb
+          insert b
+          erase bbaba
+          countWordsEqualTo baaab
+          countWordsEqualTo a
+          countWordsEqualTo aaa
+          insert abbb
+          erase bbbb
+          insert abb
+          countWordsStartingWith ab
+          insert ba
+          erase abb
+          insert bb
+          countWordsEqualTo a
+          countWordsEqualTo aa
+          insert bb
+          countWordsEqualTo aba
+          countWordsStartingWith aabb
+          countWordsEqualTo bbaba
+          insert abbb
+          insert babb
+          insert bbab
+          countWordsStartingWith b
+          insert bbb
+          countWordsEqualTo aab
+          erase a
+          insert bab
+          countWordsStartingWith ab
+          erase abb
+          erase bab
+          insert aaa
+          insert aaaa
+          countWordsEqualTo ab
+          insert b
+          erase aa
+          insert abbab
+          countWordsEqualTo bbabb
+          insert aa
+          countWordsEqualTo abab
+          countWordsStartingWith babb
+          erase bba
+          countWordsEqualTo bb
+          insert aaaba
+          countWordsEqualTo a
+          erase bbb
+          countWordsStartingWith baba
+          countWordsStartingWith baa
+          countWordsStartingWith ba
+          insert ba
+          countWordsStartingWith abbb
+          erase abbb
+          insert aaaba
+          erase abbb
+          insert baaa
+          countWordsStartingWith bba
+          insert aabba
+          countWordsStartingWith abaa
+          countWordsEqualTo baab
+          countWordsEqualTo b
+          countWordsEqualTo b
+          insert bbb
+          insert b
+          insert a
+          countWordsStartingWith bbb
+          countWordsStartingWith abb
+          insert bba
+          insert baaa
+          countWordsEqualTo bb
+          insert bab
+          countWordsEqualTo bbaa
+          insert aaaba
+          insert bbb
+          insert ba
+          insert a
+          erase bb
+          insert aa
+          countWordsStartingWith abbb
+          countWordsStartingWith ab
+          insert bb
+          countWordsStartingWith a
+          countWordsEqualTo baa
+          erase aa
+          countWordsEqualTo bb
+          erase babb
+          erase aaaba
+          insert aabb
+          countWordsEqualTo abbab
+          insert bbaaa
+          countWordsEqualTo baabb
+          insert aabb
+          insert a
+          countWordsStartingWith aaaa
+          countWordsStartingWith aaab
+          insert baaab
+          insert ab
+          countWordsStartingWith aa
+          insert ba
+          countWordsEqualTo abb
+          insert aa
+          erase bab
+          countWordsEqualTo bb
+          insert bbb
+          insert abba
+          countWordsEqualTo b
+          countWordsEqualTo aa
+          insert b
+          countWordsStartingWith ab
+          insert abaaa
+          erase a
+          countWordsEqualTo b
+          erase aabb
+          insert a
+          erase abaaa
+          erase a
+          countWordsStartingWith aba
+          countWordsStartingWith b
+          countWordsStartingWith ab
+          insert a
+          countWordsEqualTo b
+          countWordsEqualTo ab
+          countWordsEqualTo baaa
+          countWordsStartingWith b
+          countWordsStartingWith aab
+          countWordsStartingWith bbaa
+          countWordsEqualTo abab
+          countWordsEqualTo abbbb
+          insert a
+          insert a
+          countWordsStartingWith babb
+          insert aaba
+          countWordsEqualTo aabb
+          countWordsStartingWith abab
+          insert aaba
+          insert aaa
+          insert a
+          countWordsEqualTo babbb
+          insert bb
+          countWordsEqualTo baab
+          countWordsStartingWith b
+          insert abbb
+          countWordsEqualTo aba
+          countWordsEqualTo abaaa
+          insert a
+          countWordsEqualTo a
+          countWordsEqualTo bab
+          erase bbaaa
+          insert b
+          countWordsStartingWith bbbb
+          erase baaab
+          countWordsEqualTo aaba
+          insert aaa
+          insert bbaab
+          insert baabb
+          insert aaba
+          countWordsEqualTo aaab
+          countWordsStartingWith b
+          insert babb
+          countWordsStartingWith abba
+          erase baaa
+          countWordsEqualTo bb
+          insert ba
+          insert ab
+          erase a
+          countWordsStartingWith bbab
+          insert abaaa
+          insert aaab
+          countWordsEqualTo abbb
+          insert abbb
+          insert aaa
+          insert a
+          countWordsStartingWith a
+          erase ba
+          insert a
+          countWordsStartingWith b
+          insert ab
+          erase baabb
+          countWordsStartingWith aa
+          insert b
+          countWordsStartingWith a
+          insert aabbb
+          countWordsStartingWith ab
+          countWordsStartingWith a
+          insert bb
+          insert bb
+          erase aabbb
+          countWordsStartingWith bbaa
+          countWordsStartingWith aa
+          erase bbb
+          insert aaaaa
+          insert aabba
+          insert abb
+          erase abaaa
+          insert bbaab
+          erase aaba
+          erase b
+          countWordsEqualTo b
+          countWordsStartingWith ba
+          countWordsStartingWith bab
+          insert ab
+          insert bbaaa
+          insert aabba
+          insert abaa
+          erase aaaaa
+          insert abab
+          countWordsEqualTo ab
+          erase aaba
+          insert aaa
+          countWordsStartingWith aa
+          countWordsEqualTo aa
+          countWordsEqualTo abaa
+          countWordsEqualTo a
+          erase aaaa
+          countWordsEqualTo babab
+          countWordsEqualTo bbb
+          countWordsStartingWith b
+          countWordsEqualTo abab
+          countWordsStartingWith b
+          countWordsEqualTo aaaab
+          insert bbbab
+          insert b
+          countWordsEqualTo babb
+          countWordsStartingWith ba
+          erase bbaba
+          insert b
+          insert ba
+          countWordsEqualTo ba
+          erase bbbbb
+          erase aa
+          insert baa
+          insert b
+          countWordsEqualTo ab
+          insert aba
+          countWordsEqualTo aba
+          countWordsEqualTo aaaa
+          erase abbb
+          insert a
+          erase aaba
+          countWordsStartingWith baaa
+          insert abaa
+          insert ab
+          erase aabbb
+          countWordsStartingWith a
+          countWordsEqualTo aa
+          insert aba
+          insert a
+          insert bbaa
+          insert b
+          countWordsEqualTo ba
+          countWordsEqualTo aaa
+          countWordsEqualTo aab
+          erase aa
+          insert ab
+          countWordsEqualTo a
+          countWordsStartingWith aab
+          insert b
+          insert a
+          insert b
+          countWordsStartingWith aab
+          insert abba
+          countWordsEqualTo bbbba
+          insert aaaba
+          insert aab
+          erase bbaab
+          countWordsEqualTo ab
+          insert aabbb
+          countWordsStartingWith ba
+          insert a
+        expectedOutput: |
+          0
+          0
+          1
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          1
+          0
+          1
+          0
+          0
+          0
+          0
+          0
+          1
+          6
+          1
+          0
+          1
+          0
+          1
+          0
+          0
+          0
+          7
+          0
+          0
+          0
+          2
+          0
+          0
+          0
+          0
+          0
+          2
+          0
+          0
+          0
+          0
+          10
+          1
+          0
+          0
+          1
+          1
+          4
+          0
+          0
+          6
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          0
+          12
+          0
+          0
+          1
+          2
+          0
+          0
+          3
+          0
+          0
+          8
+          0
+          0
+          2
+          0
+          1
+          20
+          19
+          0
+          0
+          2
+          19
+          1
+          3
+          21
+          0
+          2
+          0
+          3
+          2
+          3
+          0
+          2
+          1
+          25
+          0
+          3
+          0
+          0
+          0
+          1
+          3
+          1
+          0
+          1
+          5
+          2
+          3
+          0
+          1
+          12
+          12
+          3
+          1
+          3
+          0
+          0
+          1
+          17
+          0
+          3
+          1
+          0
+          1
+          3
+          13
+          0
+          3
+          13
+          4
+          3
+          14
+          0
+          37
+          3
+          14
+          1
+          2
+          37
+          4
+          1
+          0
+          0
+          0
+          1
+          0
+          0
+          1
+          38
+          0
+          0
+          8
+          0
+          1
+          2
+          1
+          39
+          2
+          4
+          2
+          1
+          35
+          39
+          20
+          37
+          8
+          38
+          1
+          20
+          15
+          9
+          1
+          4
+          21
+          4
+          1
+          9
+          0
+          2
+          41
+          1
+          41
+          0
+          1
+          9
+          7
+          4
+          1
+          0
+          1
+          40
+          3
+          7
+          5
+          0
+          11
+          5
+          5
+          0
+          6
+          11
+        hidden: true
+      - input: |
+          400
+          countWordsEqualTo ab
+          insert ccab
+          insert ca
+          insert bab
+          insert bb
+          countWordsEqualTo baac
+          insert ac
+          insert aacb
+          countWordsStartingWith abc
+          countWordsEqualTo bc
+          countWordsStartingWith a
+          countWordsEqualTo ca
+          countWordsEqualTo ac
+          insert aacc
+          countWordsEqualTo ac
+          countWordsEqualTo aa
+          countWordsEqualTo cba
+          countWordsStartingWith bba
+          countWordsEqualTo ba
+          insert bcbb
+          erase bab
+          erase ccab
+          erase bb
+          erase ca
+          erase aacb
+          countWordsEqualTo bb
+          countWordsStartingWith aa
+          countWordsEqualTo bb
+          countWordsEqualTo bc
+          insert cabb
+          erase bcbb
+          countWordsStartingWith b
+          insert cc
+          countWordsEqualTo cbc
+          countWordsStartingWith ac
+          insert abbb
+          erase abbb
+          erase cc
+          countWordsStartingWith aca
+          insert ba
+          countWordsEqualTo baa
+          insert bbac
+          countWordsEqualTo cb
+          erase aacc
+          countWordsStartingWith cb
+          countWordsEqualTo ac
+          countWordsStartingWith ba
+          countWordsStartingWith bac
+          insert baab
+          insert ba
+          countWordsStartingWith c
+          erase ac
+          insert ccab
+          erase baab
+          insert ca
+          insert ac
+          countWordsStartingWith cb
+          countWordsStartingWith b
+          insert ac
+          insert bba
+          insert cbcc
+          erase bba
+          insert aac
+          countWordsStartingWith b
+          erase ca
+          erase cbcc
+          erase ba
+          insert aacc
+          countWordsEqualTo abc
+          countWordsEqualTo acc
+          insert ab
+          countWordsStartingWith ac
+          insert cbbc
+          countWordsEqualTo ba
+          countWordsEqualTo baca
+          countWordsEqualTo bba
+          countWordsStartingWith ac
+          insert bb
+          countWordsStartingWith ab
+          countWordsEqualTo acb
+          erase aacc
+          erase bb
+          erase cbbc
+          erase ac
+          countWordsStartingWith c
+          insert bba
+          insert bcc
+          insert bbcb
+          insert ba
+          erase bcc
+          countWordsEqualTo bb
+          erase cabb
+          countWordsEqualTo cc
+          insert ab
+          insert cca
+          insert ac
+          insert aaa
+          insert ccbb
+          countWordsStartingWith bba
+          countWordsEqualTo cac
+          erase ac
+          countWordsEqualTo aa
+          countWordsEqualTo acca
+          countWordsStartingWith bb
+          countWordsStartingWith cc
+          insert bc
+          insert cac
+          countWordsEqualTo cca
+          erase ccab
+          countWordsStartingWith c
+          insert cb
+          countWordsStartingWith aa
+          insert bbaa
+          countWordsEqualTo cbb
+          erase bba
+          insert aab
+          insert ccc
+          countWordsEqualTo ab
+          countWordsStartingWith acb
+          countWordsEqualTo ab
+          insert abb
+          erase cac
+          insert aac
+          insert ba
+          insert ab
+          insert ab
+          erase ccbb
+          insert bbaa
+          erase aac
+          countWordsStartingWith b
+          erase ba
+          countWordsEqualTo caaa
+          countWordsStartingWith cb
+          countWordsEqualTo bb
+          countWordsEqualTo cbbc
+          countWordsEqualTo aacc
+          insert cabc
+          erase bbcb
+          countWordsEqualTo abac
+          erase ba
+          erase bc
+          insert bb
+          countWordsEqualTo ca
+          countWordsStartingWith bab
+          countWordsStartingWith aa
+          insert aa
+          insert abba
+          erase cca
+          countWordsEqualTo ba
+          countWordsStartingWith ba
+          insert aaac
+          insert acb
+          countWordsEqualTo bba
+          countWordsEqualTo baca
+          insert bcba
+          countWordsStartingWith b
+          countWordsEqualTo aca
+          insert acaa
+          countWordsStartingWith ccc
+          insert acb
+          countWordsStartingWith c
+          countWordsEqualTo aab
+          countWordsStartingWith a
+          countWordsEqualTo bbaa
+          insert aa
+          countWordsEqualTo baba
+          insert accc
+          insert ab
+          insert ac
+          insert caac
+          countWordsStartingWith aa
+          countWordsStartingWith cbb
+          insert aca
+          erase acaa
+          insert bcb
+          insert ccab
+          countWordsStartingWith aba
+          countWordsStartingWith cb
+          insert bb
+          countWordsEqualTo bbb
+          insert baa
+          countWordsStartingWith aab
+          countWordsEqualTo bcca
+          countWordsEqualTo ba
+          countWordsEqualTo bcab
+          countWordsStartingWith bc
+          erase cb
+          insert bbac
+          countWordsEqualTo cc
+          countWordsStartingWith c
+          countWordsEqualTo cc
+          insert ac
+          countWordsStartingWith ab
+          countWordsEqualTo bacb
+          insert abbb
+          countWordsStartingWith ca
+          erase acb
+          insert bbac
+          insert aca
+          insert caa
+          countWordsStartingWith ca
+          insert bacc
+          insert bc
+          insert bca
+          insert bbcb
+          insert aca
+          insert cbbc
+          countWordsEqualTo abb
+          countWordsEqualTo bb
+          insert bb
+          countWordsEqualTo accc
+          insert ac
+          countWordsEqualTo ccbb
+          countWordsEqualTo cbbb
+          countWordsEqualTo abc
+          insert acb
+          countWordsEqualTo bca
+          countWordsEqualTo bac
+          erase ba
+          insert ab
+          insert ccaa
+          countWordsStartingWith b
+          countWordsEqualTo aa
+          insert bcbb
+          erase bb
+          countWordsStartingWith a
+          countWordsStartingWith bb
+          countWordsEqualTo bbb
+          countWordsEqualTo bc
+          insert bcbb
+          countWordsEqualTo abbb
+          countWordsStartingWith a
+          countWordsEqualTo ba
+          insert baaa
+          countWordsEqualTo aba
+          countWordsEqualTo abc
+          insert cc
+          erase ccc
+          countWordsStartingWith bb
+          countWordsEqualTo bcba
+          insert bcb
+          countWordsStartingWith a
+          countWordsStartingWith a
+          insert cba
+          countWordsStartingWith b
+          countWordsEqualTo bb
+          countWordsStartingWith bb
+          insert bcac
+          countWordsStartingWith bcc
+          insert bba
+          insert aba
+          countWordsEqualTo cb
+          countWordsStartingWith ba
+          countWordsStartingWith a
+          insert bcbb
+          insert cbb
+          countWordsEqualTo babb
+          insert bc
+          insert ca
+          countWordsEqualTo abc
+          countWordsStartingWith ccc
+          countWordsEqualTo ca
+          countWordsStartingWith acc
+          erase aa
+          erase bcb
+          countWordsEqualTo bb
+          insert cabb
+          insert cabb
+          countWordsEqualTo ccb
+          insert cbc
+          countWordsStartingWith bc
+          countWordsEqualTo abcb
+          insert ca
+          insert ca
+          countWordsEqualTo baac
+          countWordsEqualTo acbb
+          countWordsStartingWith aac
+          countWordsStartingWith c
+          countWordsEqualTo ba
+          countWordsEqualTo cba
+          countWordsEqualTo aab
+          insert bc
+          insert abba
+          insert ba
+          countWordsEqualTo abaa
+          insert cc
+          countWordsEqualTo cbcb
+          countWordsStartingWith ab
+          countWordsStartingWith ccc
+          insert aa
+          erase baaa
+          erase aab
+          insert aab
+          countWordsEqualTo bc
+          erase caac
+          insert aa
+          countWordsStartingWith a
+          countWordsStartingWith a
+          insert bac
+          insert bc
+          countWordsEqualTo ccac
+          countWordsEqualTo abc
+          insert aacc
+          countWordsEqualTo accb
+          countWordsStartingWith cbb
+          insert aab
+          countWordsStartingWith ca
+          countWordsStartingWith c
+          countWordsEqualTo cbaa
+          countWordsStartingWith cb
+          countWordsStartingWith c
+          countWordsEqualTo bab
+          erase acb
+          insert bb
+          insert bbb
+          insert cccc
+          countWordsStartingWith bcb
+          erase ba
+          insert abb
+          insert bca
+          countWordsEqualTo ac
+          insert ac
+          countWordsEqualTo caca
+          countWordsEqualTo acac
+          countWordsEqualTo ac
+          countWordsEqualTo cabc
+          countWordsStartingWith a
+          countWordsStartingWith ac
+          countWordsStartingWith cc
+          insert aacc
+          erase cabb
+          insert bbc
+          countWordsEqualTo baa
+          countWordsEqualTo bab
+          countWordsStartingWith cb
+          countWordsStartingWith b
+          countWordsStartingWith abb
+          insert bc
+          erase bca
+          countWordsEqualTo cabb
+          countWordsEqualTo caa
+          countWordsEqualTo bacb
+          countWordsStartingWith aa
+          insert bc
+          insert cbc
+          insert aaba
+          insert bcba
+          countWordsEqualTo aa
+          countWordsStartingWith abc
+          countWordsStartingWith a
+          countWordsEqualTo aab
+          insert ccb
+          insert bb
+          countWordsStartingWith bb
+          countWordsEqualTo cac
+          countWordsEqualTo cab
+          countWordsStartingWith abb
+          erase ab
+          erase bcba
+          insert caac
+          countWordsStartingWith a
+          insert cbbc
+          insert bca
+          erase cabb
+          countWordsStartingWith ab
+          insert bb
+          erase bacc
+          countWordsEqualTo ac
+          countWordsStartingWith ccc
+          erase bba
+          insert abca
+          countWordsEqualTo cbbb
+          erase cabc
+          insert aab
+          erase bbcb
+          insert ccb
+          countWordsStartingWith a
+          insert abac
+          countWordsEqualTo baac
+          insert abcb
+          insert bbb
+          countWordsEqualTo abac
+          erase cbc
+          insert bbac
+          countWordsStartingWith bb
+          countWordsEqualTo cbcb
+          countWordsStartingWith b
+          erase accc
+          countWordsEqualTo abbc
+          insert bbbb
+          insert bcb
+          countWordsStartingWith a
+          insert ca
+          erase abcb
+          countWordsStartingWith ca
+          countWordsEqualTo cb
+          erase ccab
+          countWordsStartingWith baa
+          insert aa
+          countWordsEqualTo bc
+        expectedOutput: |
+          0
+          0
+          0
+          0
+          2
+          1
+          1
+          1
+          0
+          0
+          0
+          0
+          0
+          1
+          0
+          0
+          0
+          0
+          1
+          0
+          0
+          0
+          0
+          1
+          1
+          0
+          1
+          0
+          3
+          3
+          0
+          0
+          2
+          1
+          0
+          0
+          2
+          1
+          0
+          2
+          0
+          0
+          2
+          0
+          0
+          0
+          3
+          3
+          1
+          3
+          2
+          0
+          2
+          0
+          2
+          8
+          0
+          1
+          0
+          0
+          0
+          0
+          0
+          0
+          3
+          1
+          1
+          0
+          0
+          6
+          0
+          1
+          3
+          1
+          15
+          2
+          0
+          6
+          0
+          0
+          1
+          0
+          1
+          0
+          1
+          0
+          2
+          0
+          4
+          0
+          7
+          0
+          2
+          3
+          1
+          2
+          1
+          0
+          0
+          0
+          1
+          0
+          15
+          2
+          25
+          8
+          0
+          1
+          1
+          25
+          0
+          0
+          0
+          8
+          1
+          25
+          25
+          18
+          2
+          8
+          0
+          0
+          3
+          26
+          0
+          0
+          0
+          1
+          1
+          2
+          0
+          9
+          0
+          0
+          0
+          1
+          15
+          0
+          1
+          1
+          0
+          0
+          11
+          0
+          3
+          28
+          28
+          0
+          0
+          0
+          2
+          7
+          15
+          0
+          4
+          15
+          0
+          5
+          4
+          0
+          0
+          5
+          1
+          31
+          10
+          5
+          1
+          0
+          4
+          27
+          5
+          1
+          1
+          0
+          10
+          3
+          0
+          33
+          2
+          13
+          0
+          0
+          5
+          32
+          11
+          5
+          1
+          0
+          34
+          0
+          1
+          14
+          0
+          30
+          0
+          35
+          6
+          0
+          1
+          6
+        hidden: true
+  - slug: longest-word-with-all-prefixes
+    title: "Longest Word With All Prefixes"
+    difficulty: Medium
+    topic: "Tries"
+    subtopic: "Medium Problems"
+    tags: [trie, string]
+    sourceUrl: ""
+    statement: |
+      You are given a list of words. A word is called **complete** if every one of its non-empty
+      prefixes also appears in the list. For example, `"bat"` is complete only if `"b"`, `"ba"` and
+      `"bat"` are all in the list.
+
+      Find the longest complete word. If several complete words have the maximum length, return the
+      **lexicographically smallest** one. If no word is complete, return `"None"`.
+    inputFormat: |
+      - Line 1: an integer `n`, the number of words.
+      - Line 2: `n` space-separated words (duplicates may occur).
+    outputFormat: |
+      Print the longest complete word (lexicographically smallest on ties), or `None` if there is no
+      complete word.
+    constraints:
+      - "1 <= n <= 10^5"
+      - "1 <= |word| <= 10^5"
+      - "sum of word lengths <= 10^5"
+      - "words consist of lowercase English letters"
+    examples:
+      - input: |
+          8
+          b ba bat bath c ca cab cabin
+        output: |
+          bath
+        explanation: "\"bath\" has prefixes b, ba, bat, bath, all present. \"cabin\" is longer but \"cabi\" is missing, and \"cab\" is shorter than \"bath\"."
+      - input: |
+          5
+          x xz xy y yz
+        output: |
+          xy
+        explanation: "\"xz\", \"xy\" and \"yz\" are all complete with length 2; the smallest of them is \"xy\"."
+    hints:
+      - "Checking each prefix of each word with a hash set costs O(L^2) per word because of slicing."
+      - "Insert every word into a trie and mark the nodes where words end."
+      - "A word is complete iff every node along its path is marked. Walk the trie (DFS) only through marked nodes, visiting children in alphabetical order."
+    explanation: |
+      **Brute force: hash set -- O(sum of L^2) time, O(sum of L) space.** Put all words in a set; for
+      each word check every prefix with a slice lookup. Keep the best word by (length desc, lexicographic asc).
+
+      **Optimal: trie -- O(sum of L) time and space.** Insert all words, marking end nodes. For each
+      word, walk its path and verify that every node on the way is an end node; it is complete if so.
+      Compare candidates by length, then lexicographically.
+
+      An equivalent approach is a DFS from the root that only descends into children marked as word
+      ends, visiting letters in order `a..z`; the first deepest node reached spells the answer.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def complete_string(words: List[str]) -> str:
+            # Return the longest word whose every prefix is in words (smallest on ties), or "None".
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            words = data[1:1 + n]
+            print(complete_string(words))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def complete_string(words: List[str]) -> str:
+            root = {}
+            END = "#"
+            for word in words:
+                node = root
+                for ch in word:
+                    node = node.setdefault(ch, {})
+                node[END] = True
+
+            best = ""
+            for word in words:
+                if len(word) < len(best) or (len(word) == len(best) and word >= best):
+                    continue
+                node = root
+                ok = True
+                for ch in word:
+                    node = node[ch]
+                    if END not in node:
+                        ok = False
+                        break
+                if ok:
+                    best = word
+            return best if best else "None"
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            words = data[1:1 + n]
+            print(complete_string(words))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          8
+          b ba bat bath c ca cab cabin
+        expectedOutput: |
+          bath
+        hidden: false
+      - input: |
+          5
+          x xz xy y yz
+        expectedOutput: |
+          xy
+        hidden: false
+      - input: |
+          6
+          n ni nin ninj ninja ninga
+        expectedOutput: |
+          ninja
+        hidden: true
+      - input: |
+          2
+          ab abc
+        expectedOutput: |
+          None
+        hidden: true
+      - input: |
+          1
+          q
+        expectedOutput: |
+          q
+        hidden: true
+      - input: |
+          5
+          a a ab ab b
+        expectedOutput: |
+          ab
+        hidden: true
+      - input: |
+          7
+          k ka kb kab kba kbc kaa
+        expectedOutput: |
+          kaa
+        hidden: true
+      - input: |
+          600
+          baabbb bcccccb bbbbc cbbcaa cabaa babb ccbbb babbaab acabb bbcbacb cbcac aacca bccaa cabbcb cabcba c cccbcc bcabb bbccb abacbc bcaaba abacca cacbab b bacba aaab aaca abbcb bbbbcba ccbcaca caaaccc cbcb caaabba bbbcc babba bcccbca baac aacaa ccaba abbaab bccccc bbcccc bbaab acbbc bacaa bacbac bbcccb caabb aacac accccb caa bcbca cabcaa cccb abbbbcc bccab bccbcc bcacb ccabbb ccaacb abac bbcca aabbbb cbacc cacaa bacaca aaccbb acbcbbc caaba acc cbcbab ababa abbcbbb cabaca bccbcca bcccba cbcaccc baa aabab abbc caccc caabcb accbba acacbc bcacbc bb bcbabc cccc ccbcacb ccacbba cbac accaacb cabbca bbc aaacbc bcaabbb abcabc ababb abcccbc ccbcbc bccbac accabaa baaa cbbbacc aabb ccac acaac bbaabb accac ccba bccc acbb bccaccb aba cabb abaca bcbbcaa bbcbac aabacc bcaca caaacba acac aabba cccaa abaaba bbccba ccacbc aaaa bc baccbb ccaaaba abacbb bccbbaa caaca acaacb baabb bbbcbba aacb acacb caabbb aaccbc bacca abacbcb abbbaab baaba babbaa accbcc bbcaa bccbab cbbbcb caaabab caaccba ccaaa abbbac cccac accbcb cbc acca accba cbaa acbaccb ccaac bcbcabb abc bbbaca bbbca baaac aacab babaca accbaac bba baaccc caaabb cacca cabc acaba baccacc acbaa aa acabaa cbca babac bccb cacacbb cbbcbab baccb acba cabbbcc cbcbabb cabacb cacaaa babacab acbbabc aabcca bbcb ccabaab ccabba abba ccab bcbbca bbcba bbca ccbbc caaaaaa bbbcbb aaacb bacc abaa acbaaa cacbccb ccb bcb cab babbb bbaccc cbbba accaba bccac ccabc bcaabac cbaaa ccbacc bcabbcb acaab baaabca cbaaac aaaacab acbba babaab bcbcc cbaac ccbca baabcca cccacb cbccc bcaaa abcccb aaaaa bbabcaa caacb abb cabab abcbb bbcbca bbaccb bbabb bccbabc cac aacbbac baabcac ccbba bcccaa baab accbbab bccbc bcbbbbc cacccc abacb caaa bcacbcb ccbbcca cabbbc bcccabb caacac caacacc acabbc bbcac cbaab a cbbaca aabacca cccbc aacbcb abbb bbcbaa accab bcc accca abcb cb abccc abab accaca bbabbb accb abca abacaa bccba bcccab ccca babbaac ccbbcb babbbc aaccbcb aacbc baccbbc abaaa acab accaaa caca abaaac ccacb acbbca bcacaa bcccb cacc bcbbb aabaabc acbbcb aacacca aabaab cbcbaac bcabcb aab abcaca caaab bacbbb baca cbccb ca bcbcab ccbcbcc cbbcac abbbaa babcc cbcba cbbca ccbac cbbbc cccab bbbacb bccaabc bcaa bccacc bbbc aacbca bbcbbab bcbbbb accabb caccb baababb caac acbccbc bbb bcccbaa acccb bab bababc cacbcb cacaaaa abbcc abaab bbaa aabaa accc acaa cabbbb caccab ccc acbabbb bbacccc bbcc abaabab bcac bacb ccaacbb caabc aabbbc cccbccb ccacbca aac baaab babcbc cbabcab cbaca baabcc cacbbc cbcca abbcbb bcca abbca bcabbcc baaabc ccaccac ccaacba acbbcbc bbccbcb bbacc caaac acbccc bbcccba bbbabb bcab cbab baabc cbbbac bbabc cabbb aaa abcac acaaca abcab abbbab aabcc babcb abaabaa acaacaa bbbcca accaa caacc bacbb bacac babca cacac cca caccbc bbac bccca bacbbbb bbabbc cba bbbbb acbbacc caba acbcbb ccbc bbaaa cbbab accbaab cbcacc bcbbc aaac babab aaabb baacc aacabb ccacaa cabbcac bcbc ccaab aabbbba acabacc ccbbaba cccbca cbbcacc aacabac acbaaab bcccbc babaaba bbccab bccbcaa acbccb caaabcc abbba ab ccaa accbaa ac cbaacac babc bbbcab acbcc cabac cacb ccabb aaccb bbabcca bbbbbbb cabacbb bcaab ababc cbcab caaccc caacab ccacc cabcbab bcbb bcbabca aabaaa acb babccc cbcc aaaacc ccbbcc aacaca ccabaa aacba acbcca cacccca bac bcccc baacab cbb aababb bbbac caaaba ccaabb caccbb ccaca bbab abcc bbccbc abbac aaccab acbc cabcb abcbba aabcabc bccbb aaccacb acbbba aacbb ccbb aaaac cbba ccaaab acbcb ababba cacbcba abbbb bbbaa ccbbbcc acaabbc bbba acabbca cbccbaa cacbb bbbcb aabac aaaccc bcbcca babcca aabbc bccbca ccbcb cbbb aabc bbccc bccaab bbabaa bcbcb abacc bccbbb acbac bacab ccaccb abaaacc bcba cbaba cbbc aca aaacaa accccba bbaba bbbbcb baaacb aaccac cc ccbbcba abbbbc cbbac bcacaaa acbbb bbbb bbcaca bacbacc caabba baba abcacaa ba abaaab bcabc cacab acccc bcbab aaccabb ccbbab bbabab aaba cbaccca bccabbc cbaaca caaaa accbb bca cbccba cccccb aabbab babccca aababa baccac caab bababcc cabbbbc bccbba babaa aacc aabbb ababab baabca
+        expectedOutput: |
+          aabaabc
+        hidden: true
+      - input: |
+          500
+          rqrq pspp qrpq rsss rrq rqpqr sssqs qqqrq rsrqsp srp srqprp ppppqq qqrrq pprpp psqqp ssssq srrqsp psqqqr rppr qpp srpq rsr rrsppp srr qqppqs prpp rsqp ssr rspr spsrpp rrppr srsrs spsr qprs qprsp pqprpq sqrrss rpqp srqpr rspps rqpr ppqq srsq rqs rqqqr psrss rrp qrqsp pqrqq qsqpss pqqrq pr qpprq rsppps qrpppp qspr qrrr pss qsrrrr rqqq pqr ssp ssqss qspqrs qqqr psrq rpsq qrssr qrrqsp qsqqpq rq sqsrp qrsqr rqqp prrpp qrprpq sss qqppp ppppq qprr qrsp pqqs ssqqq rsrqr rspppp srssqr rpq qsprs spqr qrrq ssss sr srrrp rsrrp qqsprq qqrrr rsqqr qsqq rqqrrq qspsq rpspr ssssqs pqqp rqqrq qsss pspr prps srqq spspq prqr qqsqpq rsprr qqqrs qprq sprqp sps rqqrqq rpss sqsr sprq rsqs rrpsp sqs prsr ppqrp sqsrps srsqr prrr sqqss rrqr ppqpq rp qqspr spppp qsqps srprqs srqpss srpp rqss rpqqsr qqp psrr srpqq ssrr qpr pqs srppp prpps pqp ppsprs prr rssrp psqqpq srqps pqpsqq spqps pqrr rpqqs sqq srq rsrqs qqpr p rqrs pqpr sqrprp qpqs qq qsqpq sppp qprp rs qrpp psppr ppsp rrrq prsp qqrs qrqsrs pppp sprpr qrp pprpq pqpq qs ppq psp sqqpq qspqpr srprpr pqqps pppsp rrpq sqqrp sqrrqs rqqqs qsprsq qrq q pqppq prpq rrps qqqsp rqq rqqs qpqp srsrss rspsp pprrs srqsp pprpr qprsrs psrrr qrppp rsrp rsp rqqqpr qrrrr srqp psqqq prrqr sqssrs sssq rqqpr qspp rqsr rqqr qrs pppsr qsspq qrps qqpsrq qqqqp rss qsrsrs rrsqrr ssqrq ppqqrq qqsp sqprs sprps rpr rprsp rrqpp ppqr prss spss qqqsr qpspsp rpsqp qss rssr qsqp pssqp pssprs qrrs rpppsp rqrr pqpsq rqsp pqps rrspps ssqs qqr qpsp qsp prpspp rppps qqspss s rqr qr qqspps rqqqp qrqp rqp qpqr rsrr qrprss qrprp qrqs psspr ps rrss srpsp pqsq prqs rqpp qqs psrp rrqp pqq rppq prq spps srrrq sppss qpsqq rpppr spr qrrrsr rqrsps qsqqs qrqsrp rrpsqq qrpr psr ssq ppqp sqprr rpsqq qqprps rpp pq prsss qqpp rsqsq qsrr sqprrs rqsq pssrs ppsr qpq pqqpsq rpsprs sqr ssqr rrr sprp qrqsr psqqrp pqqsrr qsq spssqq rspqr ssssp pppsrp psqq sqrrs rsqqpp qsrrr rsppp pppr pps srs rrrqrq qrpqp rsq sqp pqqsr rr qrprs qpsps prrrq qrpsr prsps qqqqpr sprprs qsqprr srprp rrs rsssp rqprp qsqs qqq qrr qqps ssrpp sqrp psspq rppp ss psssq sqspq ssqqqp sqspqr qprps rqrrr qrrpps rprp qqrqq qrrrs pqprp qqrq spsrr ssqq qpprqq pspprp pppspr qsppqs pprp spsrp psqqr qppsrs qrqpq spqp prrqrp spq qqqs qqqsrr qqspp rrspp qrpqpp rprr qqppq pqrqqp psssqp qpprrs qsrp rrpp r qrrqs qrsq ppr qqqspr qps sssspp pssq qqss qprpss sqrs rsqqp rprsq qsr rsrq rqprrr qpppq qsppq sprrq sprrqp spsrsp prp srqprq rspp ssqssr rqrsp rsrrr rrpr psrqs srqs prs psq sqrqs srprq sqpspr sqpr pp qprrq qp psrs rsqqqq prpr rpqpp srrr rpqppr srqspr rqprr ppspp qsrrq prpqp ppspr rsps qpprr srpr rppqpp qprss qsqqss ssrp rpqq sqps sq pssp srss prpsp sp ssqsp qprpp pqrqqq rrrqr pqrq rqpq prqpp srpppp sspr sqrq rps rpsp rrsp rrssr spp psps pqpp ppp spprp srps pqss sprr spsrs ppps prsrr
+        expectedOutput: |
+          ppppqq
+        hidden: true
+  - slug: count-distinct-substrings
+    title: "Count Distinct Substrings"
+    difficulty: Medium
+    topic: "Tries"
+    subtopic: "Medium Problems"
+    tags: [trie, string]
+    sourceUrl: ""
+    statement: |
+      Given a string `s`, count how many **different** strings occur as contiguous substrings of
+      `s`. Equal substrings found at different positions are counted only once.
+
+      **The empty string is counted as one of the substrings**, so the answer is always at least 1
+      more than the number of distinct non-empty substrings.
+    inputFormat: |
+      - Line 1: the string `s`.
+    outputFormat: |
+      Print a single integer: the number of distinct substrings of `s`, including the empty string.
+    constraints:
+      - "1 <= |s| <= 1000"
+      - "s consists of lowercase English letters"
+    examples:
+      - input: |
+          aba
+        output: |
+          6
+        explanation: "Non-empty distinct substrings: a, b, ab, ba, aba (the second \"a\" is a repeat). Adding the empty string gives 6."
+      - input: |
+          zzz
+        output: |
+          4
+        explanation: "The distinct non-empty substrings are z, zz and zzz; with the empty string the count is 4."
+    hints:
+      - "Putting every substring into a hash set works, but building and hashing O(n^2) strings of length O(n) is O(n^3)."
+      - "Every substring is a prefix of some suffix of s."
+      - "Insert each suffix into a trie character by character. Each newly created node corresponds to exactly one new distinct substring."
+    explanation: |
+      **Brute force: hash set of substrings -- O(n^3) time, O(n^3) space.** Generate all
+      `n(n+1)/2` substrings, add them to a set, and output `size + 1` for the empty string.
+
+      **Optimal for this constraint: suffix trie -- O(n^2) time, O(n^2) space.** For each start
+      index `i`, walk from the root inserting `s[i], s[i+1], ...`. A node is created exactly when the
+      substring `s[i..j]` has never been seen before, so the number of created nodes equals the number
+      of distinct non-empty substrings. The root itself represents the empty string, so the answer
+      is `created + 1`.
+
+      (Suffix automata or suffix arrays with LCP reach O(n) or O(n log n), but they are beyond the
+      scope of this section.)
+    starterCode:
+      python: |
+        import sys
+
+
+        def count_distinct_substrings(s: str) -> int:
+            # Return the number of distinct substrings of s, counting the empty string.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(count_distinct_substrings(s))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def count_distinct_substrings(s: str) -> int:
+            children = [{}]
+            for i in range(len(s)):
+                node = 0
+                for j in range(i, len(s)):
+                    nxt = children[node].get(s[j])
+                    if nxt is None:
+                        nxt = len(children)
+                        children.append({})
+                        children[node][s[j]] = nxt
+                    node = nxt
+            return len(children)
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(count_distinct_substrings(s))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          aba
+        expectedOutput: |
+          6
+        hidden: false
+      - input: |
+          zzz
+        expectedOutput: |
+          4
+        hidden: false
+      - input: |
+          a
+        expectedOutput: |
+          2
+        hidden: true
+      - input: |
+          abcd
+        expectedOutput: |
+          11
+        hidden: true
+      - input: |
+          abab
+        expectedOutput: |
+          8
+        hidden: true
+      - input: |
+          banana
+        expectedOutput: |
+          16
+        hidden: true
+      - input: |
+          baaabbbaabbbbaaaaabaabbabbbaabaaabbaaaaababaaabbaabaabbbaabaabababaabaaaababbbaaaaaaaabbbbababbbbbbabbbbabababbabbbaaabbbabaababbbaabbabbabbbaaaabaaabaaabbbbaababbabaaaabbabaabaaabbaaaaabaaababbbbaababbaaaabaabbbbabbaaaabbaaabbabbbbbbbbaaaabababbbabaaaaaababbbbaabbbbbabababbbbbbaaaaaaaababbaababaaaa
+        expectedOutput: |
+          43108
+        hidden: true
+      - input: |
+          rvlmfyejvmfujdvhngxqmoiepwglwxxhnuqoclqeyrzrgeiinjiawojwqvdhsexuebuhylknotzrnyhaqppihygicztulashoazvaepiatuubdlzlomnjkfliurfrpjjvqrwuaztppttiijowirzjsmcpknwsqtxqioozvccuvuuvyrnhjhepgarjaltysckwabmvvpxtyxrelcsvielisnlmnjsrtsmtdnokjvyzbynpvouaocyuteripelotpjfbuudicyimaneeggvrliluzbrqbngnkolfusxjvcxopfodlacrcujntrtumzlysvpzgohhinsomnqmlgsdywqursrjeqvdsmkkildfhvjtumrsklncpcratwbceiebksiryhpivkmqkvmlch
+        expectedOutput: |
+          79734
+        hidden: true
+      - input: |
+          mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+        expectedOutput: |
+          351
+        hidden: true
+  - slug: maximum-xor-of-two-numbers-in-an-array
+    title: "Maximum XOR of Two Numbers in an Array"
+    difficulty: Medium
+    topic: "Tries"
+    subtopic: "Hard Problems"
+    tags: [trie, bit-manipulation, array]
+    sourceUrl: "https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/"
+    statement: |
+      Given an array `nums` of non-negative integers, find the largest value of
+      `nums[i] XOR nums[j]` over all index pairs with `0 <= i <= j < n`.
+
+      Choosing `i = j` is allowed (it gives `0`), so the answer for a single element is `0`.
+    inputFormat: |
+      - Line 1: an integer `n`.
+      - Line 2: `n` space-separated non-negative integers.
+    outputFormat: |
+      Print a single integer: the maximum XOR of two elements.
+    constraints:
+      - "1 <= n <= 2 * 10^4"
+      - "0 <= nums[i] <= 2^31 - 1"
+    examples:
+      - input: |
+          4
+          8 1 2 12
+        output: |
+          14
+        explanation: "2 XOR 12 = 0010 XOR 1100 = 1110 = 14, which beats every other pair (for example 1 XOR 12 = 13)."
+      - input: |
+          3
+          6 6 6
+        output: |
+          0
+        explanation: "All values are equal, so every XOR is 0."
+    hints:
+      - "XOR is maximised by making the highest bits differ. Decide the answer bit by bit from the most significant bit."
+      - "Store every number's 31-bit binary representation in a trie, most significant bit first."
+      - "For each number, walk the trie greedily choosing the opposite bit whenever that child exists."
+    explanation: |
+      **Brute force -- O(n^2) time, O(1) space.** XOR every pair and keep the maximum.
+
+      **Better: prefix set per bit -- O(31 * n) time, O(n) space.** Build the answer from the top
+      bit down. For bit `b`, collect the prefixes `num >> b` in a set and test whether the candidate
+      `(answer << 1) | 1` can be formed as `p XOR q` for two prefixes in the set.
+
+      **Optimal: binary trie -- O(31 * n) time, O(31 * n) space.** Insert every number as a path of
+      31 bits (bit 30 down to bit 0). For each number `x`, start at the root; at bit `b` prefer the
+      child with bit `1 - bit(x, b)`, adding `1 << b` to the running XOR when it exists, otherwise
+      follow the same bit. The maximum over all `x` is the answer. Inserting all numbers first is
+      fine because pairing `x` with itself only yields 0.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def find_maximum_xor(nums: List[int]) -> int:
+            # Return the maximum nums[i] ^ nums[j].
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            nums = [int(x) for x in data[1:1 + n]]
+            print(find_maximum_xor(nums))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def find_maximum_xor(nums: List[int]) -> int:
+            BITS = 31
+            zero = [0]
+            one = [0]
+            for num in nums:
+                node = 0
+                for b in range(BITS - 1, -1, -1):
+                    child = one if (num >> b) & 1 else zero
+                    if child[node] == 0:
+                        child[node] = len(zero)
+                        zero.append(0)
+                        one.append(0)
+                    node = child[node]
+            best = 0
+            for num in nums:
+                node = 0
+                current = 0
+                for b in range(BITS - 1, -1, -1):
+                    bit = (num >> b) & 1
+                    want = zero if bit else one
+                    if want[node]:
+                        current |= 1 << b
+                        node = want[node]
+                    else:
+                        node = (one if bit else zero)[node]
+                best = max(best, current)
+            return best
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            nums = [int(x) for x in data[1:1 + n]]
+            print(find_maximum_xor(nums))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          4
+          8 1 2 12
+        expectedOutput: |
+          14
+        hidden: false
+      - input: |
+          3
+          6 6 6
+        expectedOutput: |
+          0
+        hidden: false
+      - input: |
+          6
+          3 10 5 25 2 8
+        expectedOutput: |
+          28
+        hidden: true
+      - input: |
+          1
+          0
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          2
+          2147483647 0
+        expectedOutput: |
+          2147483647
+        hidden: true
+      - input: |
+          12
+          14 70 53 83 49 91 36 80 92 51 66 70
+        expectedOutput: |
+          127
+        hidden: true
+      - input: |
+          900
+          1741996323 1427224679 377324862 1479081501 2046915312 189911076 1152593664 875497533 50108180 196997571 1058019571 25366043 310577463 414238397 1137512382 1938096313 462495103 1280712628 1757141246 2145533211 1557034985 252040348 646628571 812667150 1207720652 1702649209 1478259636 483192450 1603010331 791635791 2093173450 1128288347 740288494 1235266890 332354055 2137570200 2010333469 170877028 225178517 1521998331 454537094 974135144 1014890899 1179646572 1582559060 31290664 58329133 952943537 1972182517 918964321 904667254 2091676575 49470953 1819275220 368760783 1137583333 1038389733 1163072853 1301349102 1862047485 484286916 1386423117 1760437652 851296045 1114260533 1943575734 1714127187 1975984910 605803550 1948990058 553550539 1874489219 1941129105 1070892770 2021815045 131077004 893185198 949970235 1500033132 1634056261 780296244 2020066226 691527589 1708918887 2130090821 1113445647 1193687835 865919780 1414279930 795200815 1832501580 941377678 1666439579 1363611398 852767833 1939374024 752152963 331235382 1321011178 604271724 89675392 1730261255 528427003 1123244871 872325807 2082454573 89591099 442936220 588496396 578151440 1862273769 2063687471 1148187431 780412453 1793792724 1596812739 2000318699 1104045875 1123960168 1930450796 1542377927 441524647 1668492063 1825731415 1438913611 115506915 1918344703 25575687 1817038467 1791981510 1285773989 574343649 376211401 564906952 2102837380 1043981245 1327841142 1749578488 1175088378 1889143664 998634713 563251994 978208591 390960805 1448317831 1575872696 1230992521 1579868118 111296822 2007865491 221283101 72798417 1906838166 474088698 1363858690 975066112 1880510205 1563989191 1941891840 782226489 877814927 324485843 655718300 1383809709 2065816193 392182577 890204119 1566879040 898583448 1582519797 1750883812 776515821 731980566 1539555136 56412381 566580013 475581128 1112711737 2034732676 276009092 588727870 1372020149 1101541646 1907143519 640590423 78653278 620426321 1521308059 300872889 2038668811 1810773386 1885617101 104058431 345647570 1220324183 793571696 1395918088 1972793938 83889499 1065704730 1799215261 229432537 1481001780 744345388 1169737624 1685243373 282953582 673822044 684582406 607406486 152558469 1371118244 417260906 1868169836 447762104 875080600 761221406 1363996851 229291712 296158442 544408516 1766983140 1106228547 1102405116 274484246 1973314537 1758879252 1475053530 571413822 56705356 2113499551 728894335 1122631637 1568734474 1007810909 555904020 1648326536 1493656836 2041345465 1399906842 627164456 703749888 2044898077 71916375 1776730012 50507709 1325005012 710948038 1167529694 97618114 1145378276 394510531 928527139 486988713 687490783 1549544198 1329298933 1816338802 845102674 1450229988 53013132 1505717233 1453428274 917203808 1146690359 882412303 1766150658 1958142052 1689670726 2007240992 1308371694 1430966808 1661160483 994522887 501903937 334993307 685860718 229943757 1974110894 1959075321 1191370628 249563095 1965905055 15326732 970748242 1473808912 1761668774 775366660 761909864 581527272 578502927 593637228 1472169537 1180410922 1680703390 1255080314 1213463060 83612639 1821690264 910012724 1611739308 952889515 852201309 1843019325 1575403395 1210644319 591898594 61681633 429084129 352878798 128367710 511695479 296040235 1998265916 1325707128 1199389173 414234151 2087197890 1286505599 484957654 1029198398 1552886423 1758329619 978228754 958821395 1941395512 1949346719 11326201 2133825119 1473829999 1244474087 853645712 479389965 639319099 1209506769 1542118523 115173422 445699877 964056166 1230630512 1687742083 1390926261 1070047812 1037136921 1843103895 1201016488 1490747966 1450636181 900972974 1074813474 652998574 385844365 2035110084 151861636 225116905 2027227203 1436086478 1713170839 1441137559 1898106339 1175877328 1698773277 229906688 36000397 1205671654 1822456634 1637999098 314152937 769804694 1191543676 27869459 1495354008 1518266423 1664171543 729251242 1878603936 337231222 1603891947 1301018111 2046922158 1463304816 2035784136 13398533 1966770435 1755390187 1291214409 1543494462 2025655095 736046837 478090271 1090045535 506163859 981771135 376981683 19172463 878577349 907371978 645939371 1706755667 1297519734 113172393 444368683 1896279006 492926497 1588128364 2006964885 1071175465 1243071007 1878992932 790012145 1478524836 897308494 786427377 1212913733 757334028 1315321425 1507023537 995477718 1468972653 909255165 1729270287 1247521409 2049574717 891612740 795386928 463894212 1020910440 1811433083 1768143745 2122497576 1269998857 445140021 1691048128 1681869989 739871949 33300718 48670860 1603328356 1152571782 1177132523 1155428527 1937449016 227841846 290867259 1544939770 829821754 1302413179 421017037 1535485617 1889781157 1434614146 707526402 1156381069 1918238531 1226949718 1272800701 34331225 163004624 1521526453 811443862 1031438886 228927013 766699844 953423438 2108284425 403825602 1647651385 1038519442 1679523430 997007151 769667317 456833110 1488294830 1663504816 1715933365 474742704 2066911883 552862108 38589960 228958366 1615010351 1814305033 1178960198 837525516 357308980 1909550565 799404316 749310527 3936575 113012663 1953500289 1016192413 154338986 2022071215 1736561679 1539683101 567221231 1544522993 1644218040 1712783476 787697193 41440932 1957330599 1544424821 835688732 703496883 1418639629 679070796 1029995732 600621243 1134076466 612114 763409079 469245088 2019141722 1040379009 1501119362 1456234217 1483973057 471626552 1656931838 1020174347 1625617948 437382487 945147341 713327294 333211869 621090256 1218703310 171197450 416914293 368631990 1617297544 1850091799 2133200357 1168790499 396868221 517714553 1563448157 1370838154 1567021694 835972292 1293994076 1292654454 1085675590 837382227 702689092 129503434 921498449 1973390546 758887469 1480703186 682275975 1834990219 171586156 675310721 68856173 370829938 1185275371 1693400288 1200498940 373315876 766306958 1388242274 807296186 1682322131 1170398700 1855222378 2109170097 1476733943 1150865660 36832312 829237416 1989573616 671330714 70222159 1372762787 1318886836 531456521 824121261 726885223 157612449 1650713812 437064661 1372683087 502746604 360733481 214919519 2131959250 666835335 2023659390 1635656008 904207981 2062662211 225621794 2085933031 1058333259 144594290 2068895402 1903050811 604666689 750792800 1110600786 2085890665 1639128076 1343165541 2143008684 53106304 1981271229 1305140495 1804302141 1595809984 1299253636 1914950837 540890910 1152150866 246587028 126867561 1057563787 625389193 893009007 728125782 1822426696 760983108 515424503 1704852123 1203025470 238253950 2146487745 1702840875 1387011994 329142672 694232088 1091807960 2130360005 270619534 223385898 661943254 552996194 301524969 1429943482 2001672653 271874388 751984934 1690194471 497498953 1867617073 1934489430 1145241256 841709756 403714560 2109986627 1420194153 174931900 982603307 283823296 1890779816 704067409 1536669193 357396851 2112170411 1521301957 1393976632 934100752 2090390851 1446049845 435102774 17909970 487467608 297179060 1281433629 275754991 203706001 2094808737 1107320735 2121090708 1956633259 284868128 1397473193 409942731 1076123582 1999081000 484571873 1627525264 563762416 897188451 1628632080 254650031 721889052 1199309820 1652854340 2010938044 1063619884 287099694 1942950480 2099638207 524885514 878629840 437718424 274878785 348473059 890340777 110478903 1315195293 1663862514 1628379358 752023946 1767576352 97352149 944063550 684426026 207894612 1407091909 1670870312 605455096 680017199 174350559 561351876 515758675 2060771482 2140011096 943403952 751619705 317834096 210304148 1589106656 1864007693 193782395 88122543 1398138989 1217387768 1058721940 623497847 1361089156 1627875654 1732791270 1011120194 618661568 311418807 525130780 1256971005 2025155292 319422354 1566897749 1386587091 1910407582 1103104166 1743341125 1270913537 514876105 377371432 2031302604 1195811026 663652599 895590809 1766464192 76507441 164559879 1082796680 231737292 390988571 1618414747 219181001 1087176821 1499161592 1313775706 1932323541 1685012637 677939173 1475444157 359631761 1100644056 1172722176 725371718 507344333 90865759 358067922 173689125 276423661 1651448638 934443154 1553310253 912356249 1853891606 1207899217 1496040847 341292761 972115421 918221833 2125011695 2117320775 85047376 2126444241 1587132780 941853544 1833916633 1077249330 44555092 986605923 776845448 1862085050 1080618401 2040589044 1486549926 130404165 884655799 1869953246 1305361367 893354757 59735292 1375946860 67431366 345946857 1341992072 523299166 1485467198 1611062965 200304770 1168512480 1007740663 1001768682 1600613247 349919799 1126794683 1055890634 1831273102 1388021861 1961103488 927325172 1321773782 1696413335 767443539 840598921 2047049266 1460650949 618781407 345550646 414297001 723308966 1563513881 935076609 1789183094 1955498494 1625924753 1923433889 526326781 1125309029 1661663114 4084026 1236375012 471825957 276881889 190013145 1936480258 199891508 986166278 963699598 1338841002 1634851330 2002108898 695167374 1006385632 108894316 989286332 1175943764 1872039141 470668648 180623640 988886381 186136679 16411821 1494221686 1546642977 432189664 87182906 1326034264 774491424 1960016435 225690168 1239479348 1652073295 695655005 1578522794 820988138 1251410189 1551386656 230658985 1500863205 1645109042 1027111325 1269166672 1298333913 1787416689 537162839 2102826642 1840423033 918014718 1454051867 999920231 1227777420
+        expectedOutput: |
+          2147478208
+        hidden: true
+      - input: |
+          900
+          727 665 182 929 50 667 696 457 656 493 657 604 585 865 84 383 803 799 732 684 321 601 39 262 472 984 553 489 955 216 302 944 627 138 56 715 287 782 683 789 992 675 836 527 834 108 700 400 541 792 444 648 655 641 82 717 229 738 255 66 334 980 56 643 752 801 202 25 377 459 261 452 196 713 607 497 59 741 262 562 906 853 407 631 88 965 174 692 825 303 214 616 624 71 993 176 927 585 504 162 260 594 552 633 777 363 144 805 449 297 351 493 395 474 411 988 535 821 654 279 1000 371 214 482 704 771 603 700 146 986 184 437 28 392 271 643 534 481 322 213 671 478 260 482 360 143 265 687 402 735 538 120 829 830 764 333 485 743 312 305 271 960 595 682 205 590 950 486 943 842 300 320 287 940 39 965 581 410 44 573 726 58 349 203 95 229 600 609 269 288 172 381 542 374 613 666 365 475 250 417 662 813 108 482 731 402 486 857 217 56 583 889 727 411 489 464 618 908 762 132 289 51 660 458 840 538 128 18 351 766 313 796 741 929 709 558 209 679 28 798 812 375 603 43 244 322 689 156 82 335 656 307 481 970 508 663 572 773 526 799 190 180 188 867 244 225 253 288 404 727 14 974 368 903 351 350 864 521 501 915 242 74 285 500 55 101 892 759 805 920 38 871 580 138 565 111 554 49 77 839 280 83 701 710 227 89 93 300 339 637 140 673 605 655 697 196 255 448 542 310 691 170 746 143 874 462 718 712 749 324 338 234 261 105 136 335 888 629 720 776 465 505 68 440 384 5 866 629 435 865 1 462 424 364 678 933 272 233 757 11 82 323 717 249 451 32 162 593 453 91 290 242 668 567 489 630 944 841 76 609 556 589 798 326 171 75 95 780 179 3 684 149 388 147 613 20 363 547 389 480 98 369 161 656 917 564 540 963 926 224 607 965 378 63 566 638 570 280 390 348 833 164 58 39 429 584 109 497 58 53 446 854 184 78 537 634 858 32 310 828 794 377 806 236 549 329 807 334 283 919 192 104 645 384 836 347 240 236 330 319 124 822 974 251 432 796 818 51 111 458 363 646 710 54 323 814 818 705 585 595 904 502 208 848 260 98 340 304 202 672 870 189 359 402 319 531 886 541 522 348 478 909 598 398 147 416 203 838 524 464 96 454 270 892 546 721 434 995 837 43 479 157 227 915 515 422 430 313 334 996 405 803 176 609 44 295 19 578 214 314 95 521 697 504 193 863 97 907 12 778 466 907 910 31 911 653 817 593 846 507 347 464 783 583 491 731 258 645 470 761 843 691 736 713 768 349 355 772 767 122 75 229 921 595 773 992 849 84 216 248 375 878 795 984 318 241 691 229 88 795 721 548 592 224 930 199 164 399 869 55 161 16 960 374 542 736 729 456 288 478 916 688 618 464 352 996 783 664 474 931 742 342 368 735 59 817 697 596 818 580 281 887 457 486 548 580 634 577 229 960 574 466 22 876 2 594 616 871 202 29 801 937 756 744 954 633 497 503 614 304 696 227 876 938 589 37 920 806 989 383 441 974 958 559 32 842 198 906 630 424 806 116 970 983 769 23 971 324 327 298 355 9 170 13 884 363 556 35 660 839 970 608 641 102 320 472 542 785 112 785 234 531 613 981 851 990 391 391 105 256 776 553 328 522 844 163 438 930 376 956 839 35 194 960 933 345 899 392 431 675 499 159 61 277 735 750 387 428 660 698 252 77 741 333 699 571 91 672 208 453 429 700 254 502 289 277 121 209 753 568 682 61 68 701 312 788 30 231 146 486 747 370 266 331 725 828 208 975 581 965 866 406 628 747 155 438 368 353 339 19 85 760 247 220 789 192 321 845 706 328 559 559 854 841 287 44 803 430 479 941 987 862 494 167 477 137 94 50 501 786 852 742 674 799 768 483 932 419 841 359 925 668 219 889 956 552 271 502 822 578 662 484 3 74 996 529 209 228 572 631 428 823 260 497 545 144 313 86 971 102 668 431 83 944 293 958 356 484 427 872 279 915 24 7 209 783 758 341 667 130
+        expectedOutput: |
+          1023
+        hidden: true
+  - slug: maximum-xor-with-an-element-from-array
+    title: "Maximum XOR With an Element From Array"
+    difficulty: Hard
+    topic: "Tries"
+    subtopic: "Hard Problems"
+    tags: [trie, bit-manipulation, sorting, offline-queries]
+    sourceUrl: "https://leetcode.com/problems/maximum-xor-with-an-element-from-array/"
+    statement: |
+      You are given an array `nums` of non-negative integers and `q` queries. Query `i` is a pair
+      `(x, m)`.
+
+      The answer to a query is the maximum of `x XOR nums[j]` over all elements with
+      `nums[j] <= m`. If no element of `nums` is at most `m`, the answer is `-1`.
+
+      Answer every query.
+    inputFormat: |
+      - Line 1: two integers `n` and `q`.
+      - Line 2: `n` space-separated non-negative integers, the array `nums`.
+      - Next `q` lines: two integers `x m` per query.
+    outputFormat: |
+      Print `q` lines; line `i` contains the answer to query `i`.
+    constraints:
+      - "1 <= n, q <= 10^5"
+      - "0 <= nums[j], x, m <= 10^9"
+    examples:
+      - input: |
+          4 3
+          5 2 9 12
+          7 4
+          7 1
+          10 20
+        output: |
+          5
+          -1
+          15
+        explanation: "Query 1: only 2 is <= 4, and 7 XOR 2 = 5. Query 2: no element is <= 1, so -1. Query 3: every element is allowed; 10 XOR 5 = 15 is the largest."
+      - input: |
+          3 2
+          4 4 4
+          4 4
+          0 3
+        output: |
+          0
+          -1
+        explanation: "4 XOR 4 = 0 for the first query; no element is <= 3 for the second."
+    hints:
+      - "Without the limit m this is the maximum-XOR trie problem. How can you make the trie contain only elements <= m?"
+      - "Process queries offline: sort them by m and sort nums ascending."
+      - "Before answering a query, insert every not-yet-inserted element that is <= m, then query the trie greedily. Remember to print answers in the original order."
+    explanation: |
+      **Brute force -- O(n * q) time, O(1) space.** For each query scan all elements, skipping those
+      greater than `m`.
+
+      **Optimal: offline queries + binary trie -- O((n + q) * B + n log n + q log q) time,
+      O(n * B) space** (B = 30 bits). Sort `nums`. Sort query indices by `m`. Keep a pointer into
+      `nums`; for each query in increasing `m`, insert all elements `<= m` into the trie. If the trie
+      is still empty the answer is `-1`; otherwise walk from the top bit, choosing the opposite bit of
+      `x` whenever that child exists, to obtain the maximum XOR. Store the answer at the query's
+      original index.
+
+      An online alternative stores in each trie node the minimum value in its subtree and only
+      follows children whose minimum is `<= m`; it has the same complexity without sorting queries.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def maximize_xor(nums: List[int], queries: List[List[int]]) -> List[int]:
+            # For each [x, m], return max(x ^ v) over v in nums with v <= m, or -1.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n, q = int(data[0]), int(data[1])
+            nums = [int(x) for x in data[2:2 + n]]
+            queries = [[int(data[2 + n + 2 * i]), int(data[3 + n + 2 * i])] for i in range(q)]
+            print("\n".join(map(str, maximize_xor(nums, queries))))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def maximize_xor(nums: List[int], queries: List[List[int]]) -> List[int]:
+            BITS = 30
+            zero = [0]
+            one = [0]
+
+            def insert(num: int) -> None:
+                node = 0
+                for b in range(BITS - 1, -1, -1):
+                    child = one if (num >> b) & 1 else zero
+                    if child[node] == 0:
+                        child[node] = len(zero)
+                        zero.append(0)
+                        one.append(0)
+                    node = child[node]
+
+            def best_xor(x: int) -> int:
+                node = 0
+                result = 0
+                for b in range(BITS - 1, -1, -1):
+                    bit = (x >> b) & 1
+                    want = zero if bit else one
+                    if want[node]:
+                        result |= 1 << b
+                        node = want[node]
+                    else:
+                        node = (one if bit else zero)[node]
+                return result
+
+            values = sorted(nums)
+            answers = [-1] * len(queries)
+            pointer = 0
+            for idx in sorted(range(len(queries)), key=lambda i: queries[i][1]):
+                x, limit = queries[idx]
+                while pointer < len(values) and values[pointer] <= limit:
+                    insert(values[pointer])
+                    pointer += 1
+                if pointer > 0:
+                    answers[idx] = best_xor(x)
+            return answers
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n, q = int(data[0]), int(data[1])
+            nums = [int(x) for x in data[2:2 + n]]
+            queries = [[int(data[2 + n + 2 * i]), int(data[3 + n + 2 * i])] for i in range(q)]
+            print("\n".join(map(str, maximize_xor(nums, queries))))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          4 3
+          5 2 9 12
+          7 4
+          7 1
+          10 20
+        expectedOutput: |
+          5
+          -1
+          15
+        hidden: false
+      - input: |
+          3 2
+          4 4 4
+          4 4
+          0 3
+        expectedOutput: |
+          0
+          -1
+        hidden: false
+      - input: |
+          5 3
+          0 1 2 3 4
+          3 1
+          1 3
+          5 6
+        expectedOutput: |
+          3
+          3
+          7
+        hidden: true
+      - input: |
+          1 3
+          7
+          7 6
+          7 7
+          0 1000000000
+        expectedOutput: |
+          -1
+          0
+          7
+        hidden: true
+      - input: |
+          3 3
+          1000000000 0 536870912
+          1000000000 1000000000
+          536870911 600000000
+          0 0
+        expectedOutput: |
+          1000000000
+          1073741823
+          0
+        hidden: true
+      - input: |
+          300 300
+          789165149 206131816 419810861 20602390 788243662 436198267 633258447 940456038 505945189 81271792 705060099 82736433 287377465 544220614 714974048 442025129 328701812 733577833 855924453 199205551 186649537 265396431 221335753 631683022 103921629 719248731 110271396 570436949 319412692 604128624 808464570 23046151 206612924 907189339 893927238 37451248 251662077 289333295 9505855 566329170 557861627 149332861 21451559 393967521 20515178 680248288 623633156 716654011 462351642 708193828 148414327 64767451 900987534 961204526 992807865 507437106 106927106 807972838 129905497 544503865 873184497 627595728 778859849 899425906 211467089 526579471 173040884 336236362 330681634 79266148 746464410 292819959 718080715 22044041 299035751 598349822 817807426 644021750 338407414 214996353 139223306 49449007 17111555 572745207 762197072 923539645 146060688 104840271 728016444 221276398 241542556 941398084 698678519 532518779 292875075 192041936 472336359 618416503 874749337 587972874 871259384 754128406 521525896 653677276 618646845 229225387 804787822 798979666 661231884 318212762 532201130 836709803 297180652 331752196 395009504 206783030 197593068 368028447 493098698 627351317 454411729 910334706 411067143 48197781 138626325 441332516 445641480 140921898 540465776 483919463 458117109 467550928 824868190 216649439 568364433 886893242 808853280 454201377 237877995 419654925 555523234 865933686 54984443 845439008 980499095 119813946 861595136 293306848 573279637 1935636 12131955 10871520 418190011 502659668 535495021 905975362 134541433 109701501 356357101 778726254 330407363 679596751 194632457 885623095 323876956 517790862 686121070 810371392 222525937 695151661 315731741 949423882 387418477 236999850 241397536 410488653 786145356 574004935 28329356 83240568 589653422 967989640 135458965 55083861 396231726 256841276 285547746 477056546 750091434 521951216 838743116 22970183 192156554 499462538 688108535 351300026 666409751 393122849 616353786 715499199 934370108 869695051 687519407 317418728 132154444 582339641 126385191 443973110 773974579 39887827 261607980 384007699 121833819 31760073 49929170 56270180 223810048 988829152 933114359 302489022 657336967 333086645 474758130 816562331 202130934 638350071 587601156 455633523 966805994 273480298 840270976 159126098 124469652 63922838 818765756 738355993 976390638 868280740 160022153 998854176 311272332 689127911 338917508 36559352 622560035 563902400 837356356 699396214 234324427 907203174 842260289 352107393 182057726 904694761 571692941 562932217 384087731 686598582 826387475 485033746 227218884 953243852 586798873 340404458 462848003 622029618 928722578 137688761 848869123 168995713 344150750 864407086 36063653 820344411 720049665 250317224 64736276 736759088 349513294 498455997 211487834 701841373 521709103 416697145 509311832 92474069 910694541 54205441 646475542 236418944 713202013 259029161 572160621 80681658 467920732 70794091 496866954 18928472 676731189 538206093
+          908964296 807159857
+          382072432 642177698
+          403991157 552758508
+          458391032 107140057
+          855103519 803487167
+          674947960 311582441
+          883962981 461767554
+          435152689 104729543
+          752787352 677840341
+          962045436 958620340
+          772967646 264206236
+          534507832 815973875
+          316904817 557647176
+          153719718 52481048
+          740363427 170443982
+          110922544 838980684
+          976280627 511870992
+          840508143 686566706
+          883451279 569005053
+          499825991 887783472
+          831592751 457373657
+          714566188 664902780
+          455669918 190743033
+          319597099 529978128
+          563722405 942834590
+          889311675 289460850
+          699238259 9170724
+          806288065 96071952
+          27510218 132363776
+          827713569 300715146
+          751939868 984779606
+          979716072 438297791
+          566080948 139407494
+          987838502 317011933
+          100208545 818152156
+          679102183 387354075
+          187092535 482272741
+          500812957 732714692
+          900265346 333852371
+          969348326 409655214
+          370534938 610049820
+          747989113 714697263
+          479882078 42122377
+          83134953 584156835
+          25153630 160466826
+          713519673 403382166
+          742640835 150849982
+          742129622 427396817
+          332751499 922763005
+          998043761 221807849
+          865830223 315597252
+          588345164 943285740
+          504321993 334088029
+          771821805 158464470
+          532433091 881117707
+          341103967 240177990
+          986951653 379277820
+          772388722 630468596
+          750969539 728148850
+          483824254 149271285
+          706467274 481654523
+          145648660 732430053
+          924124283 405169219
+          280497911 536581384
+          880036447 812206978
+          481601299 212857535
+          165942319 145370628
+          256960715 880334711
+          452868928 70686294
+          658408926 885911363
+          980799182 489141718
+          444025215 439186625
+          878255129 883447085
+          103389834 503994901
+          863455515 937778331
+          264181317 931540850
+          147784414 163860106
+          226209797 543304742
+          462147267 981415724
+          358827272 451670936
+          485831590 371464734
+          814135251 541152386
+          394311104 262067042
+          389277152 848745527
+          424921322 290881415
+          463968918 322783141
+          443143570 205627801
+          443521741 759843503
+          186441283 792293231
+          973409615 412203870
+          210651173 277714274
+          686290236 120020759
+          668181966 887951413
+          632513761 269184258
+          733135792 869240322
+          674741662 390760342
+          624502662 293567263
+          447919589 798297973
+          618748345 697123076
+          695649563 803136668
+          457278161 487367580
+          600286606 489182180
+          222712994 380223645
+          863372075 514025642
+          270724729 284752631
+          699288673 296586562
+          582568468 236396714
+          59863243 443793572
+          480303287 669878195
+          671284938 749650408
+          282796507 712423840
+          141794121 305485588
+          156836197 178141188
+          722211181 981143359
+          590358104 176220293
+          779844654 119728009
+          845462252 848164488
+          531476903 786764174
+          766173463 524866997
+          949856523 898318168
+          549253258 775732169
+          126650088 803813096
+          20392110 683207610
+          277255814 79939659
+          470324749 830848518
+          885824381 603580441
+          585269109 227048325
+          466462687 436188637
+          613454771 175474472
+          981328594 469212139
+          494440149 657731365
+          555756360 474502543
+          664230989 856253007
+          843894506 485836197
+          815485522 995993174
+          21804247 558610820
+          508608428 990133032
+          561915615 431844267
+          706750594 954760011
+          555535397 570507825
+          261836451 970414204
+          375775703 273807354
+          655409371 176400458
+          873024095 850695621
+          283127448 780151127
+          478506311 107968096
+          600381319 113440585
+          267316660 208879301
+          369731558 93518729
+          284990246 617410470
+          806177297 740718133
+          161797885 150699813
+          842058364 817722210
+          891833821 923647193
+          117056796 145790426
+          228056095 506540713
+          862372798 660448770
+          128492795 993244595
+          273954655 39541337
+          865846231 359127384
+          658673247 413443763
+          817309726 45862888
+          42798080 965414118
+          874845327 83610653
+          303184259 577388466
+          918131993 45806278
+          934721898 321745337
+          862737776 511537112
+          867054663 371463720
+          130556270 71774366
+          57097036 440877170
+          868973733 572148191
+          833247465 972096805
+          555206842 644851573
+          810592199 488497570
+          612909064 819555548
+          665192846 415375594
+          41220195 975762122
+          581035611 586226916
+          493381996 503015951
+          940556172 469798436
+          803336123 334299299
+          886528350 191447239
+          688179117 408716061
+          961148573 206185446
+          497927688 587989110
+          545821122 902220859
+          717803953 900823139
+          862277854 740847714
+          37780448 931061448
+          709188748 242394614
+          613307408 946954736
+          200857974 347695084
+          55903615 605892765
+          137334000 849278770
+          805411940 177210015
+          47930373 320258521
+          151540686 272858684
+          976994550 393503320
+          584192792 864791691
+          864579683 32439873
+          976445646 77788000
+          466421843 841729203
+          406030918 806830804
+          521952039 664381563
+          848729584 987370603
+          64219041 461310254
+          856725776 373195048
+          845774846 989083372
+          874398586 556296167
+          162929433 924163457
+          32705467 287679355
+          315032096 550216886
+          130568989 872287030
+          72472186 934166497
+          956390817 917227909
+          820090260 91115924
+          485416626 930258077
+          359753902 268881078
+          215438051 409023279
+          304594663 731834885
+          844660442 508036115
+          592302367 213831955
+          365369138 65698635
+          274248235 425957627
+          590484050 367700448
+          21580397 360542891
+          883377443 375418989
+          635412633 47971024
+          491206428 175097716
+          930164751 703345002
+          384968137 406766059
+          97344833 871630248
+          370503394 3234887
+          667333352 293013145
+          969219379 256667528
+          134796528 132667912
+          567309727 37810519
+          826412233 309503330
+          791048259 246641922
+          830930618 77878859
+          608723376 973380233
+          539064276 693680796
+          986027013 445499335
+          2293721 31728101
+          140893456 920799043
+          551886152 703699195
+          405330062 724906581
+          16749411 876211335
+          311821482 846378085
+          600917171 461977699
+          57671495 874861860
+          947577131 680019782
+          267000278 829093580
+          412825676 328229719
+          733668037 577147804
+          235251654 363072584
+          515533274 997532943
+          397103119 761539822
+          270975876 141710008
+          179665182 819648561
+          780146296 597010424
+          137245344 852731782
+          890888985 493042174
+          590392021 492965969
+          202107285 527054693
+          403279618 931468847
+          310056814 644064262
+          656609598 397773027
+          29013690 828064872
+          711512661 729460475
+          454016199 728110686
+          831528775 188786804
+          452897682 571143040
+          542191219 888046181
+          41831135 426544651
+          3826758 609457562
+          29605746 91603601
+          347983734 926968607
+          987518739 812776482
+          774896666 313266151
+          686926583 233093027
+          792897772 383954842
+          655929874 744558290
+          127304798 716549477
+          895311316 623204316
+          718208190 660655653
+          210478215 545103098
+          982677210 672147146
+          754023826 118165037
+          200663566 42446285
+          604289753 621812532
+          790074146 677516270
+          265840525 117966307
+          363283079 491309313
+          592293309 989718586
+          660195737 630486902
+          688307119 917335646
+          61257202 58585011
+          443441965 294936339
+        expectedOutput: |
+          1067716417
+          936995538
+          946098099
+          535559324
+          1070051569
+          985088244
+          1069819887
+          534663404
+          1071072844
+          1071533185
+          804655639
+          1072507720
+          872352211
+          200729395
+          805128568
+          937240355
+          1068750566
+          1072603940
+          1071412741
+          1073488768
+          1073003699
+          1068169665
+          535880558
+          535127284
+          1069728765
+          1071131461
+          699403879
+          898494484
+          133976520
+          1069441417
+          1071147208
+          1072057661
+          704573601
+          1063400179
+          902930503
+          1050603604
+          536078457
+          1073391978
+          1073254774
+          1073260713
+          938829707
+          1071157285
+          519751821
+          653567164
+          164324814
+          1069212116
+          798984472
+          1073601746
+          1071057298
+          1069904149
+          1070782247
+          1073244254
+          535546112
+          803573284
+          1070361861
+          533532246
+          1062249776
+          1071340309
+          1070283543
+          535662207
+          1072987861
+          801633560
+          1072932614
+          536287435
+          1072533846
+          536618054
+          266053728
+          1073424464
+          469442883
+          1072221927
+          1073136667
+          536101802
+          1069598480
+          534135281
+          1072558666
+          1072848645
+          267072996
+          762310536
+          1065978803
+          532332534
+          533606311
+          1073139578
+          535230954
+          1071598678
+          534389143
+          530555389
+          535486279
+          1070684930
+          801313662
+          1065748378
+          482521679
+          801358342
+          1067723395
+          803405845
+          1073277786
+          1059075315
+          896916972
+          1071311925
+          1072995432
+          1066777352
+          536347573
+          1071702633
+          533460782
+          1072500593
+          536039094
+          971159051
+          804926437
+          468123526
+          1068177853
+          1067252452
+          988614655
+          443811575
+          265340952
+          1073510615
+          736672047
+          801847714
+          1072672552
+          1071486049
+          1068334249
+          1073146015
+          1071515525
+          802856925
+          700246862
+          348040685
+          1067614707
+          1072468156
+          802369468
+          536190132
+          784398151
+          1073670151
+          1070416620
+          1023896751
+          1071698688
+          1072004417
+          1072376571
+          561671847
+          1071453781
+          972965336
+          1070564253
+          1069551787
+          1070991331
+          535584606
+          804676518
+          1071048944
+          1052886187
+          534769699
+          670117100
+          267609248
+          401422639
+          889118294
+          1071442654
+          268124927
+          1070025655
+          1072805667
+          251581797
+          529547681
+          1073598436
+          1068776639
+          309980839
+          1070764479
+          1069739352
+          852986829
+          1002954030
+          939448475
+          871543826
+          939443774
+          1073404000
+          1073174826
+          1073651195
+          131442810
+          468146251
+          1070020947
+          1070595445
+          1070273588
+          1070036459
+          1069944829
+          1070696131
+          1003794825
+          1069936785
+          532093433
+          1072643008
+          1068307921
+          1073173151
+          1072150974
+          1071344953
+          1069453701
+          1072326349
+          1073037916
+          1073736591
+          938705262
+          801527385
+          1069554661
+          535975484
+          660029455
+          985086963
+          978450576
+          335172668
+          261802090
+          1069074979
+          1068893650
+          865466743
+          1040931749
+          1070550307
+          1066078545
+          1064074977
+          1070984193
+          463759596
+          1073305551
+          1071802938
+          1071203478
+          1073611668
+          297791953
+          854710352
+          939412541
+          936646740
+          1066649093
+          886681343
+          1072221110
+          531141200
+          534678327
+          1005748538
+          1072811377
+          802646606
+          402416322
+          533684231
+          937899036
+          365566131
+          1070929651
+          670689596
+          532606158
+          1069909407
+          529414043
+          939426304
+          369682422
+          931809410
+          1073389948
+          266883260
+          603827303
+          1068074337
+          800554108
+          901694929
+          1071571379
+          1070233273
+          1061592784
+          26393173
+          1048002891
+          1073593191
+          1066419097
+          888418194
+          1073230074
+          1000786942
+          929317814
+          1072864524
+          1071384310
+          535853528
+          1072745007
+          534203297
+          1073357601
+          1073563962
+          409641614
+          989343838
+          1073452952
+          985040291
+          1069554151
+          1072213170
+          533829152
+          1068569621
+          937271456
+          930081620
+          838336506
+          1065843018
+          1070855600
+          1002470323
+          1004681008
+          1072478472
+          461187026
+          607658294
+          100369433
+          1071212874
+          1063214534
+          1073549437
+          802528717
+          1057903238
+          1073062057
+          801152363
+          1065658154
+          1072918355
+          754965694
+          1058110479
+          801792403
+          199781146
+          1072127365
+          1062955336
+          264629913
+          536290931
+          1067756207
+          1071229598
+          1072022972
+          62602470
+          535652856
+        hidden: true
+      - input: |
+          250 300
+          4936 3408 624 3049 534 4976 3102 3989 2828 3210 1216 2107 4186 4416 3894 4110 305 4009 2422 92 1947 2699 2597 383 1700 4059 1699 977 1760 1746 468 2111 4143 1159 3807 1013 378 1791 3216 2715 4337 724 2250 2340 4659 3857 4506 1644 3369 4927 3378 3647 3510 3085 2971 2261 1715 4161 1912 3354 716 839 3177 574 1510 2247 4588 2666 1256 1917 4026 3371 1671 2570 569 1687 2821 3106 3140 747 3274 667 2836 1485 1220 100 3299 3204 2654 4163 2653 408 3226 1535 535 4845 849 2971 2051 4125 1415 1328 3896 2356 3670 1068 3712 3210 3714 3638 752 172 2239 906 4138 1750 3244 3690 1247 3128 1287 3523 352 1783 4989 1853 3728 1821 3986 4576 2692 4091 4617 3236 2198 4029 2428 428 1624 1758 705 340 4366 2891 998 2248 4028 1066 2137 2691 871 525 543 2666 1404 1098 4963 2596 649 422 3151 4891 2884 320 4674 2182 3573 4300 2741 659 3351 4683 740 1416 3409 2617 3959 4381 861 3491 1506 4575 1247 288 607 3062 349 1070 2060 2326 1664 1240 596 1938 1261 3665 3578 1724 4509 4410 1331 754 1511 316 4747 3749 1991 2969 1484 1982 1983 1960 1442 1507 1321 1882 487 4992 1641 1375 2801 2726 4749 4452 2192 3513 3447 3686 4171 3331 4049 4437 1222 3711 4427 3050 3078 56 3982 833 914 578 643 2858 3603 4685 3214 1011 4232 1243
+          5228 2991
+          5711 2444
+          5694 226
+          3577 1477
+          7166 2963
+          3679 1774
+          3789 507
+          5826 491
+          4944 996
+          3623 342
+          5044 817
+          1709 1922
+          3567 2668
+          6992 2160
+          4657 2705
+          507 1526
+          6656 734
+          6677 1832
+          1709 1175
+          5191 2323
+          7616 2140
+          5837 2840
+          7790 328
+          6294 675
+          3072 2387
+          3082 2955
+          3846 332
+          2479 468
+          3012 2157
+          4093 674
+          5645 1893
+          5040 201
+          2303 720
+          2074 2068
+          5591 772
+          6632 783
+          3298 1285
+          2567 1220
+          5747 1898
+          4382 2430
+          6920 2151
+          7018 1193
+          929 812
+          1671 1214
+          5313 371
+          2904 613
+          6749 1808
+          884 1058
+          5004 1062
+          129 1635
+          3015 1232
+          5997 1024
+          5306 85
+          1052 1110
+          783 1097
+          7190 862
+          5476 1824
+          3294 2156
+          3194 74
+          1608 2407
+          2426 114
+          4892 2539
+          2921 472
+          4656 1927
+          2949 236
+          4082 1917
+          1250 637
+          7140 1500
+          2648 1410
+          5383 2380
+          1651 273
+          2878 2981
+          1120 870
+          4243 111
+          5066 2459
+          7598 767
+          2606 199
+          1960 1169
+          6637 1907
+          322 699
+          1649 107
+          1145 233
+          3724 1464
+          4981 208
+          5625 882
+          5804 98
+          4793 2985
+          3556 515
+          6877 1022
+          2173 2440
+          3738 2421
+          4956 344
+          3204 2041
+          7756 1203
+          239 507
+          1792 637
+          3993 283
+          635 2706
+          2464 2843
+          5783 2541
+          7552 1759
+          5294 774
+          582 336
+          951 2902
+          4117 1661
+          4659 1493
+          2120 1569
+          1432 806
+          4683 1284
+          2737 2324
+          6704 1003
+          3312 2008
+          5503 2492
+          225 1867
+          4192 369
+          1080 2757
+          3266 1228
+          1729 1100
+          7182 2313
+          2683 1758
+          137 1693
+          7144 629
+          7285 527
+          245 5
+          379 2430
+          7659 745
+          4927 1230
+          1135 2001
+          3505 1670
+          459 385
+          7552 1291
+          4214 2862
+          6828 1490
+          699 816
+          857 2878
+          3422 2606
+          4816 1098
+          3094 429
+          4091 2534
+          3513 1700
+          4796 2925
+          2409 2656
+          2550 2813
+          6994 611
+          7921 304
+          5592 347
+          6699 2313
+          6749 2651
+          4783 2459
+          3479 2998
+          4824 375
+          1937 2433
+          380 979
+          1726 861
+          4333 1336
+          1213 1186
+          5614 1790
+          2331 56
+          7168 2080
+          1470 905
+          1476 1419
+          4800 2260
+          4886 22
+          1501 2777
+          3361 2701
+          2653 459
+          3209 2078
+          1416 526
+          411 629
+          6732 2444
+          5672 1931
+          3569 1103
+          488 1158
+          5917 172
+          3251 1519
+          7755 2724
+          3482 671
+          1487 2205
+          4616 2190
+          6567 1230
+          4113 1953
+          4854 322
+          6470 370
+          6841 2932
+          4012 923
+          6374 1327
+          4626 2114
+          4758 1954
+          1280 1205
+          174 696
+          5407 455
+          1338 132
+          2067 1657
+          6239 1721
+          6040 1619
+          4792 2447
+          5411 216
+          1789 2380
+          3061 552
+          5650 1922
+          6295 1771
+          2186 918
+          6386 1889
+          200 504
+          7185 2616
+          6723 747
+          2424 2645
+          2906 440
+          4366 62
+          6368 58
+          2509 701
+          7711 1740
+          6608 1700
+          7156 2378
+          7075 1718
+          3096 2610
+          5623 1069
+          2076 2935
+          2996 1372
+          6772 2130
+          2148 427
+          5650 127
+          6211 640
+          3587 641
+          2073 614
+          7204 2578
+          7226 1610
+          1619 2231
+          4326 317
+          5656 1621
+          4072 458
+          554 1564
+          4995 1372
+          2301 1425
+          4785 2561
+          99 1600
+          723 560
+          7960 163
+          103 874
+          6705 1554
+          7697 664
+          3088 2067
+          4499 2361
+          3192 2312
+          5607 2236
+          7617 231
+          5199 10
+          4828 1859
+          2322 1975
+          7590 1083
+          7405 1030
+          3542 1049
+          6598 1941
+          6807 2890
+          3433 1868
+          7169 2849
+          6858 2383
+          5250 2263
+          370 629
+          3845 844
+          4707 1225
+          7787 1065
+          2949 1117
+          7087 2858
+          6996 967
+          5999 2616
+          1153 1055
+          7044 1806
+          5400 555
+          6520 899
+          4306 292
+          1732 108
+          1538 2047
+          5421 985
+          3775 2667
+          532 1468
+          7832 1014
+          846 2521
+          705 1488
+          7743 2818
+          6502 578
+          5274 2412
+          48 1593
+          6379 2935
+          1728 408
+          5768 289
+          2844 0
+          2032 748
+          6953 654
+          3180 2793
+          2020 2958
+          6346 2609
+          6937 1519
+          2656 1328
+          341 2682
+          5813 1362
+          3221 213
+          6075 500
+          1130 309
+          893 1475
+        expectedOutput: |
+          8183
+          8059
+          5778
+          4084
+          8148
+          4089
+          4092
+          6142
+          5116
+          3955
+          5096
+          2041
+          4089
+          8151
+          6989
+          1495
+          7143
+          8183
+          2041
+          7416
+          8190
+          8185
+          8031
+          6886
+          4085
+          4095
+          4010
+          2547
+          4078
+          4037
+          6122
+          5100
+          2802
+          4061
+          6126
+          7167
+          4031
+          3783
+          6123
+          6617
+          8165
+          8173
+          1021
+          2045
+          5629
+          3060
+          8191
+          984
+          5096
+          1753
+          4077
+          6081
+          5250
+          2042
+          1829
+          8023
+          6143
+          4025
+          3138
+          3964
+          2370
+          7131
+          3013
+          6141
+          3041
+          4042
+          1789
+          8142
+          3953
+          7634
+          1759
+          4094
+          1853
+          4343
+          7157
+          8186
+          2690
+          2036
+          8117
+          985
+          1609
+          1237
+          4086
+          5081
+          6132
+          5872
+          7119
+          3548
+          7165
+          4079
+          4090
+          5104
+          4067
+          8170
+          478
+          1964
+          4093
+          2925
+          4088
+          8171
+          8176
+          5882
+          890
+          3054
+          5756
+          6143
+          3562
+          2024
+          5836
+          4078
+          7140
+          4023
+          7673
+          2044
+          4444
+          3772
+          4005
+          2045
+          8189
+          4092
+          1765
+          7120
+          7800
+          -1
+          2557
+          8189
+          6143
+          2045
+          4083
+          499
+          8176
+          7034
+          8179
+          1019
+          3046
+          4061
+          5886
+          3514
+          4035
+          4091
+          7114
+          4094
+          4014
+          7166
+          8145
+          5600
+          8167
+          8191
+          7129
+          4071
+          5112
+          4040
+          1023
+          2046
+          5610
+          2044
+          6137
+          2339
+          8181
+          2044
+          2045
+          6911
+          -1
+          4089
+          4085
+          3067
+          4078
+          1925
+          1003
+          8174
+          6140
+          4092
+          1478
+          6065
+          4084
+          8173
+          4074
+          3572
+          6798
+          7661
+          6026
+          5078
+          6634
+          8166
+          4080
+          7649
+          6701
+          6122
+          2034
+          762
+          5555
+          1382
+          3711
+          7932
+          6140
+          7118
+          5519
+          4075
+          3021
+          6133
+          7934
+          3053
+          8175
+          505
+          8183
+          7151
+          4095
+          3062
+          4406
+          6360
+          3060
+          8184
+          8124
+          8158
+          8169
+          4094
+          6138
+          4059
+          4094
+          8188
+          2556
+          5750
+          6781
+          4068
+          2651
+          8181
+          8171
+          3797
+          4570
+          6143
+          4048
+          2023
+          6089
+          3578
+          7117
+          1515
+          1011
+          8060
+          826
+          8189
+          8182
+          4086
+          6602
+          4082
+          7659
+          7673
+          -1
+          6133
+          4082
+          8185
+          8124
+          4079
+          8111
+          8171
+          4090
+          8180
+          8186
+          7387
+          895
+          4009
+          5860
+          8179
+          4047
+          8165
+          7160
+          8191
+          2022
+          8142
+          5909
+          7163
+          4594
+          1788
+          2021
+          6137
+          4095
+          1974
+          8184
+          3057
+          2034
+          8171
+          7033
+          7614
+          1533
+          8182
+          2044
+          6056
+          -1
+          1992
+          7045
+          4094
+          4072
+          8183
+          8180
+          3943
+          2929
+          6133
+          3313
+          6119
+          1371
+          2042
+        hidden: true
+      - input: |
+          50 60
+          141 125 164 131 152 107 155 150 144 146 114 181 155 163 183 118 156 178 185 149 184 171 123 169 186 178 185 102 198 129 142 165 153 198 113 174 118 124 158 104 102 152 167 151 165 190 195 111 110 195
+          278 43
+          268 143
+          204 19
+          278 134
+          78 128
+          290 138
+          268 96
+          131 57
+          174 145
+          39 18
+          191 13
+          20 34
+          15 69
+          127 42
+          280 116
+          135 2
+          37 14
+          154 121
+          167 150
+          94 33
+          299 128
+          30 9
+          14 75
+          12 73
+          87 4
+          8 64
+          266 40
+          92 117
+          81 149
+          214 70
+          86 27
+          98 115
+          182 110
+          101 57
+          81 92
+          64 94
+          207 67
+          35 95
+          280 52
+          144 68
+          183 48
+          18 105
+          23 37
+          229 58
+          34 1
+          51 105
+          262 136
+          252 5
+          273 132
+          185 80
+          191 130
+          42 20
+          111 66
+          19 25
+          59 1
+          92 50
+          253 104
+          32 142
+          141 15
+          221 1
+        expectedOutput: |
+          -1
+          399
+          -1
+          407
+          63
+          419
+          -1
+          -1
+          223
+          -1
+          -1
+          -1
+          -1
+          -1
+          382
+          -1
+          -1
+          252
+          220
+          -1
+          349
+          -1
+          -1
+          -1
+          -1
+          -1
+          -1
+          58
+          223
+          -1
+          -1
+          19
+          222
+          -1
+          -1
+          -1
+          -1
+          -1
+          -1
+          -1
+          -1
+          122
+          -1
+          -1
+          -1
+          91
+          391
+          -1
+          402
+          -1
+          217
+          -1
+          -1
+          -1
+          -1
+          -1
+          155
+          174
+          -1
+          -1
+        hidden: true
+  - sheetId: prob-17-2-4-bit-prerequisites-for-tri
+    slug: bit-prerequisites-for-trie-problems
+    title: Bit PreRequisites for TRIE Problems
+    difficulty: Easy
+    topic: Bit Manipulation
+    subtopic: Problems
+    tags: [bit manipulation, trie, simulation]
+    sourceUrl: ""
+    statement: |
+      The trie problems that follow - maximum XOR of two numbers, maximum XOR with an
+      element from an array - store numbers in a trie **bit by bit**, from the most
+      significant bit down to the least. Before building one, you need to be fluent in
+      reading and editing a single bit of an integer. This exercise drills exactly
+      that.
+
+      You start with a non-negative integer `x` and apply `q` operations to it. Bit
+      positions are counted from the **least significant** end, so position `0` is the
+      last bit of the binary representation, position `1` is the one before it, and so
+      on.
+
+      | Operation | Meaning |
+      | --- | --- |
+      | `get i` | report the bit at position `i` (`0` or `1`) |
+      | `set i` | make the bit at position `i` equal to `1` |
+      | `clear i` | make the bit at position `i` equal to `0` |
+      | `toggle i` | flip the bit at position `i` |
+      | `count` | report how many bits of the current value are `1` |
+      | `value` | report the current value |
+
+      `set`, `clear` and `toggle` change the number and print nothing; `get`, `count`
+      and `value` print one line each. An operation applies to the value as it stands
+      after all the previous operations.
+    inputFormat: |
+      - Line 1: two integers `x` and `q`, the starting value and the number of
+        operations.
+      - Next `q` lines: one operation each, in one of the forms `get i`, `set i`,
+        `clear i`, `toggle i`, `count` or `value`.
+    outputFormat: |
+      For every `get`, `count` and `value` operation, print its answer on its own
+      line, in the order the operations are given.
+    constraints:
+      - "0 <= x < 2^31"
+      - "1 <= q <= 10^5"
+      - "0 <= i <= 30"
+    examples:
+      - input: |
+          13 6
+          get 0
+          get 1
+          count
+          clear 0
+          value
+          count
+        output: |
+          1
+          0
+          3
+          12
+          2
+        explanation: "13 is 1101 in binary. Position 0 holds 1 and position 1 holds 0, and three bits are set. Clearing position 0 turns 1101 into 1100, which is 12 and has two bits set."
+      - input: |
+          8 5
+          get 2
+          set 1
+          value
+          toggle 3
+          value
+        output: |
+          0
+          10
+          2
+        explanation: "8 is 1000. Position 2 holds 0. Setting position 1 gives 1010 = 10. Position 3 is currently 1, so toggling it clears it and leaves 0010 = 2."
+    hints:
+      - "`1 << i` is a number whose only set bit is at position i - that single value is the key to all four bit operations."
+      - "Reading is `(x >> i) & 1`. Setting is `x | (1 << i)`, flipping is `x ^ (1 << i)`, and clearing needs the inverted mask: `x & ~(1 << i)`."
+      - "For `count`, `x & (x - 1)` erases the lowest set bit of x, so repeating it until x becomes 0 counts the set bits in as many steps as there are ones."
+    explanation: |
+      Every operation here is O(1) with the right mask, so the whole simulation is
+      O(q) time and O(1) space beyond the output. What matters is getting the four
+      identities right.
+
+      **The mask.** `1 << i` is `2^i`: a number whose only `1` bit sits at position
+      `i`. All four edits are built from it.
+
+      - **Read**: `(x >> i) & 1`. Shifting right by `i` moves the wanted bit into
+        position 0, and `& 1` discards everything above it. `(x & (1 << i)) != 0`
+        works too, but note it yields `2^i`, not `1`, before the comparison.
+      - **Set**: `x | (1 << i)`. OR leaves every other bit alone and forces position
+        `i` to `1`, whether it was `0` or `1` already.
+      - **Clear**: `x & ~(1 << i)`. `~` inverts the mask into a value that is `1`
+        everywhere except at position `i`, so AND keeps the rest and zeroes that one
+        bit. This is the operation people most often get wrong - `x & (1 << i)` would
+        throw away all the *other* bits instead.
+      - **Toggle**: `x ^ (1 << i)`. XOR with `1` flips a bit and XOR with `0` leaves
+        it unchanged, which is exactly what the mask asks for.
+
+      **Counting set bits.** The straightforward way tests all 31 positions:
+      O(31) per query. **Brian Kernighan's trick** is better: `x & (x - 1)` clears the
+      lowest set bit, because subtracting 1 flips that bit to `0` and turns everything
+      below it into `1`s, which the AND then wipes. Looping until `x` becomes `0`
+      takes one step per set bit - at most 31, and usually far fewer.
+
+      **Why the trie problems need this.** Inserting a number into a binary trie walks
+      its bits from position 30 down to position 0 and branches on each one, so the
+      inner loop is nothing but `(x >> i) & 1` repeated 31 times. Searching for the
+      number that maximises a XOR does the same walk and greedily prefers the child
+      labelled with the *opposite* bit. If the four identities above are automatic,
+      those problems reduce to ordinary trie traversal.
+
+      A word of caution outside Python: `1 << i` is an `int` in C++ and Java, so with
+      `i = 31` it overflows a signed 32-bit type - `1L << i` is needed there. Python
+      integers are unbounded, so shifting is always safe, but `~x` gives a negative
+      number for a positive `x`, and `bin(x)` never shows leading zeros; pad it
+      yourself when a fixed width matters.
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Tuple
+
+
+        def run_bit_operations(x: int, operations: List[Tuple[str, int]]) -> List[int]:
+            # Apply the operations to x and return one value per reporting operation.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            x = int(data[0])
+            q = int(data[1])
+            pos = 2
+            operations = []
+            for _ in range(q):
+                name = data[pos]
+                pos += 1
+                if name in ("count", "value"):
+                    operations.append((name, -1))
+                else:
+                    operations.append((name, int(data[pos])))
+                    pos += 1
+            for result in run_bit_operations(x, operations):
+                print(result)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List, Tuple
+
+
+        def run_bit_operations(x: int, operations: List[Tuple[str, int]]) -> List[int]:
+            value = x
+            results: List[int] = []
+            for name, position in operations:
+                if name == "get":
+                    results.append((value >> position) & 1)
+                elif name == "set":
+                    value |= 1 << position
+                elif name == "clear":
+                    value &= ~(1 << position)
+                elif name == "toggle":
+                    value ^= 1 << position
+                elif name == "count":
+                    rest = value
+                    ones = 0
+                    while rest:
+                        rest &= rest - 1
+                        ones += 1
+                    results.append(ones)
+                else:
+                    results.append(value)
+            return results
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            x = int(data[0])
+            q = int(data[1])
+            pos = 2
+            operations = []
+            for _ in range(q):
+                name = data[pos]
+                pos += 1
+                if name in ("count", "value"):
+                    operations.append((name, -1))
+                else:
+                    operations.append((name, int(data[pos])))
+                    pos += 1
+            for result in run_bit_operations(x, operations):
+                print(result)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          13 6
+          get 0
+          get 1
+          count
+          clear 0
+          value
+          count
+        expectedOutput: |
+          1
+          0
+          3
+          12
+          2
+        hidden: false
+      - input: |
+          8 5
+          get 2
+          set 1
+          value
+          toggle 3
+          value
+        expectedOutput: |
+          0
+          10
+          2
+        hidden: false
+      - input: |
+          0 4
+          count
+          set 30
+          value
+          count
+        expectedOutput: |
+          0
+          1073741824
+          1
+        hidden: true
+      - input: |
+          2147483647 3
+          count
+          clear 30
+          count
+        expectedOutput: |
+          31
+          30
+        hidden: true
+      - input: |
+          5 4
+          toggle 0
+          value
+          toggle 0
+          value
+        expectedOutput: |
+          4
+          5
+        hidden: true
+      - input: |
+          1 3
+          set 0
+          value
+          get 0
+        expectedOutput: |
+          1
+          1
+        hidden: true
+      - input: |
+          37 12
+          toggle 27
+          count
+          toggle 14
+          count
+          count
+          set 5
+          count
+          toggle 20
+          count
+          set 3
+          toggle 9
+          set 2
+        expectedOutput: |
+          4
+          5
+          5
+          5
+          6
+        hidden: true
+      - input: |
+          0 40
+          clear 2
+          value
+          value
+          set 1
+          value
+          set 1
+          value
+          value
+          set 1
+          get 1
+          value
+          clear 0
+          toggle 1
+          value
+          count
+          get 2
+          set 0
+          clear 3
+          value
+          toggle 1
+          clear 2
+          set 3
+          count
+          count
+          toggle 2
+          toggle 2
+          value
+          get 2
+          count
+          value
+          clear 3
+          count
+          count
+          value
+          set 3
+          value
+          value
+          toggle 1
+          clear 1
+          set 2
+        expectedOutput: |
+          0
+          0
+          2
+          2
+          2
+          1
+          2
+          0
+          0
+          0
+          1
+          3
+          3
+          11
+          0
+          3
+          11
+          2
+          2
+          3
+          11
+          11
+        hidden: true
+      - input: |
+          2147483647 60
+          toggle 8
+          value
+          count
+          value
+          clear 4
+          toggle 0
+          clear 15
+          clear 20
+          toggle 22
+          count
+          set 17
+          get 21
+          count
+          set 14
+          clear 5
+          clear 28
+          set 1
+          count
+          set 2
+          count
+          value
+          clear 21
+          toggle 25
+          get 0
+          get 26
+          value
+          count
+          set 2
+          toggle 30
+          toggle 3
+          value
+          toggle 4
+          count
+          clear 28
+          count
+          count
+          set 22
+          get 17
+          set 16
+          get 12
+          count
+          toggle 21
+          count
+          toggle 15
+          count
+          toggle 17
+          get 20
+          value
+          get 30
+          set 25
+          value
+          clear 11
+          clear 27
+          value
+          toggle 21
+          clear 3
+          clear 7
+          clear 11
+          clear 16
+          count
+        expectedOutput: |
+          2147483391
+          30
+          2147483391
+          25
+          1
+          25
+          23
+          23
+          1873772238
+          0
+          1
+          1838120654
+          21
+          764378822
+          20
+          20
+          20
+          1
+          1
+          21
+          22
+          23
+          0
+          770571990
+          0
+          804126422
+          669906646
+          18
+        hidden: true
+      - input: |
+          1048576 300
+          get 19
+          value
+          value
+          count
+          set 8
+          value
+          clear 9
+          value
+          get 21
+          toggle 9
+          toggle 21
+          toggle 12
+          get 8
+          set 27
+          clear 11
+          clear 11
+          value
+          value
+          count
+          set 5
+          count
+          value
+          value
+          clear 5
+          get 20
+          get 3
+          count
+          clear 0
+          get 8
+          set 27
+          toggle 12
+          count
+          toggle 28
+          count
+          get 27
+          value
+          value
+          get 18
+          count
+          value
+          value
+          clear 5
+          get 23
+          toggle 16
+          value
+          set 8
+          toggle 19
+          set 15
+          clear 16
+          clear 3
+          get 26
+          get 8
+          clear 3
+          get 5
+          value
+          toggle 3
+          value
+          count
+          count
+          get 13
+          toggle 21
+          set 17
+          toggle 14
+          clear 15
+          toggle 13
+          toggle 19
+          get 8
+          toggle 12
+          set 14
+          count
+          toggle 2
+          count
+          set 15
+          value
+          clear 18
+          toggle 0
+          value
+          toggle 30
+          toggle 0
+          clear 22
+          count
+          clear 30
+          toggle 8
+          clear 9
+          count
+          set 1
+          value
+          count
+          toggle 25
+          clear 3
+          toggle 3
+          get 6
+          clear 0
+          get 18
+          count
+          clear 16
+          clear 8
+          get 1
+          set 24
+          set 0
+          set 8
+          count
+          clear 5
+          set 6
+          count
+          value
+          clear 9
+          value
+          clear 1
+          count
+          count
+          value
+          set 16
+          value
+          set 11
+          toggle 12
+          set 30
+          toggle 17
+          count
+          clear 15
+          count
+          get 7
+          value
+          toggle 15
+          clear 2
+          clear 25
+          get 4
+          set 1
+          value
+          set 6
+          clear 15
+          toggle 4
+          count
+          toggle 1
+          get 8
+          value
+          clear 17
+          toggle 13
+          set 14
+          set 2
+          set 25
+          value
+          set 4
+          get 21
+          set 20
+          value
+          clear 29
+          count
+          value
+          count
+          value
+          get 18
+          toggle 14
+          clear 30
+          toggle 10
+          get 27
+          clear 1
+          value
+          value
+          value
+          count
+          get 29
+          get 13
+          get 27
+          get 26
+          value
+          set 2
+          get 25
+          value
+          clear 1
+          set 12
+          count
+          set 0
+          toggle 14
+          toggle 22
+          count
+          get 9
+          get 8
+          set 9
+          value
+          count
+          value
+          count
+          get 17
+          set 23
+          get 29
+          clear 28
+          get 27
+          get 12
+          toggle 14
+          clear 11
+          value
+          clear 0
+          clear 4
+          clear 30
+          count
+          value
+          clear 30
+          set 16
+          count
+          toggle 0
+          value
+          get 14
+          clear 18
+          toggle 25
+          count
+          toggle 8
+          value
+          toggle 6
+          get 12
+          value
+          toggle 7
+          toggle 26
+          count
+          get 24
+          set 26
+          set 6
+          clear 27
+          get 7
+          get 14
+          value
+          count
+          get 0
+          set 21
+          value
+          count
+          value
+          clear 24
+          toggle 14
+          set 28
+          value
+          get 20
+          get 22
+          value
+          set 22
+          clear 14
+          value
+          set 12
+          get 19
+          clear 15
+          set 24
+          value
+          clear 10
+          toggle 17
+          clear 1
+          set 19
+          value
+          toggle 4
+          clear 15
+          clear 17
+          get 4
+          get 16
+          get 21
+          clear 15
+          clear 20
+          clear 11
+          value
+          value
+          set 4
+          get 6
+          count
+          get 4
+          count
+          set 28
+          clear 27
+          toggle 18
+          toggle 26
+          count
+          clear 5
+          clear 7
+          count
+          value
+          clear 10
+          count
+          toggle 3
+          get 1
+          clear 27
+          clear 5
+          clear 6
+          set 3
+          count
+          value
+          set 29
+          toggle 9
+          count
+          toggle 3
+          toggle 24
+          get 14
+          count
+          get 22
+          count
+          set 1
+          count
+          count
+          set 17
+          count
+          count
+          toggle 6
+          count
+          get 4
+        expectedOutput: |
+          0
+          1048576
+          1048576
+          1
+          1048832
+          1048832
+          0
+          1
+          137368320
+          137368320
+          6
+          7
+          137368352
+          137368352
+          1
+          0
+          6
+          1
+          5
+          6
+          1
+          405799680
+          405799680
+          0
+          6
+          405799680
+          405799680
+          0
+          405865216
+          0
+          1
+          0
+          406356736
+          406356744
+          9
+          9
+          0
+          1
+          10
+          11
+          403895052
+          403895053
+          13
+          10
+          403894286
+          11
+          0
+          0
+          12
+          1
+          15
+          16
+          454226255
+          454226255
+          15
+          15
+          454226253
+          454291789
+          16
+          15
+          0
+          1527867725
+          0
+          1494346059
+          15
+          1
+          1494313305
+          1527859549
+          0
+          1527859549
+          15
+          1527859549
+          15
+          1527859549
+          0
+          1
+          454102365
+          454102365
+          454102365
+          14
+          0
+          0
+          1
+          0
+          454102365
+          1
+          454102365
+          15
+          17
+          0
+          1
+          458317661
+          18
+          458317661
+          18
+          0
+          0
+          1
+          1
+          198252381
+          14
+          198252364
+          14
+          198252365
+          0
+          14
+          164697677
+          1
+          164697613
+          14
+          1
+          1
+          0
+          97588941
+          14
+          1
+          99686093
+          15
+          99686093
+          351360717
+          1
+          1
+          351360717
+          351344333
+          0
+          368121549
+          368775885
+          1
+          1
+          1
+          367596253
+          367596253
+          1
+          16
+          1
+          16
+          16
+          15
+          300749405
+          15
+          0
+          14
+          300749341
+          14
+          0
+          12
+          1
+          12
+          13
+          13
+          14
+          14
+          15
+          1
+        hidden: true

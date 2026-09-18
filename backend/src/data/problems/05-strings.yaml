@@ -1,0 +1,2218 @@
+section: strings
+problems:
+  - slug: remove-outermost-parentheses
+    title: Remove Outermost Parentheses
+    difficulty: Easy
+    topic: Strings
+    subtopic: Easy Problems
+    tags: [string, stack, parentheses]
+    sourceUrl: https://leetcode.com/problems/remove-outermost-parentheses/
+    statement: |
+      A string made of `(` and `)` is **balanced** if every opening bracket is
+      closed later and no prefix has more `)` than `(`.
+
+      Any non-empty balanced string can be cut uniquely into consecutive
+      **blocks**: balanced pieces that cannot themselves be split into two
+      non-empty balanced parts. For example `(())()(()())` has the blocks
+      `(())`, `()` and `(()())`.
+
+      Given a balanced string `s`, delete the first and the last character of
+      every block and print what remains.
+    inputFormat: |
+      - Line 1: the string `s`.
+    outputFormat: |
+      Print the resulting string. If nothing remains, print an empty line.
+    constraints:
+      - "2 <= |s| <= 10^5"
+      - "`s` contains only `(` and `)` and is balanced."
+    examples:
+      - input: |
+          (()())()
+        output: |
+          ()()
+        explanation: "The blocks are (()()) and (). Stripping their outer brackets leaves ()() and an empty string."
+      - input: |
+          (())()((()))
+        output: |
+          ()(())
+        explanation: "Blocks (()), () and ((())) become (), nothing and (()). Concatenated: ()(())."
+    hints:
+      - Track the current nesting depth while scanning left to right.
+      - "An opening bracket seen at depth 0 starts a block; a closing bracket that brings the depth back to 0 ends it."
+      - Keep a character only if it is not one of those two boundary brackets.
+    explanation: |
+      **Explicit decomposition - O(n) time, O(n) space.** Scan with a counter,
+      record the start index of each block when the counter leaves 0 and the end
+      index when it returns to 0, then append `s[start+1:end]` for every block.
+
+      **Stack - O(n) time, O(n) space.** Push on `(` and pop on `)`. A `(` pushed
+      onto an empty stack, or a `)` that empties the stack, is an outer bracket
+      and is skipped; every other character is copied to the answer.
+
+      **Depth counter - O(n) time, O(n) space for the output (O(1) extra).** The
+      stack only ever holds `(`, so its size is all we need. For `(`: append it if
+      `depth > 0`, then increment. For `)`: decrement first, then append it if
+      `depth > 0`. Build the answer in a list and join once to avoid quadratic
+      string concatenation.
+    starterCode:
+      python: |
+        import sys
+
+
+        def remove_outer_parentheses(s: str) -> str:
+            # Remove the outermost pair of brackets of every block in s.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(remove_outer_parentheses(s))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def remove_outer_parentheses(s: str) -> str:
+            result = []
+            depth = 0
+            for ch in s:
+                if ch == "(":
+                    if depth > 0:
+                        result.append(ch)
+                    depth += 1
+                else:
+                    depth -= 1
+                    if depth > 0:
+                        result.append(ch)
+            return "".join(result)
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(remove_outer_parentheses(s))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          (()())()
+        expectedOutput: |
+          ()()
+        hidden: false
+      - input: |
+          (())()((()))
+        expectedOutput: |
+          ()(())
+        hidden: false
+      - input: |
+          ()
+        expectedOutput: ""
+        hidden: true
+      - input: |
+          ()()()()
+        expectedOutput: ""
+        hidden: true
+      - input: |
+          ((()))
+        expectedOutput: |
+          (())
+        hidden: true
+      - input: |
+          (()(()))()((()))
+        expectedOutput: |
+          ()(())(())
+        hidden: true
+      - input: |
+          (()())()(()())(((((((((()((()())(()))(()((()))(()()(()))()))(((()))))))(()()(())))()()())((()(()()())))((())((((((()))())))(()()())(())()))())()(((()))())))()((()))(())()()()()(((())()))()()()()(((((()))(())(()()()())()(()(((()(((())())))))(()))))())((()(()()()(())(((((((((()))(())()))())(())())()()((((()))(()))))))(()()))(()))()(()()()))()(())()()()()(()(((()))))()((())())()()()()()()((()()))(())()()((()(()()))(()))()()(()()(())((()))(())(()((())))()())(()())()(()()((()((()))((())))))(()((()(()(()()()())()())((()))()())(()(()(())))(((((((())()()())()())((()())()((((((()))(())((())))(()(())))((()(()(((())())))(())((()))))()(()())))))()((((((()(())(()()()))()(()))((())(()((()())(()()(()((())(())(())()))()((()))(())(())()(()()(()))()((()(()()(()()()()()()(()()(()))))()(())))((()())()(()))()())()((()((()()))))))()((()())()()))))(())(((()()())))((()())((())(())))()((()(((())))())(()()())))))()((((())(())((((()((((()()())))))(((()((((()(())((()()(((((()()(()())()()))))(((()())()(((()((()()())(((((((()(()()()))()))(((()(((()(((((()(()(()()())))()())())((())(()()((((((((((((())))((()((())))((())(())((())()))()()()))(((((((()((()((((()())(()(()(()((())())(()))(((()))(()()())))))(()(())((()(()()()()((())()()(()(()((())()(((()(((())))))((()()))))))()()(((((((()()())(()(())((()(((((((()(((((()((((())(())())(())(((())(((((())(()(()))())))(())(()())((((())((()())()((((()))((())())((())()))))(())))()()())()(()))))))))(()())())()()(((()()(()((())(())()()()()()))(((()))(()()(()()))()))(((()())))()))()())()))())))()(())()(()))())()(()(((())())))(()()))(()()()))()))))()))()()()(()())())()()()()()())()((((()((()(()()))))))()())))))(())))))((())()((())()((())(()))(()((()(((()(()))()(()))))((()))(()((()()((()()()()))((()((()))()))(()))()())()))(()()()())(((()((()))())()()(()))(())()()((((())(())))))((()()))(((()(()((()((()))))())(()())()()(())(((())()))()(()))))((((()()))))))))()(()((((()(())((())((()())(()())((())))(((()()))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+        expectedOutput: |
+          ()()()()((((((((()((()())(()))(()((()))(()()(()))()))(((()))))))(()()(())))()()())((()(()()())))((())((((((()))())))(()()())(())()))())()(((()))()))(())()((())())((((()))(())(()()()())()(()(((()(((())())))))(()))))()(()(()()()(())(((((((((()))(())()))())(())())()()((((()))(()))))))(()()))(()))()(()()())()()(((())))(())()(()())()(()(()()))(())()()(())((()))(())(()((())))()()()()()()((()((()))((()))))()((()(()(()()()())()())((()))()())(()(()(())))(((((((())()()())()())((()())()((((((()))(())((())))(()(())))((()(()(((())())))(())((()))))()(()())))))()((((((()(())(()()()))()(()))((())(()((()())(()()(()((())(())(())()))()((()))(())(())()(()()(()))()((()(()()(()()()()()()(()()(()))))()(())))((()())()(()))()())()((()((()()))))))()((()())()()))))(())(((()()())))((()())((())(())))()((()(((())))())(()()())))))()((((())(())((((()((((()()())))))(((()((((()(())((()()(((((()()(()())()()))))(((()())()(((()((()()())(((((((()(()()()))()))(((()(((()(((((()(()(()()())))()())())((())(()()((((((((((((())))((()((())))((())(())((())()))()()()))(((((((()((()((((()())(()(()(()((())())(()))(((()))(()()())))))(()(())((()(()()()()((())()()(()(()((())()(((()(((())))))((()()))))))()()(((((((()()())(()(())((()(((((((()(((((()((((())(())())(())(((())(((((())(()(()))())))(())(()())((((())((()())()((((()))((())())((())()))))(())))()()())()(()))))))))(()())())()()(((()()(()((())(())()()()()()))(((()))(()()(()()))()))(((()())))()))()())()))())))()(())()(()))())()(()(((())())))(()()))(()()()))()))))()))()()()(()())())()()()()()())()((((()((()(()()))))))()())))))(())))))((())()((())()((())(()))(()((()(((()(()))()(()))))((()))(()((()()((()()()()))((()((()))()))(()))()())()))(()()()())(((()((()))())()()(()))(())()()((((())(())))))((()()))(((()(()((()((()))))())(()())()()(())(((())()))()(()))))((((()()))))))))()(()((((()(())((())((()())(()())((())))(((()())))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+        hidden: true
+
+  - slug: reverse-words-in-a-string
+    title: Reverse Words in a String
+    difficulty: Medium
+    topic: Strings
+    subtopic: Easy Problems
+    tags: [string, two-pointers]
+    sourceUrl: https://leetcode.com/problems/reverse-words-in-a-string/
+    statement: |
+      A line of text contains **words** - maximal runs of non-space characters -
+      separated by spaces. The line may start or end with spaces, and words may
+      be separated by more than one space.
+
+      Print the words in reverse order, separated by exactly one space, with no
+      leading or trailing spaces.
+    inputFormat: |
+      - Line 1: the string `s` (it may contain leading, trailing and repeated spaces).
+    outputFormat: |
+      Print the words of `s` in reverse order, joined by single spaces.
+    constraints:
+      - "1 <= |s| <= 10^4"
+      - "`s` consists of English letters, digits and spaces."
+      - "`s` contains at least one word."
+    examples:
+      - input: |
+          practice makes progress
+        output: |
+          progress makes practice
+        explanation: The three words are printed last to first.
+      - input: "  fast   cars drive  \n"
+        output: |
+          drive cars fast
+        explanation: Extra spaces at the ends and between words are dropped in the output.
+    hints:
+      - Splitting on runs of whitespace gives you the words directly. Can you do it by hand with an index?
+      - "In languages with mutable strings, a classic O(1)-extra-space trick is: reverse the whole string, then reverse each word back."
+    explanation: |
+      **Split and reverse - O(n) time, O(n) space.** Split the line into words
+      (ignoring empty pieces caused by repeated spaces), reverse the list and
+      join it with single spaces.
+
+      **Manual scan from the right - O(n) time, O(n) space.** Walk an index from
+      the end of the string: skip spaces, mark where a word ends, move left until
+      a space or the start, and append `s[start:end]` to the answer. This avoids
+      library splitting and produces words already in reverse order.
+
+      **In-place double reversal - O(n) time, O(1) extra space** (for a mutable
+      character array). Reverse the entire array, reverse each individual word to
+      restore its spelling, then compact the array by removing extra spaces with
+      a read/write pointer pair. Python strings are immutable, so in Python the
+      O(n) approaches above are the natural choice.
+    starterCode:
+      python: |
+        import sys
+
+
+        def reverse_words(s: str) -> str:
+            # Return the words of s in reverse order, separated by single spaces.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().rstrip("\r\n")
+            print(reverse_words(s))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def reverse_words(s: str) -> str:
+            words = []
+            i = len(s) - 1
+            while i >= 0:
+                while i >= 0 and s[i] == " ":
+                    i -= 1
+                if i < 0:
+                    break
+                end = i + 1
+                while i >= 0 and s[i] != " ":
+                    i -= 1
+                words.append(s[i + 1:end])
+            return " ".join(words)
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().rstrip("\r\n")
+            print(reverse_words(s))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          practice makes progress
+        expectedOutput: |
+          progress makes practice
+        hidden: false
+      - input: "  fast   cars drive  \n"
+        expectedOutput: |
+          drive cars fast
+        hidden: false
+      - input: |
+          single
+        expectedOutput: |
+          single
+        hidden: true
+      - input: "     x     \n"
+        expectedOutput: |
+          x
+        hidden: true
+      - input: |
+          1 2 3 4 5
+        expectedOutput: |
+          5 4 3 2 1
+        hidden: true
+      - input: "   Bob    Loves  Alice   \n"
+        expectedOutput: |
+          Alice Loves Bob
+        hidden: true
+      - input: |
+          Hello World HELLO world
+        expectedOutput: |
+          world HELLO World Hello
+        hidden: true
+
+  - slug: largest-odd-number-in-string
+    title: Largest Odd Number in String
+    difficulty: Easy
+    topic: Strings
+    subtopic: Easy Problems
+    tags: [string, greedy]
+    sourceUrl: https://leetcode.com/problems/largest-odd-number-in-string/
+    statement: |
+      You are given a string `num` of decimal digits representing a large
+      non-negative integer (it has no leading zeros).
+
+      Among all non-empty **contiguous substrings** of `num` whose value is an
+      odd integer, find the one with the largest value and print it exactly as
+      it appears in `num`. If no substring is odd, print an empty line.
+    inputFormat: |
+      - Line 1: the digit string `num`.
+    outputFormat: |
+      Print the largest odd-valued substring, or an empty line if none exists.
+    constraints:
+      - "1 <= |num| <= 10^5"
+      - "`num` contains only digits and has no leading zeros."
+    examples:
+      - input: |
+          6178
+        output: |
+          617
+        explanation: "The odd-valued substrings are 1, 7, 17, 61 and 617 (anything ending in 8 or 6 is even). The largest is 617."
+      - input: |
+          4206
+        output: ""
+        explanation: Every digit is even, so every substring ends in an even digit and no odd value exists.
+    hints:
+      - A number is odd exactly when its last digit is odd.
+      - Among substrings without leading zeros, a longer one always has a larger value. Which odd substring is the longest?
+      - Find the rightmost odd digit; the answer is the prefix ending there.
+    explanation: |
+      **Brute force - O(n^3) time.** Enumerate every substring, check its last
+      digit and compare values (comparing big numbers as strings costs O(n)).
+      Far too slow.
+
+      **Better - O(n^2) time.** Only substrings ending at an odd digit matter,
+      and for a fixed end the longest one (starting at index 0) is the largest,
+      because `num` has no leading zeros. That leaves at most `n` candidates to
+      compare.
+
+      **Optimal - O(n) time, O(1) extra space.** The candidate prefixes are
+      nested, so the longest one wins: scan from the right for the last odd digit
+      at index `i` and output `num[0..i]`. If there is no odd digit, output an
+      empty string.
+    starterCode:
+      python: |
+        import sys
+
+
+        def largest_odd_number(num: str) -> str:
+            # Return the largest odd-valued substring of num, or "" if none exists.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            num = sys.stdin.readline().strip()
+            print(largest_odd_number(num))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def largest_odd_number(num: str) -> str:
+            for i in range(len(num) - 1, -1, -1):
+                if (ord(num[i]) - ord("0")) % 2 == 1:
+                    return num[:i + 1]
+            return ""
+
+
+        # --- Input/output handling ---
+        def main():
+            num = sys.stdin.readline().strip()
+            print(largest_odd_number(num))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          6178
+        expectedOutput: |
+          617
+        hidden: false
+      - input: |
+          4206
+        expectedOutput: ""
+        hidden: false
+      - input: |
+          7
+        expectedOutput: |
+          7
+        hidden: true
+      - input: |
+          0
+        expectedOutput: ""
+        hidden: true
+      - input: |
+          35427
+        expectedOutput: |
+          35427
+        hidden: true
+      - input: |
+          10
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          8000000003000
+        expectedOutput: |
+          8000000003
+        hidden: true
+      - input: |
+          24682468246824682468
+        expectedOutput: ""
+        hidden: true
+
+  - slug: longest-common-prefix
+    title: Longest Common Prefix
+    difficulty: Easy
+    topic: Strings
+    subtopic: Easy Problems
+    tags: [string, sorting]
+    sourceUrl: https://leetcode.com/problems/longest-common-prefix/
+    statement: |
+      Given `n` lowercase words, find the longest string that is a prefix of
+      **every** word. If the words do not share even their first letter, the
+      answer is the empty string.
+    inputFormat: |
+      - Line 1: an integer `n`.
+      - Next `n` lines: one word per line.
+    outputFormat: |
+      Print the longest common prefix, or an empty line if it is empty.
+    constraints:
+      - "1 <= n <= 200"
+      - "1 <= length of each word <= 200"
+      - "Words contain only lowercase English letters."
+    examples:
+      - input: |
+          3
+          planet
+          plane
+          plan
+        output: |
+          plan
+        explanation: '"plan" starts all three words, but "plane" is not a prefix of "plan".'
+      - input: |
+          3
+          sun
+          moon
+          star
+        output: ""
+        explanation: The first letters s, m and s already differ, so nothing is shared.
+    hints:
+      - Compare the words column by column, starting from the first character.
+      - Stop at the first column where some word ends or has a different character.
+      - "Alternative: after sorting, only the first and last words need to be compared."
+    explanation: |
+      **Horizontal scanning - O(S) time, O(1) extra space**, where `S` is the
+      total number of characters. Start with the first word as the prefix and
+      shorten it until it is a prefix of the second word, then the third, and so
+      on.
+
+      **Vertical scanning - O(S) time, O(1) extra space.** For column
+      `i = 0, 1, ...`, check that every word has length greater than `i` and the
+      same character as the first word at `i`. The first failure gives the answer
+      `words[0][:i]`. This stops early as soon as a mismatch appears.
+
+      **Sort - O(S log n) time.** After lexicographic sorting, the common prefix
+      of all words equals the common prefix of the first and last words, since
+      every word in between is sandwiched between them.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def longest_common_prefix(words: List[str]) -> str:
+            # Return the longest prefix shared by every word.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            words = data[1:1 + n]
+            print(longest_common_prefix(words))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def longest_common_prefix(words: List[str]) -> str:
+            first = words[0]
+            for i, ch in enumerate(first):
+                for word in words[1:]:
+                    if i >= len(word) or word[i] != ch:
+                        return first[:i]
+            return first
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            words = data[1:1 + n]
+            print(longest_common_prefix(words))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          3
+          planet
+          plane
+          plan
+        expectedOutput: |
+          plan
+        hidden: false
+      - input: |
+          3
+          sun
+          moon
+          star
+        expectedOutput: ""
+        hidden: false
+      - input: |
+          1
+          alone
+        expectedOutput: |
+          alone
+        hidden: true
+      - input: |
+          3
+          abc
+          abc
+          abc
+        expectedOutput: |
+          abc
+        hidden: true
+      - input: |
+          2
+          ab
+          a
+        expectedOutput: |
+          a
+        hidden: true
+      - input: |
+          4
+          interview
+          internet
+          interval
+          internal
+        expectedOutput: |
+          inter
+        hidden: true
+      - input: |
+          2
+          zebra
+          zoo
+        expectedOutput: |
+          z
+        hidden: true
+      - input: |
+          3
+          abc
+          abd
+          xbc
+        expectedOutput: ""
+        hidden: true
+
+  - slug: isomorphic-strings
+    title: Isomorphic Strings
+    difficulty: Easy
+    topic: Strings
+    subtopic: Easy Problems
+    tags: [string, hashing]
+    sourceUrl: https://leetcode.com/problems/isomorphic-strings/
+    statement: |
+      Two strings `s` and `t` of equal length are **isomorphic** if you can
+      rename the characters of `s` to obtain `t`, where:
+
+      - every occurrence of a character is renamed to the same character,
+      - two different characters are never renamed to the same character,
+      - a character may be renamed to itself.
+
+      Decide whether `s` and `t` are isomorphic.
+    inputFormat: |
+      - Line 1: the string `s`.
+      - Line 2: the string `t`.
+    outputFormat: |
+      Print `true` if the strings are isomorphic, otherwise `false`.
+    constraints:
+      - "1 <= |s| = |t| <= 5 * 10^4"
+      - "Both strings consist of printable ASCII characters without spaces."
+    examples:
+      - input: |
+          letter
+          bottom
+        output: |
+          true
+        explanation: "Rename l->b, e->o, t->t, r->m. Every character has one image and no two share an image."
+      - input: |
+          moon
+          noon
+        output: |
+          false
+        explanation: "m must become n and n must also become n, but two different characters cannot map to the same one."
+    hints:
+      - "One map from characters of `s` to characters of `t` is not enough: `ab` -> `aa` would pass."
+      - Maintain the mapping in both directions and check both on every position.
+      - "Equivalently, the strings are isomorphic exactly when, at each index, the position where `s[i]` first appeared equals the position where `t[i]` first appeared."
+    explanation: |
+      **Brute force - O(n^2) time, O(1) space.** For every pair of indices
+      `(i, j)`, require `s[i] == s[j]` exactly when `t[i] == t[j]`.
+
+      **Two hash maps - O(n) time, O(k) space** (`k` = alphabet size). Scan
+      once, keeping `s_to_t` and `t_to_s`. At index `i`, if `s[i]` is already
+      mapped to something other than `t[i]`, or `t[i]` is already mapped from
+      something other than `s[i]`, answer `false`; otherwise record both
+      directions.
+
+      **First-occurrence signature - O(n) time, O(k) space.** Replace every
+      character by the index of its first occurrence in its own string. The two
+      strings are isomorphic if and only if these signatures are identical.
+    starterCode:
+      python: |
+        import sys
+
+
+        def is_isomorphic(s: str, t: str) -> bool:
+            # Return True if s can be turned into t by a one-to-one character renaming.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            s, t = data[0], data[1]
+            print("true" if is_isomorphic(s, t) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def is_isomorphic(s: str, t: str) -> bool:
+            if len(s) != len(t):
+                return False
+            s_to_t = {}
+            t_to_s = {}
+            for a, b in zip(s, t):
+                if s_to_t.get(a, b) != b or t_to_s.get(b, a) != a:
+                    return False
+                s_to_t[a] = b
+                t_to_s[b] = a
+            return True
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            s, t = data[0], data[1]
+            print("true" if is_isomorphic(s, t) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          letter
+          bottom
+        expectedOutput: |
+          true
+        hidden: false
+      - input: |
+          moon
+          noon
+        expectedOutput: |
+          false
+        hidden: false
+      - input: |
+          a
+          b
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          ab
+          aa
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          aa
+          ab
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          abcdefghij
+          jihgfedcba
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          badc
+          baba
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          13!3
+          4#?#
+        expectedOutput: |
+          true
+        hidden: true
+
+  - slug: rotate-string
+    title: Rotate String
+    difficulty: Easy
+    topic: Strings
+    subtopic: Easy Problems
+    tags: [string, string-matching]
+    sourceUrl: https://leetcode.com/problems/rotate-string/
+    statement: |
+      A **shift** takes the first character of a string and moves it to the end
+      (one shift turns `abcd` into `bcda`).
+
+      Given strings `s` and `goal`, decide whether `s` can become `goal` after
+      some number of shifts (zero shifts are allowed).
+    inputFormat: |
+      - Line 1: the string `s`.
+      - Line 2: the string `goal`.
+    outputFormat: |
+      Print `true` if `goal` is a rotation of `s`, otherwise `false`.
+    constraints:
+      - "1 <= |s|, |goal| <= 2000"
+      - "Both strings consist of lowercase English letters."
+    examples:
+      - input: |
+          coding
+          ingcod
+        output: |
+          true
+        explanation: "Three shifts: coding -> odingc -> dingco -> ingcod."
+      - input: |
+          coding
+          codgni
+        output: |
+          false
+        explanation: No number of shifts changes the cyclic order of the letters, and "codgni" has g before n.
+    hints:
+      - Strings of different lengths can never match.
+      - "Brute force: try every possible shift amount `k` and compare `s[k:] + s[:k]` with `goal`."
+      - Every rotation of `s` appears as a substring of `s + s`.
+    explanation: |
+      **Try every rotation - O(n^2) time, O(n) space.** For each `k` in
+      `0..n-1`, build `s[k:] + s[:k]` and compare it with `goal`.
+
+      **Doubling - O(n) to O(n^2) time depending on the search, O(n) space.** If
+      the lengths match, `goal` is a rotation of `s` exactly when `goal` occurs
+      inside `s + s`, because `s + s` contains every rotation as a length-`n`
+      window. The cost depends on the substring search used.
+
+      **Doubling + linear matching - O(n) time, O(n) space.** Search for `goal`
+      in `s + s` with KMP (or the Z-algorithm) to get a guaranteed linear bound.
+    starterCode:
+      python: |
+        import sys
+
+
+        def rotate_string(s: str, goal: str) -> bool:
+            # Return True if some number of left shifts turns s into goal.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            s, goal = data[0], data[1]
+            print("true" if rotate_string(s, goal) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def rotate_string(s: str, goal: str) -> bool:
+            if len(s) != len(goal):
+                return False
+            text = s + s
+            pattern = goal
+            # KMP failure function
+            fail = [0] * len(pattern)
+            k = 0
+            for i in range(1, len(pattern)):
+                while k > 0 and pattern[i] != pattern[k]:
+                    k = fail[k - 1]
+                if pattern[i] == pattern[k]:
+                    k += 1
+                fail[i] = k
+            k = 0
+            for ch in text:
+                while k > 0 and ch != pattern[k]:
+                    k = fail[k - 1]
+                if ch == pattern[k]:
+                    k += 1
+                if k == len(pattern):
+                    return True
+            return False
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            s, goal = data[0], data[1]
+            print("true" if rotate_string(s, goal) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          coding
+          ingcod
+        expectedOutput: |
+          true
+        hidden: false
+      - input: |
+          coding
+          codgni
+        expectedOutput: |
+          false
+        hidden: false
+      - input: |
+          a
+          a
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          aa
+          a
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          abab
+          baba
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          abc
+          acb
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          bbabbbbaaabbbabbbbabbaabbbbbabbaaabaababbabbaababaabbbbbaababbabaaabbbaabaaaaaaabbabbaaabaaaaabbabbbabbbabaaabbbabaabaabbaaabaabaaababbbaaabababaabaabaaabbbabaabaaaababbbbbbbbaaaabababbaaabaaabbbabaabaabaaabbaaababbabaabbabbbaabbbbbbbbaabbbabaaaabaaabaaaaaaaaabaababbbbaabbaaabbaababaaaaaaabaabbaaabaaaabbabaabbaabbbabbaabaaabaaaabaabaaababbababbaabbaababbabbbbbaaaaaabbaabbabbbbbaabaaabaaaaabbbbabaabbaabbabbbaaaaaabbaabbbbbbaabaababbaabbaaaaaabaabaaababbbabbaabbaaaaabaaabbabaabbaabbaaabaaabbbbaaaaabbaaaabaaabbababbbaabbabaaaaabaaabaabbbbabbaababbaaaaaabbbababbbaabbaabaaabbbbbbabaaaababbbbbabbabababbaaaaabaaabbabaabaaabbababbaabaaaababaaaaaaababababbbbaababaaaabbabbabababbbbaabbabaaabbbababbabbaabbbabbaaaaababababbaaaaabbbaaabbabababbbbababbbabaaababbaaababbaabbaabbbbbbbbbbbbbaababbbabbaabaaabbabaaabbbbbabbaaababbbabaaaaabaabaaaaaabbbbbbaabaabaabbababaaabbaaaaabababababbabbaabbabababaababaababbbbaabbaaabaabaaabaaabaabbabababaaaaaaaaaaababababaaaabbbbbbaabbbbbababababababbbaabbabbbababaababbabbabbbbbabaaaaabbaabbabbaaaabbaaabaaabbbbbbbaabaabbbabbbaaabbaaabbaaabbabaaaababbbababaaabbabbbbaaaaabaaaaabbbbaababaaabaaabaaaabaabaabbabaaabbbbaabbbaabbabaaababbbbbabbabbbbbaaaaaaabbbbaabbbbbaababaabbaababbbababaabbabababbaaaaabaabaaaaabbbabbbaababbaaabbaabbabbaababaabbaaaabababaaaabbaabbbaabbbabbaabbbbaabaaabbbbbbaaaaabbaabbbbbbabaabbaaabbababaabbabbbbaabaaabbababbababbbabaaabababbbabaaabbbbbbabbbaaabbaaabbaababbbbbbbbabbbabaabaaaababbabababbbababaaabbabbabbbbabaaabababbbaabbabaaaabaabbbabbbaabbababaabbbaaabaaaabbabbaaababbbbbabbaaaaaababaaaaababbbbabbbbabbabbaaabaabbbbbbbbbbbbbbaabbabababbbaaaababaaaabaaabbabbabbbbbbbbbabbbbbaabbaaabbababbabbbaaabbaabaabaabaababbbabbaaaababbaababababbabbaababaaabaaaaabbabbbbbaaaaaabaabaababbbaabaabbaabbabababbabbaaaaaabbbaaaaaaaabbaabbaaaabbaaaabababaabbbabbbbbabaaaaabbaabbaabbabaabaaaaaaabaabbbbabbaabbbbbababbbbaababbbaabbbbbbbaabbabaaaabaaabaaaaabbabaaabbbaaaaaabbaaababaaabbaaabababbaabaabaabbbababaaaaaaababbaaaababaaabbabbbabbabababbbababbaba
+          abaaaaabbbabbbaababbaaabbaabbabbaababaabbaaaabababaaaabbaabbbaabbbabbaabbbbaabaaabbbbbbaaaaabbaabbbbbbabaabbaaabbababaabbabbbbaabaaabbababbababbbabaaabababbbabaaabbbbbbabbbaaabbaaabbaababbbbbbbbabbbabaabaaaababbabababbbababaaabbabbabbbbabaaabababbbaabbabaaaabaabbbabbbaabbababaabbbaaabaaaabbabbaaababbbbbabbaaaaaababaaaaababbbbabbbbabbabbaaabaabbbbbbbbbbbbbbaabbabababbbaaaababaaaabaaabbabbabbbbbbbbbabbbbbaabbaaabbababbabbbaaabbaabaabaabaababbbabbaaaababbaababababbabbaababaaabaaaaabbabbbbbaaaaaabaabaababbbaabaabbaabbabababbabbaaaaaabbbaaaaaaaabbaabbaaaabbaaaabababaabbbabbbbbabaaaaabbaabbaabbabaabaaaaaaabaabbbbabbaabbbbbababbbbaababbbaabbbbbbbaabbabaaaabaaabaaaaabbabaaabbbaaaaaabbaaababaaabbaaabababbaabaabaabbbababaaaaaaababbaaaababaaabbabbbabbabababbbababbababbabbbbaaabbbabbbbabbaabbbbbabbaaabaababbabbaababaabbbbbaababbabaaabbbaabaaaaaaabbabbaaabaaaaabbabbbabbbabaaabbbabaabaabbaaabaabaaababbbaaabababaabaabaaabbbabaabaaaababbbbbbbbaaaabababbaaabaaabbbabaabaabaaabbaaababbabaabbabbbaabbbbbbbbaabbbabaaaabaaabaaaaaaaaabaababbbbaabbaaabbaababaaaaaaabaabbaaabaaaabbabaabbaabbbabbaabaaabaaaabaabaaababbababbaabbaababbabbbbbaaaaaabbaabbabbbbbaabaaabaaaaabbbbabaabbaabbabbbaaaaaabbaabbbbbbaabaababbaabbaaaaaabaabaaababbbabbaabbaaaaabaaabbabaabbaabbaaabaaabbbbaaaaabbaaaabaaabbababbbaabbabaaaaabaaabaabbbbabbaababbaaaaaabbbababbbaabbaabaaabbbbbbabaaaababbbbbabbabababbaaaaabaaabbabaabaaabbababbaabaaaababaaaaaaababababbbbaababaaaabbabbabababbbbaabbabaaabbbababbabbaabbbabbaaaaababababbaaaaabbbaaabbabababbbbababbbabaaababbaaababbaabbaabbbbbbbbbbbbbaababbbabbaabaaabbabaaabbbbbabbaaababbbabaaaaabaabaaaaaabbbbbbaabaabaabbababaaabbaaaaabababababbabbaabbabababaababaababbbbaabbaaabaabaaabaaabaabbabababaaaaaaaaaaababababaaaabbbbbbaabbbbbababababababbbaabbabbbababaababbabbabbbbbabaaaaabbaabbabbaaaabbaaabaaabbbbbbbaabaabbbabbbaaabbaaabbaaabbabaaaababbbababaaabbabbbbaaaaabaaaaabbbbaababaaabaaabaaaabaabaabbabaaabbbbaabbbaabbabaaababbbbbabbabbbbbaaaaaaabbbbaabbbbbaababaabbaababbbababaabbabababbaaaaaba
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          bbabbbbaaabbbabbbbabbaabbbbbabbaaabaababbabbaababaabbbbbaababbabaaabbbaabaaaaaaabbabbaaabaaaaabbabbbabbbabaaabbbabaabaabbaaabaabaaababbbaaabababaabaabaaabbbabaabaaaababbbbbbbbaaaabababbaaabaaabbbabaabaabaaabbaaababbabaabbabbbaabbbbbbbbaabbbabaaaabaaabaaaaaaaaabaababbbbaabbaaabbaababaaaaaaabaabbaaabaaaabbabaabbaabbbabbaabaaabaaaabaabaaababbababbaabbaababbabbbbbaaaaaabbaabbabbbbbaabaaabaaaaabbbbabaabbaabbabbbaaaaaabbaabbbbbbaabaababbaabbaaaaaabaabaaababbbabbaabbaaaaabaaabbabaabbaabbaaabaaabbbbaaaaabbaaaabaaabbababbbaabbabaaaaabaaabaabbbbabbaababbaaaaaabbbababbbaabbaabaaabbbbbbabaaaababbbbbabbabababbaaaaabaaabbabaabaaabbababbaabaaaababaaaaaaababababbbbaababaaaabbabbabababbbbaabbabaaabbbababbabbaabbbabbaaaaababababbaaaaabbbaaabbabababbbbababbbabaaababbaaababbaabbaabbbbbbbbbbbbbaababbbabbaabaaabbabaaabbbbbabbaaababbbabaaaaabaabaaaaaabbbbbbaabaabaabbababaaabbaaaaabababababbabbaabbabababaababaababbbbaabbaaabaabaaabaaabaabbabababaaaaaaaaaaababababaaaabbbbbbaabbbbbababababababbbaabbabbbababaababbabbabbbbbabaaaaabbaabbabbaaaabbaaabaaabbbbbbbaabaabbbabbbaaabbaaabbaaabbabaaaababbbababaaabbabbbbaaaaabaaaaabbbbaababaaabaaabaaaabaabaabbabaaabbbbaabbbaabbabaaababbbbbabbabbbbbaaaaaaabbbbaabbbbbaababaabbaababbbababaabbabababbaaaaabaabaaaaabbbabbbaababbaaabbaabbabbaababaabbaaaabababaaaabbaabbbaabbbabbaabbbbaabaaabbbbbbaaaaabbaabbbbbbabaabbaaabbababaabbabbbbaabaaabbababbababbbabaaabababbbabaaabbbbbbabbbaaabbaaabbaababbbbbbbbabbbabaabaaaababbabababbbababaaabbabbabbbbabaaabababbbaabbabaaaabaabbbabbbaabbababaabbbaaabaaaabbabbaaababbbbbabbaaaaaababaaaaababbbbabbbbabbabbaaabaabbbbbbbbbbbbbbaabbabababbbaaaababaaaabaaabbabbabbbbbbbbbabbbbbaabbaaabbababbabbbaaabbaabaabaabaababbbabbaaaababbaababababbabbaababaaabaaaaabbabbbbbaaaaaabaabaababbbaabaabbaabbabababbabbaaaaaabbbaaaaaaaabbaabbaaaabbaaaabababaabbbabbbbbabaaaaabbaabbaabbabaabaaaaaaabaabbbbabbaabbbbbababbbbaababbbaabbbbbbbaabbabaaaabaaabaaaaabbabaaabbbaaaaaabbaaababaaabbaaabababbaabaabaabbbababaaaaaaababbaaaababaaabbabbbabbabababbbababbaba
+          abaaaaabbbabbbaababbaaabbaabbabbaababaabbaaaabababaaaabbaabbbaabbbabbaabbbbaabaaabbbbbbaaaaabbaabbbbbbabaabbaaabbababaabbabbbbaabaaabbababbababbbabaaabababbbabaaabbbbbbabbbaaabbaaabbaababbbbbbbbabbbabaabaaaababbabababbbababaaabbabbabbbbabaaabababbbaabbabaaaabaabbbabbbaabbababaabbbaaabaaaabbabbaaababbbbbabbaaaaaababaaaaababbbbabbbbabbabbaaabaabbbbbbbbbbbbbbaabbabababbbaaaababaaaabaaabbabbabbbbbbbbbabbbbbaabbaaabbababbabbbaaabbaabaabaabaababbbabbaaaababbaababababbabbaababaaabaaaaabbabbbbbaaaaaabaabaababbbaabaabbaabbabababbabbaaaaaabbbaaaaaaaabbaabbaaaabbaaaabababaabbbabbbbbabaaaaabbaabbaabbabaabaaaaaaabaabbbbabbaabbbbbababbbbaababbbaabbbbbbbaabbabaaaabaaabaaaaabbabaaabbbaaaaaabbaaababaaabbaaabababbaabaabaabbbababaaaaaaababbaaaababaaabbabbbabbabababbbababbababbabbbbaaabbbabbbbabbaabbbbbabbaaabaababbabbaababaabbbbbaababbabaaabbbaabaaaaaaabbabbaaabaaaaabbabbbabbbabaaabbbabaabaabbaaabaabaaababbbaaabababaabaabaaabbbabaabaaaababbbbbbbbaaaabababbaaabaaabbbabaabaabaaabbaaababbabaabbabbbaabbbbbbbbaabbbabaaaabaaabaaaaaaaaabaababbbbaabbaaabbaababaaaaaaabaabbaaabaaaabbabaabbaabbbabbaabaaabaaaabaabaaababbababbaabbaababbabbbbbaaaaaabbaabbabbbbbaabaaabaaaaabbbbabaabbaabbabbbaaaaaabbaabbbbbbaabaababbaabbaaaaaabaabaaababbbabbaabbaaaaabaaabbabaabbaabbaaabaaabbbbaaaaabbaaaabaaabbababbbaabbabaaaaabaaabaabbbbabbaababbaaaaaabbbababbbaabbaabaaabbbbbbabaaaababbbbbabbabababbaaaaabaaabbabaabaaabbababbaabaaaababaaaaaaababababbbbaababaaaabbabbabababbbbaabbabaaabbbababbabbaabbbabbaaaaababababbaaaaabbbaaabbabababbbbababbbabaaababbaaababbaabbaabbbbbbbbbbbbbaababbbabbaabaaabbabaaabbbbbabbaaababbbabaaaaabaabaaaaaabbbbbbaabaabaabbababaaabbaaaaabababababbabbaabbabababaababaababbbbaabbaaabaabaaabaaabaabbabababaaaaaaaaaaababababaaaabbbbbbaabbbbbababababababbbaabbabbbababaababbabbabbbbbabaaaaabbaabbabbaaaabbaaabaaabbbbbbbaabaabbbabbbaaabbaaabbaaabbabaaaababbbababaaabbabbbbaaaaabaaaaabbbbaababaaabaaabaaaabaabaabbabaaabbbbaabbbaabbabaaababbbbbabbabbbbbaaaaaaabbbbaabbbbbaababaabbaababbbababaabbabababbaaaaabb
+        expectedOutput: |
+          false
+        hidden: true
+
+  - slug: valid-anagram
+    title: Valid Anagram
+    difficulty: Easy
+    topic: Strings
+    subtopic: Easy Problems
+    tags: [string, hashing, counting]
+    sourceUrl: https://leetcode.com/problems/valid-anagram/
+    statement: |
+      String `t` is an **anagram** of string `s` if `t` uses exactly the same
+      letters as `s`, each the same number of times, possibly in a different
+      order.
+
+      Decide whether `t` is an anagram of `s`.
+    inputFormat: |
+      - Line 1: the string `s`.
+      - Line 2: the string `t`.
+    outputFormat: |
+      Print `true` if `t` is an anagram of `s`, otherwise `false`.
+    constraints:
+      - "1 <= |s|, |t| <= 5 * 10^4"
+      - "Both strings consist of lowercase English letters."
+    examples:
+      - input: |
+          night
+          thing
+        output: |
+          true
+        explanation: Both words contain one each of g, h, i, n and t.
+      - input: |
+          hello
+          hollo
+        output: |
+          false
+        explanation: '"hello" has one o and one e, while "hollo" has two o''s and no e.'
+    hints:
+      - If the lengths differ, the answer is immediately `false`.
+      - Sorting both strings gives a simple check. Can you avoid the log factor?
+      - "Only 26 letters exist: count them with an array, adding for `s` and subtracting for `t`."
+    explanation: |
+      **Sorting - O(n log n) time, O(n) space.** Two strings are anagrams exactly
+      when their sorted character sequences are equal.
+
+      **Hash map counting - O(n) time, O(k) space.** Count characters of `s` in a
+      map, decrement for each character of `t`, and check that all counts end at
+      zero.
+
+      **Fixed-size array - O(n) time, O(1) space.** With only lowercase letters,
+      an array of 26 counters indexed by `ord(c) - ord('a')` replaces the map.
+      Check lengths first; then any negative count while processing `t` proves
+      the strings are not anagrams.
+    starterCode:
+      python: |
+        import sys
+
+
+        def is_anagram(s: str, t: str) -> bool:
+            # Return True if t is a rearrangement of the letters of s.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            s, t = data[0], data[1]
+            print("true" if is_anagram(s, t) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def is_anagram(s: str, t: str) -> bool:
+            if len(s) != len(t):
+                return False
+            counts = [0] * 26
+            for ch in s:
+                counts[ord(ch) - 97] += 1
+            for ch in t:
+                index = ord(ch) - 97
+                counts[index] -= 1
+                if counts[index] < 0:
+                    return False
+            return True
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            s, t = data[0], data[1]
+            print("true" if is_anagram(s, t) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          night
+          thing
+        expectedOutput: |
+          true
+        hidden: false
+      - input: |
+          hello
+          hollo
+        expectedOutput: |
+          false
+        hidden: false
+      - input: |
+          a
+          a
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          a
+          ab
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          aacc
+          ccac
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          dormitory
+          dirtyroom
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          iwkixnowsqhqzjhhfqjgusyvaqigvxbelzsnoatsmfqagilmtbtvbqxplchetbzzwqvyxmjxkrkfdvqsgzfzabgmvljuvuehgkmzsnqpeeqsyvcrbvsjdoqweffyktwuixckgbpjxicnaijoydflnxoyauhahekcykqsvogbbhjhyjgkfxuaxlaazfkrruuhqpxgedjoomgtajhimtxijzpvnrqimnmqnukdgrhkqophlqilzvvtgvqmcttdvftzxxrqvsjdaqtdzumfakbhengnmizaflwltxjrraylhscdjhthizjjdnpfzzullkwibeppufmqcvjkosvbrfzxwsqshuczomqkpiyuykwvtfjrudszjerariqcjhocgmxezlntmiumrexmyzadgppipnvcavpvhftfkiqkaxkaqissfbvkmaseetxmpwsbqfrnlmvpcmakcuirtgludrwamyoukcbvherljfskscnapkigalwbmohfviuqcyzydxqisyoiecrbjjrfjezlskqrdrmribuswkjsrbvzessjbukabmksnyybzggwolwhiaubmyphdonsekxbchpjhsrbvotlmnfkiydtirfnescemzdfvryxlouakyxluporztkaytqwvkxcqnwvjhbjqxaeqzskphggrkjlqwsvjkoaqvksmptatoyzwumffdkrwaafvbmcdtkbblzdegeuziutquskbndnudxxndeokftkrzuetwnngufurpuzpgdrrlosmuzvtcflkvubncpjodrillasyjsesrmxqanbkvypwxlugmseonbwepynqqfdzpqlicefhbebrjnbykunnsltwvggoldqymsikkavaheoaofzexcfadikrelssgnwhhnpwynzmenmmcoqlzyjmyjqxmafdeytfpgbkkowewubkhrqnyuvoauuhntqnxlmmifrjrchwijuhurlwloaqynowcbhkfbtctgqqgcbnvsglkykfncirrodeogolnixdmtxepetdkkeneoogyjrowmdrzzqgjjiganorrxmrcxrosnyxfqndjexcqekfkiynkntyxmqhjxjhgnsoehvcrnnyeutoptkudhpxjfnfdiahgqebkbtwpvdamzjcpovwsneymyerquxrtfccyvuajxsbxvoekrzklweyaovcmjkdurgsvyjzgodazymaudnoruzxruasaaguggaeaaaoxyryvywahbjsjzkvsvvmhcxvaozfgryysvszbijdezmvgpccumbyvaduurtunlvoofxpivkaqmdvovyugkdocvbmegwplswcdurkowgdldchpjjwsudezrsqbhiurlljezlzbfgapjadbycqvngtsntguvpsivhrasxzptbxxjxgpsxbeljnmuyxkowavjzhmdmljldemqtnatpltxrocjmzzfbxwhonykupuipxkweryywevmgrtgftywysqmdlwsxzzsktpnmtimoaxrfbemcmtizwneoirqdztakekjqnanepzzyyendilpewvmdupslpbkqirtdbtofcvmzfzskeifdnrkpqijrszysthufijbfmkfuhbgcspwhstexzlqgqorpipppwudqciyhmkonjuigfzvxxhqwqzidpvlnmdpmwnobkezvwlcedempvjmvmvlxtuwvcgnprjvenszyijxziqvbxptqyyvtcvfmhwlwnoqenwuvfyrariverugkldddnihujnbvjhrrtwnlvulbgqoktvwatqbnnrgmdtoqfoizpaknwfrpelfpbpasfxjuphouyeyzdronyggtzoeumshacwxionxtqwoeffvcjxhsosmhypdbphnwglhtbrdoqxfjojrflxqizrdtuveyhrpqukwqsmflsrwaaecweqzawxqdkfygcwdttkbjjumxjmmukupadjcdjavuuzmnqotskprhtksvtzaaaxoeigywewhnhtfafxyltngtfzapdajbzqqjweunoqsnuyuwmkrcfjumcudkoafvumjiwepfpmwnvswyinaovhcicsoskelyrjvhinqdqdbqwrjlttogsztllzbbnakeyrakjjdtfrmuxsnhdeeubqvlgufjyalmoeqlogrgckjxhdakkzfeyymutybdxkwcvqixprunngeexizturzhbnpssrsyllytlsdsduifeabsdmipwyrhsiahzbzjdsnwucmweqqwfmsdeatyvmobxjwafpgszcadvdcpkdqixxexaefjixjaxwnqxglwrxgvlcuftrdyilhauimssaqosyzatagtgdvftqudwehbisbjbkijopygivxhozslllrbhhpramuoishjudcbspfidygvatimcsjqmuucxkgepnxxmqzkfdigehhrmgxqasurnwcxwrbrtkswzrnikyatkzpzldddxkimwazblvkheyyqutjoxmppjlgphkcozikqyexujgtpykoxsvfnexejgvwnlwrlfamzbbsueppntwhykduhwqqxnzihosrycjrrxfbimhxadpnbhilnalxpxdlsfhfzedbxhuyofbhginygsgxtessbxifcuzhsydkvxqozoqbagqnxsnpwmoyiiafbdcjvyrfghzryjadqorpszjhfkebelavyvgpdncmajwnzlqoizupjpfnqtgkstonoidtkxcekfogbjjhkgismdtoexzsuwyuewyrggteyelvotedanufuhcpiryexsgldtlwetbsglmelisghwvaddrfgzukhvkdwedyaxznctniyhtccdlwdkxbrroioxgefslegqtdndzsxdlsqcnknurkiagwcmgiobbkrjprnrsxznqnrcedmezvplyojayqmxmyryaxesnhohqhiwhqloqvxfgwyiglezyxlniwunrajxeivigawfiqjulxjsruhtpjocqrbiqpzegcebdrgfwzxthzxxzdbbsqtrcppawzfybgicramkfmfkzrqmrksybsopdizkhhdtnkvokqscexkhnjocnhijtgkphvyihspgyywvejwfpuiryjukfxycdgqgdzycpmqlqydkphcvpvnktkpplkcnsxkquzwcuxghskdhvxjmczfxkjjmjkuooqokqdsdogwkhlutpgsraxuhqvqmleccqajkkqmgfdceqtnwszgbhumbachhtrxyelpuzugppkbnmxhcmjoyouygixcogouzdmudcohursglbalxjvuopxojjfyzliplgahnccdkrwokcuuiouzbzfxannqrizjbetyqyliiwxyjaaazxcaqcgmyfseiwnkgesjczdfoxvfghqzqplgaqsgbbhlufuadsuskbzkpicgjzlklbdnuequtikyeilcxvhfuueifqcsvtsticrxvjpfwbpkuwjgyozevyxahiphqsqpxypqdzunxcoifxokktjlmywmeobrjzotwjthurqhqxgvszwbxnnfjhquzucesotzkdcameihyncequdxtgjxzpjlibbvkeynpfuodxhehipygnglttyvhrutqnezfazcdflnsmvdozteoclyxzpkxbydsoefjfgdlfhktksqlycqmkmcxyapmbjhrshvcngjaambotspwanesuogwrxhbvtfsjglaopbgqxhicjjqxwxkwpntfeusshsxlkraugbmlsmkeryvgtjjfmgohnipvpxfjajkppahoftyeweprgxshmwbfimnzmkavgjdhxrzgkbmyaaebtweymlzzpjjeaztyiezyxsengrymjoyrjsqqjjgagqvvjjdhblgdhaifkpwqcqkcollxdyddoyikrmsckyvcpshhyikezewiwkusauetalfsddliiehhgziqzthfdywnvlawxwjgmkcpvnwbxqlfalntgjnbescabhdvxefifpsctapbxxbvvhrisnghturvhzaordngmwhauueyjb
+          osgxhrmavmvfkgfbgvieixyeudcmfvckenqixianbxbizxhntknldwaufdspvailopnymjltzkinjqadiobaspvpqdffuvjabdscosghtmphybbsirpfwadygokhhtwmyzdshizpyqqfkhwgdftxcxczokjihrdxvcumdimyaqvyetsijyvoupybzzzybircwdrgwflzsqseltkxxottmyknbqxtkpwxbaygkuhluctigwlzjtfnipcxpwszatfazhjirccxgenbchuhiwjxqnpaorxpsiunxtapdpcjhztmxteifecoprripiqexqparqkrbwoxilnsgsytzfxgmkivzjbditcyxkwarnrkviplmbyccpxguvuyjveihfuixsotoqkysndwdkjsymnqnfigkwknejgexblepbnfgttqjioamoulgzoanapqrgwiqrgzolilknwmnoyovkifrxhnrztzyepsymnwyfwbeslnzgshafcctfvtctzhyyakhnivwxepmessnuolpyetvuzbqvxzbjgbasvbgfgplgofkfdmvumldnlatjwehppjgufqsbxjkfmjvkuqdwukxuludnhkdhanspopbnqmjyaltqjckqftqwclmgyypdginldzuibnmwkbphayfoviwowdaznplyoamcqgrjlyahgpbaaotepdvgyjpevkskhqoxwjxjrsulyroyixzntgacbjmvxtbbjitfmadcyzzohbeyukjtursftvrmavmnmihjopnmkynafrsietjlvmuomuimzaaxqlxfoqqirdxjrvnohlwwurugeovgclaaypfnawvcmcplsmphrcunkrmedjetveqndpwtlmyglobjykwioejgrgnjamittzqfvvnfimpoggnndvwevgcndxmuzwvtmvllnjzrseekkrduxgirtqfnjaqprmoktpgsypytcqpsagtlkbxjzendkzvabnngoenmkcvclzgiixbslivcudxwqglghalpttoqkuzmslxltpnmhbkfiesqticqtpoejprmpfcoomsxamaurucvnjvqsaxdkhyujaspqjfupsarqezztozubmfaxjkrcprviqoltzboxzihgyqpkrbrfipwfxzqgvaxaaqtpuesraxvelezfufvbyxghdbkcpjjzmdznuoksxplhliievworpddpogkrcwlahslolramsdacrwfbuphsjzjnewsuqfbxdsepuusgwwmnceurexltuznxxgjgqthnmkauaxlwlmqyigqhxfqkytivpyhnngxuukxxffmrisqcposwhcyjrekleoyfdrnyhynqggbvhknafznvbdhgwmrjyulhhlkzdhgqcitxhredzpnamnqgqsluasxsrvwmhxpdkykhabdujprrozpkqugfuxuplqildncgdsurcgoblcjifpvfvrpocotwgsivvlopotmuslitfyvittzcywxtkzdjvbfblyudhsmmfocsezdnkenhrnzsozocdxkhvbuyrxaoyokyxtiuusbrrqlnrelcuzyvxfddjgpgzmnyvjgadoaobflhyijgivlsiumsvhhwrdwmerncqxidlpsbcqwfynosgwhlfoimwschdizvokgzjezglbxygeetpzvmyhjwsjdsnhoutusrcbahwabqpvxoiahxqxopcyhjcqrdujpojypbfzxapnujzmllyaegwpjhjmsdeawqzzyuqaxnbzojewmsbssugtcdkhbayppyoewmyuklhmilqhkumnyfvovtrfkjwpzjnxvmifxfqqpoigsgujaqbiuvytudpytpuuhymwkyvhpbswdrrwovtkhdehzyjiqufynuserhjuzndmhbzfjdejsbxrmaifumgyrxoadrxmziukeketakienfvkqsxuwiqzrhwuhjukavxneeszttmwizukrvfmesqhtogdcmrogsqwczowkymsbnfexeilqswlehreuphpgnsjjttmylzluahbkgsangqopvvtcnqyxxjjmojdwxqsecmgmjkeiejfqgeesdksvdskkwkvvahbntvloxlgjhrecudqgulpykodgapfugaixhfgttqkhvajupieyhezzzfylndxrahnesrmwqcxxkrsueeesgnbvahwuazjnjunnkxzseimimtyrhonltsyjowpyhnmjgduqvywjqtlhezrkjiztbxpzibkldoqpzqwksetoalxedcggqdkiemsxuthnewntjwhfsbkeebfonweqmkezaapbruzredbhemfxmgougfrqbxcozamdbxyhsmhcbjwqqxoiamymqaujkqkmkundnkhvrnlsgtxvdtojyqwqoyuubvgquslsnfrlzrqbxfmfhdwvhhsighuqjjmakemeprxfyhsceajbzeedspbseeuoufgsobzpshhdirhenyjmeywldozhcuhkheyqqfiehpijwrdacezuvjeipkfkcufjplkqkydjvotkhyszythjentpjqwamnzaekqugoucoiqaqrdotyiuzlelboyuxjdlwptcrsctkyfgangsdxtwljrshqijydwpabuwssacdsrvpkukyddehyvbbzzanvueazvhqlsxvdblgqxhmvhltoesctafmywkwzyheuzsgbmvcdwhknvdnxvykcakcgzrvpsoymhjwcuhkklqpfryvzabetthcnjzlfbdwyippeeymfzxzvrvwgzyykdjezomzqfqjbowsgawprdkfvjpuncujpnrpaitmtiukseajbxfpjxpixorknxkhbpiemjojfnbdrkrrqtraeiwcofagasakiomqvubbiayxibixmxxjnsdsexlchnetbnswcfhvhjraawdxukknhcrnzvjfxvtxbnezzjekxoklhmxlzzubrmqraecbwzbidiukreagporkujuxshiehnyfcsokccnldhhrfgpeudohjcnsesgifcrbfdxjtbglwhcpynxjaxadquhwitociroriqesbabzcxygykkzrkvtcpxrrtgzaeodzllyefrdohxstightpblkcbaisntuhdvbwfpaylqbimyuhxpysnmjenmodkuqmqsfitgzawbdzfuonfodugtucfdrkavdzvkhkuecwgiirhngftjqnyrxfkohovjmvikozgjjgxokrgcwnzrnawkynokzssbbukjclwjamgxabjtnluoxueimfhmvoikjlkyylxdkkfyojkzhikrztycrjgqfbagwyvvzmeqxmvkukuvmryqvkgvxwpdxxlorlxqolmrosaevpenzwclartgxoxmgygboukleosqjlalequcdljtspdwrzqiybqrwckdefskmjxhiecnkkxqbaazthvdikgviisppvsznjaaucygfbkdwfpebbydjnsdwozscveqakpdjuxaesrninbjjqrmarfklsvzebqtqgpeyqmdmfdtaowsrkrugmrfguqsgvldptdpqrteitsdnxlgflcpxxzyyzyjafcalybpdawabqudytyzvqoqigiectgnwtwnzqkynnsqecqdiujvsjzcdtpeyroavucisglstexzhffetlhbvwskjkpxmqhoecwswbmztwjvfschmmxrrvmwdzasiopiglgmsdyhtyzrmbxwqqiahghfwaxzcdeabsjkccewkkwzlzdsuitvlqewxaswowuqyxrxjjxsvcefdqonbmdhrdosflcqqxyayirafuryypkhqgufbvjhlxuynbddsetzaqgujofwabjgjhlslxrqmztxctgcnsknklkrqndotmccxufsnnjtsrgrxgjgdzzldqjhjrdgywvvqkgcjqnuilawqekuqfamsjvenmmyqhcdccrlwdjvjuaxwegnsfgzeztgfekuphxfbqbrfyydxzslezxfnbvuffgyvyxsoqpklxaidtbtfldcoegrypkxd
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          iwkixnowsqhqzjhhfqjgusyvaqigvxbelzsnoatsmfqagilmtbtvbqxplchetbzzwqvyxmjxkrkfdvqsgzfzabgmvljuvuehgkmzsnqpeeqsyvcrbvsjdoqweffyktwuixckgbpjxicnaijoydflnxoyauhahekcykqsvogbbhjhyjgkfxuaxlaazfkrruuhqpxgedjoomgtajhimtxijzpvnrqimnmqnukdgrhkqophlqilzvvtgvqmcttdvftzxxrqvsjdaqtdzumfakbhengnmizaflwltxjrraylhscdjhthizjjdnpfzzullkwibeppufmqcvjkosvbrfzxwsqshuczomqkpiyuykwvtfjrudszjerariqcjhocgmxezlntmiumrexmyzadgppipnvcavpvhftfkiqkaxkaqissfbvkmaseetxmpwsbqfrnlmvpcmakcuirtgludrwamyoukcbvherljfskscnapkigalwbmohfviuqcyzydxqisyoiecrbjjrfjezlskqrdrmribuswkjsrbvzessjbukabmksnyybzggwolwhiaubmyphdonsekxbchpjhsrbvotlmnfkiydtirfnescemzdfvryxlouakyxluporztkaytqwvkxcqnwvjhbjqxaeqzskphggrkjlqwsvjkoaqvksmptatoyzwumffdkrwaafvbmcdtkbblzdegeuziutquskbndnudxxndeokftkrzuetwnngufurpuzpgdrrlosmuzvtcflkvubncpjodrillasyjsesrmxqanbkvypwxlugmseonbwepynqqfdzpqlicefhbebrjnbykunnsltwvggoldqymsikkavaheoaofzexcfadikrelssgnwhhnpwynzmenmmcoqlzyjmyjqxmafdeytfpgbkkowewubkhrqnyuvoauuhntqnxlmmifrjrchwijuhurlwloaqynowcbhkfbtctgqqgcbnvsglkykfncirrodeogolnixdmtxepetdkkeneoogyjrowmdrzzqgjjiganorrxmrcxrosnyxfqndjexcqekfkiynkntyxmqhjxjhgnsoehvcrnnyeutoptkudhpxjfnfdiahgqebkbtwpvdamzjcpovwsneymyerquxrtfccyvuajxsbxvoekrzklweyaovcmjkdurgsvyjzgodazymaudnoruzxruasaaguggaeaaaoxyryvywahbjsjzkvsvvmhcxvaozfgryysvszbijdezmvgpccumbyvaduurtunlvoofxpivkaqmdvovyugkdocvbmegwplswcdurkowgdldchpjjwsudezrsqbhiurlljezlzbfgapjadbycqvngtsntguvpsivhrasxzptbxxjxgpsxbeljnmuyxkowavjzhmdmljldemqtnatpltxrocjmzzfbxwhonykupuipxkweryywevmgrtgftywysqmdlwsxzzsktpnmtimoaxrfbemcmtizwneoirqdztakekjqnanepzzyyendilpewvmdupslpbkqirtdbtofcvmzfzskeifdnrkpqijrszysthufijbfmkfuhbgcspwhstexzlqgqorpipppwudqciyhmkonjuigfzvxxhqwqzidpvlnmdpmwnobkezvwlcedempvjmvmvlxtuwvcgnprjvenszyijxziqvbxptqyyvtcvfmhwlwnoqenwuvfyrariverugkldddnihujnbvjhrrtwnlvulbgqoktvwatqbnnrgmdtoqfoizpaknwfrpelfpbpasfxjuphouyeyzdronyggtzoeumshacwxionxtqwoeffvcjxhsosmhypdbphnwglhtbrdoqxfjojrflxqizrdtuveyhrpqukwqsmflsrwaaecweqzawxqdkfygcwdttkbjjumxjmmukupadjcdjavuuzmnqotskprhtksvtzaaaxoeigywewhnhtfafxyltngtfzapdajbzqqjweunoqsnuyuwmkrcfjumcudkoafvumjiwepfpmwnvswyinaovhcicsoskelyrjvhinqdqdbqwrjlttogsztllzbbnakeyrakjjdtfrmuxsnhdeeubqvlgufjyalmoeqlogrgckjxhdakkzfeyymutybdxkwcvqixprunngeexizturzhbnpssrsyllytlsdsduifeabsdmipwyrhsiahzbzjdsnwucmweqqwfmsdeatyvmobxjwafpgszcadvdcpkdqixxexaefjixjaxwnqxglwrxgvlcuftrdyilhauimssaqosyzatagtgdvftqudwehbisbjbkijopygivxhozslllrbhhpramuoishjudcbspfidygvatimcsjqmuucxkgepnxxmqzkfdigehhrmgxqasurnwcxwrbrtkswzrnikyatkzpzldddxkimwazblvkheyyqutjoxmppjlgphkcozikqyexujgtpykoxsvfnexejgvwnlwrlfamzbbsueppntwhykduhwqqxnzihosrycjrrxfbimhxadpnbhilnalxpxdlsfhfzedbxhuyofbhginygsgxtessbxifcuzhsydkvxqozoqbagqnxsnpwmoyiiafbdcjvyrfghzryjadqorpszjhfkebelavyvgpdncmajwnzlqoizupjpfnqtgkstonoidtkxcekfogbjjhkgismdtoexzsuwyuewyrggteyelvotedanufuhcpiryexsgldtlwetbsglmelisghwvaddrfgzukhvkdwedyaxznctniyhtccdlwdkxbrroioxgefslegqtdndzsxdlsqcnknurkiagwcmgiobbkrjprnrsxznqnrcedmezvplyojayqmxmyryaxesnhohqhiwhqloqvxfgwyiglezyxlniwunrajxeivigawfiqjulxjsruhtpjocqrbiqpzegcebdrgfwzxthzxxzdbbsqtrcppawzfybgicramkfmfkzrqmrksybsopdizkhhdtnkvokqscexkhnjocnhijtgkphvyihspgyywvejwfpuiryjukfxycdgqgdzycpmqlqydkphcvpvnktkpplkcnsxkquzwcuxghskdhvxjmczfxkjjmjkuooqokqdsdogwkhlutpgsraxuhqvqmleccqajkkqmgfdceqtnwszgbhumbachhtrxyelpuzugppkbnmxhcmjoyouygixcogouzdmudcohursglbalxjvuopxojjfyzliplgahnccdkrwokcuuiouzbzfxannqrizjbetyqyliiwxyjaaazxcaqcgmyfseiwnkgesjczdfoxvfghqzqplgaqsgbbhlufuadsuskbzkpicgjzlklbdnuequtikyeilcxvhfuueifqcsvtsticrxvjpfwbpkuwjgyozevyxahiphqsqpxypqdzunxcoifxokktjlmywmeobrjzotwjthurqhqxgvszwbxnnfjhquzucesotzkdcameihyncequdxtgjxzpjlibbvkeynpfuodxhehipygnglttyvhrutqnezfazcdflnsmvdozteoclyxzpkxbydsoefjfgdlfhktksqlycqmkmcxyapmbjhrshvcngjaambotspwanesuogwrxhbvtfsjglaopbgqxhicjjqxwxkwpntfeusshsxlkraugbmlsmkeryvgtjjfmgohnipvpxfjajkppahoftyeweprgxshmwbfimnzmkavgjdhxrzgkbmyaaebtweymlzzpjjeaztyiezyxsengrymjoyrjsqqjjgagqvvjjdhblgdhaifkpwqcqkcollxdyddoyikrmsckyvcpshhyikezewiwkusauetalfsddliiehhgziqzthfdywnvlawxwjgmkcpvnwbxqlfalntgjnbescabhdvxefifpsctapbxxbvvhrisnghturvhzaordngmwhauueyjb
+          osgxhrmbvmvfkgfbgvieixyeudcmfvckenqixianbxbizxhntknldwaufdspvailopnymjltzkinjqadiobaspvpqdffuvjabdscosghtmphybbsirpfwadygokhhtwmyzdshizpyqqfkhwgdftxcxczokjihrdxvcumdimyaqvyetsijyvoupybzzzybircwdrgwflzsqseltkxxottmyknbqxtkpwxbaygkuhluctigwlzjtfnipcxpwszatfazhjirccxgenbchuhiwjxqnpaorxpsiunxtapdpcjhztmxteifecoprripiqexqparqkrbwoxilnsgsytzfxgmkivzjbditcyxkwarnrkviplmbyccpxguvuyjveihfuixsotoqkysndwdkjsymnqnfigkwknejgexblepbnfgttqjioamoulgzoanapqrgwiqrgzolilknwmnoyovkifrxhnrztzyepsymnwyfwbeslnzgshafcctfvtctzhyyakhnivwxepmessnuolpyetvuzbqvxzbjgbasvbgfgplgofkfdmvumldnlatjwehppjgufqsbxjkfmjvkuqdwukxuludnhkdhanspopbnqmjyaltqjckqftqwclmgyypdginldzuibnmwkbphayfoviwowdaznplyoamcqgrjlyahgpbaaotepdvgyjpevkskhqoxwjxjrsulyroyixzntgacbjmvxtbbjitfmadcyzzohbeyukjtursftvrmavmnmihjopnmkynafrsietjlvmuomuimzaaxqlxfoqqirdxjrvnohlwwurugeovgclaaypfnawvcmcplsmphrcunkrmedjetveqndpwtlmyglobjykwioejgrgnjamittzqfvvnfimpoggnndvwevgcndxmuzwvtmvllnjzrseekkrduxgirtqfnjaqprmoktpgsypytcqpsagtlkbxjzendkzvabnngoenmkcvclzgiixbslivcudxwqglghalpttoqkuzmslxltpnmhbkfiesqticqtpoejprmpfcoomsxamaurucvnjvqsaxdkhyujaspqjfupsarqezztozubmfaxjkrcprviqoltzboxzihgyqpkrbrfipwfxzqgvaxaaqtpuesraxvelezfufvbyxghdbkcpjjzmdznuoksxplhliievworpddpogkrcwlahslolramsdacrwfbuphsjzjnewsuqfbxdsepuusgwwmnceurexltuznxxgjgqthnmkauaxlwlmqyigqhxfqkytivpyhnngxuukxxffmrisqcposwhcyjrekleoyfdrnyhynqggbvhknafznvbdhgwmrjyulhhlkzdhgqcitxhredzpnamnqgqsluasxsrvwmhxpdkykhabdujprrozpkqugfuxuplqildncgdsurcgoblcjifpvfvrpocotwgsivvlopotmuslitfyvittzcywxtkzdjvbfblyudhsmmfocsezdnkenhrnzsozocdxkhvbuyrxaoyokyxtiuusbrrqlnrelcuzyvxfddjgpgzmnyvjgadoaobflhyijgivlsiumsvhhwrdwmerncqxidlpsbcqwfynosgwhlfoimwschdizvokgzjezglbxygeetpzvmyhjwsjdsnhoutusrcbahwabqpvxoiahxqxopcyhjcqrdujpojypbfzxapnujzmllyaegwpjhjmsdeawqzzyuqaxnbzojewmsbssugtcdkhbayppyoewmyuklhmilqhkumnyfvovtrfkjwpzjnxvmifxfqqpoigsgujaqbiuvytudpytpuuhymwkyvhpbswdrrwovtkhdehzyjiqufynuserhjuzndmhbzfjdejsbxrmaifumgyrxoadrxmziukeketakienfvkqsxuwiqzrhwuhjukavxneeszttmwizukrvfmesqhtogdcmrogsqwczowkymsbnfexeilqswlehreuphpgnsjjttmylzluahbkgsangqopvvtcnqyxxjjmojdwxqsecmgmjkeiejfqgeesdksvdskkwkvvahbntvloxlgjhrecudqgulpykodgapfugaixhfgttqkhvajupieyhezzzfylndxrahnesrmwqcxxkrsueeesgnbvahwuazjnjunnkxzseimimtyrhonltsyjowpyhnmjgduqvywjqtlhezrkjiztbxpzibkldoqpzqwksetoalxedcggqdkiemsxuthnewntjwhfsbkeebfonweqmkezaapbruzredbhemfxmgougfrqbxcozamdbxyhsmhcbjwqqxoiamymqaujkqkmkundnkhvrnlsgtxvdtojyqwqoyuubvgquslsnfrlzrqbxfmfhdwvhhsighuqjjmakemeprxfyhsceajbzeedspbseeuoufgsobzpshhdirhenyjmeywldozhcuhkheyqqfiehpijwrdacezuvjeipkfkcufjplkqkydjvotkhyszythjentpjqwamnzaekqugoucoiqaqrdotyiuzlelboyuxjdlwptcrsctkyfgangsdxtwljrshqijydwpabuwssacdsrvpkukyddehyvbbzzanvueazvhqlsxvdblgqxhmvhltoesctafmywkwzyheuzsgbmvcdwhknvdnxvykcakcgzrvpsoymhjwcuhkklqpfryvzabetthcnjzlfbdwyippeeymfzxzvrvwgzyykdjezomzqfqjbowsgawprdkfvjpuncujpnrpaitmtiukseajbxfpjxpixorknxkhbpiemjojfnbdrkrrqtraeiwcofagasakiomqvubbiayxibixmxxjnsdsexlchnetbnswcfhvhjraawdxukknhcrnzvjfxvtxbnezzjekxoklhmxlzzubrmqraecbwzbidiukreagporkujuxshiehnyfcsokccnldhhrfgpeudohjcnsesgifcrbfdxjtbglwhcpynxjaxadquhwitociroriqesbabzcxygykkzrkvtcpxrrtgzaeodzllyefrdohxstightpblkcbaisntuhdvbwfpaylqbimyuhxpysnmjenmodkuqmqsfitgzawbdzfuonfodugtucfdrkavdzvkhkuecwgiirhngftjqnyrxfkohovjmvikozgjjgxokrgcwnzrnawkynokzssbbukjclwjamgxabjtnluoxueimfhmvoikjlkyylxdkkfyojkzhikrztycrjgqfbagwyvvzmeqxmvkukuvmryqvkgvxwpdxxlorlxqolmrosaevpenzwclartgxoxmgygboukleosqjlalequcdljtspdwrzqiybqrwckdefskmjxhiecnkkxqbaazthvdikgviisppvsznjaaucygfbkdwfpebbydjnsdwozscveqakpdjuxaesrninbjjqrmarfklsvzebqtqgpeyqmdmfdtaowsrkrugmrfguqsgvldptdpqrteitsdnxlgflcpxxzyyzyjafcalybpdawabqudytyzvqoqigiectgnwtwnzqkynnsqecqdiujvsjzcdtpeyroavucisglstexzhffetlhbvwskjkpxmqhoecwswbmztwjvfschmmxrrvmwdzasiopiglgmsdyhtyzrmbxwqqiahghfwaxzcdeabsjkccewkkwzlzdsuitvlqewxaswowuqyxrxjjxsvcefdqonbmdhrdosflcqqxyayirafuryypkhqgufbvjhlxuynbddsetzaqgujofwabjgjhlslxrqmztxctgcnsknklkrqndotmccxufsnnjtsrgrxgjgdzzldqjhjrdgywvvqkgcjqnuilawqekuqfamsjvenmmyqhcdccrlwdjvjuaxwegnsfgzeztgfekuphxfbqbrfyydxzslezxfnbvuffgyvyxsoqpklxaidtbtfldcoegrypkxd
+        expectedOutput: |
+          false
+        hidden: true
+
+  - slug: sort-characters-by-frequency
+    title: Sort Characters by Frequency
+    difficulty: Medium
+    topic: Strings
+    subtopic: Medium Problems
+    tags: [string, hashing, sorting]
+    sourceUrl: ""
+    statement: |
+      Rearrange the characters of a string `s` so that characters occurring more
+      often come first. All copies of the same character must be placed next to
+      each other.
+
+      To make the answer unique: when two different characters occur the same
+      number of times, the one with the **smaller ASCII code** comes first (so
+      digits come before uppercase letters, which come before lowercase letters).
+    inputFormat: |
+      - Line 1: the string `s`.
+    outputFormat: |
+      Print the rearranged string.
+    constraints:
+      - "1 <= |s| <= 10^5"
+      - "`s` consists of English letters and digits."
+    examples:
+      - input: |
+          banana
+        output: |
+          aaannb
+        explanation: a occurs 3 times, n twice and b once.
+      - input: |
+          Aabb
+        output: |
+          bbAa
+        explanation: b occurs twice. A and a both occur once; 'A' (code 65) is smaller than 'a' (code 97), so A comes first.
+    hints:
+      - Start by counting how many times each character appears.
+      - "Sort the distinct characters by the key (-count, character) and write each one `count` times."
+      - The number of distinct characters is at most 62, so sorting them is cheap. Bucket sort by frequency also works.
+    explanation: |
+      **Sort the whole string - O(n log n) time, O(n) space.** Count frequencies,
+      then sort all `n` characters with key `(-freq[c], c)`. Equal characters
+      share a key, so they end up adjacent.
+
+      **Sort distinct characters - O(n + k log k) time, O(n + k) space.** Count
+      with a hash map (or a 128-slot array), sort only the `k <= 62` distinct
+      characters by `(-count, char)`, and build the output by repeating each one
+      `count` times.
+
+      **Bucket sort - O(n + k) time, O(n) space.** Put each character into a
+      bucket indexed by its frequency, iterate the buckets from `n` down to 1 and
+      emit the characters of each bucket in increasing ASCII order (sorting a
+      bucket costs at most O(k log k) in total).
+    starterCode:
+      python: |
+        import sys
+
+
+        def frequency_sort(s: str) -> str:
+            # Order characters by decreasing frequency; ties by smaller ASCII code first.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(frequency_sort(s))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def frequency_sort(s: str) -> str:
+            counts = {}
+            for ch in s:
+                counts[ch] = counts.get(ch, 0) + 1
+            order = sorted(counts, key=lambda ch: (-counts[ch], ch))
+            return "".join(ch * counts[ch] for ch in order)
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(frequency_sort(s))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          banana
+        expectedOutput: |
+          aaannb
+        hidden: false
+      - input: |
+          Aabb
+        expectedOutput: |
+          bbAa
+        hidden: false
+      - input: |
+          z
+        expectedOutput: |
+          z
+        hidden: true
+      - input: |
+          cccaaa
+        expectedOutput: |
+          aaaccc
+        hidden: true
+      - input: |
+          mississippi
+        expectedOutput: |
+          iiiissssppm
+        hidden: true
+      - input: |
+          aAbB11
+        expectedOutput: |
+          11ABab
+        hidden: true
+      - input: |
+          programming
+        expectedOutput: |
+          ggmmrrainop
+        hidden: true
+      - input: |
+          qf4F61Arxo8Gyvol8bJ43I2qkp7b44BAAI44skjmgdt68C36xskupbyyme2p2tFuFotllxa3f2HtyFBocfHncmlugjD2GfAfE7fEI3CziJvlvsq3Hjg0H5jnE3wA6iJy6urkq7x7yg59EhJk4GmD5bvzpr19lzlrA4wGp43EzH5vo1jEx16ypwG6BF6zskF43FkGol7J7iyqCkB7buhaz978aorbbzhpgCcAme0tpqkhwhty75trxvA237qdxfnB3sdgvq6bfgoa9vpB7yih078lA1leBpeiucsl9emxFjJomrElk5xFmqGunD3Fmd544ckF2kmI2y44akaCou9yzgmFwa4oEapdbbIAdCx7sspqd9c7Gwxj0htspz33ueEbrHqun33JBu73jxfwkC9DHDpEefcBtmpjI93fpIsgrrBerofxIC6E8vzk3anwIrtg45uIFt5xe3ltIi7i9lykvykDcoJGn1EtrBtgrpsGFiJCD8yvfdwccpwcE2J1wvqz3cHp4H8ItAwnzDi1as1hrue2fiuvhthzvup0iGfrmjbe6st28zxgIzuu7JwrIy2wAErh73to5i3H7FoIIffGJH1zEhEg5vyvJlxabEzo0m2p9DhApsvlaxavpcC3ywECi3nhzG783t5651h8imyuw3aoA9egbydyepo8hxwD8mljc8en7Elwwdd0Jbgq4ad6aypufper3G9CJuDaJ1nxewcEwv5sEohFCkACcbJCAk02n7k5haw4crgh9b2il910g6eB0repH9jxj5BcynosmzqzhFw875d5Ipd4g73mJCIva1hE6GpxyhErruguExpsuxb5xIuplcyp5b2h2p8Giajx9gkaihcGzjcJzdvq2k5Gj1n1E36uD7pucH1JaD97oeGDy82CBtpgmIk1E7iqlzm3po4kGG9ixmG58Jfj8xFhpIF7yHjBA0154I13q6akozi4iHxeEJG1h90qxJesx1ez9c1af8alEJ1wj8HDw0F71A3Fke8w62C4sxDycEl9Gq6CavlezlAksoa2B6J0neDvfoz7ls1diyDfogHBIhHecusjE7ntekJdBAe8egzgkJzGxiFI7f14h06bn0cmurkzi772c5d7l9epbFav9mtA6Afc6aGsHgyzBv2ev40Jsb2aD0Ew5fn80w3jGp3Dhjq4kBr9mgwuv8zCFIhirx3nIuHcFJ0F2D8jane8uEuw4Dvs0t2wd6eErjnoEv0cf1hjpCqcgjfqo1o62JcavmyCaz6hfcrgCq6dAx7JbrIvojq2BE57In1H1Eoyuvw5BhohH4hw997bj5khC2rJ05r7JyqawrBpb6cGj114xHE4rsl0hHeqIvviFxcF5sCBzCh6AEalwcdB5olfdh1e4wspBlsDu3B9cEtddCnfviv3pahbIp7x8rw3E9lII29zo36sGg2sArjrppuFCsryg689w6ziFwEn9zFe0i0hi8sm3eG9oh3nq0A8DJIjfHjxAxkEHHpvzrh5gp1gGulu9A37A8x1juBhovrvnaf0ek3omsh0a2I7dgu0fisbAduvfHbsHBI2mukAhCHrC3604rc8ybBr6IjE4ugjd0b8nh7HgfIb5IlFklAkvI7vIdHil3qE1JEwz53e2Fhgm3klcftgr9aa95ctCCnAAFG4J608Beylwlwj07d1C0zi9Aix1JFqa693DB1x45it85oFr5qGx6aE1aqv0uxhJ6A9jCrnG0eyvknHAoetfxcD28vgC7txf0073d01Hd1hDuJGF89mCJdwq1oeIhoxbazA1mAgcJlhroFt6hmcdvJiFnjDraAsEFatik9evz5tetg6nkb1gzCEJ6jgEn8gc5IpbIkvwkAGiol59m01tvpg4Bkw1k4rhkk8b5r417BxtfaDzv8wi2ft0c5HGr73oCfIetxnwtz4pwk3lw4a7IgGq5zI173dvw8zleJ5AGeDfAtfzjb4hsyGgfaav8kl4sgelbxifv0uh8z8fH1zIFbq
+        expectedOutput: |
+          hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv3333333333333333333333333333333333333333333333333333111111111111111111111111111111111111111111111111111777777777777777777777777777777777777777777777777777pppppppppppppppppppppppppppppppppppppppppppppppppppaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeekkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIgggggggggggggggggggggggggggggggggggggggggggggggffffffffffffffffffffffffffffffffffffffffffffff555555555555555555555555555555555555555555555888888888888888888888888888888888888888888888cccccccccccccccccccccccccccccccccccccccccccccllllllllllllllllllllllllllllllllllllllllllllluuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJoooooooooooooooooooooooooooooooooooooooooooo00000000000000000000000000000000000000000004444444444444444444444444444444444444444444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA99999999999999999999999999999999999999999966666666666666666666666666666666666666666FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiijjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjssssssssssssssssssssssssssssssssssssssstttttttttttttttttttttttttttttttttttttttCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy222222222222222222222222222222222222HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBddddddddddddddddddddddddddddddddddnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+        hidden: true
+
+  - slug: maximum-nesting-depth-of-parentheses
+    title: Maximum Nesting Depth of Parentheses
+    difficulty: Easy
+    topic: Strings
+    subtopic: Medium Problems
+    tags: [string, stack, parentheses]
+    sourceUrl: https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/
+    statement: |
+      You are given a correctly parenthesized arithmetic expression `s` built
+      from digits, the operators `+ - * /` and the brackets `(` and `)`.
+
+      The **nesting depth** of a position is the number of bracket pairs that
+      enclose it. Find the maximum nesting depth over the whole expression (0 if
+      there are no brackets).
+    inputFormat: |
+      - Line 1: the expression `s` (no spaces).
+    outputFormat: |
+      Print one integer: the maximum nesting depth.
+    constraints:
+      - "1 <= |s| <= 10^4"
+      - "`s` contains only digits, `+ - * /`, `(` and `)`."
+      - "The brackets in `s` are correctly matched."
+    examples:
+      - input: |
+          (4*(5+(6-2)))
+        output: |
+          3
+        explanation: "The digits 6 and 2 are enclosed by three pairs of brackets."
+      - input: |
+          7+(8*9)
+        output: |
+          1
+        explanation: 8 and 9 are inside a single pair; nothing is deeper.
+    hints:
+      - You do not need to know which bracket matches which - only how many are currently open.
+      - "Increase a counter on `(`, decrease it on `)`, and remember the largest value it reaches."
+    explanation: |
+      **Stack - O(n) time, O(n) space.** Push every `(` and pop on every `)`.
+      The largest stack size observed during the scan is the answer.
+
+      **Counter - O(n) time, O(1) space.** Since the stack only contains `(`
+      characters, its size is all that matters. Keep `depth`, add 1 on `(` and
+      update `best = max(best, depth)`, subtract 1 on `)`, and ignore all other
+      characters. The input is guaranteed to be balanced, so no validation is
+      required.
+    starterCode:
+      python: |
+        import sys
+
+
+        def max_depth(s: str) -> int:
+            # Return the maximum number of brackets open at the same time.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(max_depth(s))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def max_depth(s: str) -> int:
+            depth = 0
+            best = 0
+            for ch in s:
+                if ch == "(":
+                    depth += 1
+                    best = max(best, depth)
+                elif ch == ")":
+                    depth -= 1
+            return best
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(max_depth(s))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          (4*(5+(6-2)))
+        expectedOutput: |
+          3
+        hidden: false
+      - input: |
+          7+(8*9)
+        expectedOutput: |
+          1
+        hidden: false
+      - input: |
+          42
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          ((((((1))))))
+        expectedOutput: |
+          6
+        hidden: true
+      - input: |
+          (1+2)*(3+4)/(5-6)
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          8*((2+3)-(4))+(((5)))
+        expectedOutput: |
+          3
+        hidden: true
+      - input: |
+          ((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((1+((((((((((((((((((((((((((((((((((((((((2))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))*(3)
+        expectedOutput: |
+          100
+        hidden: true
+      - input: |
+          ((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*((9)*0))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+        expectedOutput: |
+          151
+        hidden: true
+
+  - slug: roman-to-integer
+    title: Roman to Integer
+    difficulty: Easy
+    topic: Strings
+    subtopic: Medium Problems
+    tags: [string, hashing, math]
+    sourceUrl: https://leetcode.com/problems/roman-to-integer/
+    statement: |
+      Roman numerals use seven symbols:
+
+      | Symbol | I | V | X | L | C | D | M |
+      | --- | --- | --- | --- | --- | --- | --- | --- |
+      | Value | 1 | 5 | 10 | 50 | 100 | 500 | 1000 |
+
+      Symbols are normally written from largest to smallest and their values are
+      added (`XVI = 10 + 5 + 1 = 16`). Six special pairs place a smaller symbol
+      before a larger one to mean subtraction: `IV = 4`, `IX = 9`, `XL = 40`,
+      `XC = 90`, `CD = 400`, `CM = 900`.
+
+      Given a valid Roman numeral, print its integer value.
+    inputFormat: |
+      - Line 1: the Roman numeral `s`.
+    outputFormat: |
+      Print the integer value of `s`.
+    constraints:
+      - "1 <= |s| <= 15"
+      - "`s` is a valid Roman numeral for a value between 1 and 3999."
+    examples:
+      - input: |
+          XLII
+        output: |
+          42
+        explanation: XL = 40 (X before L means subtract), then I + I = 2. Total 42.
+      - input: |
+          MCDLXXVI
+        output: |
+          1476
+        explanation: M = 1000, CD = 400, L = 50, XX = 20, VI = 6. Total 1476.
+    hints:
+      - Map each symbol to its value.
+      - A symbol is subtracted exactly when the symbol right after it has a larger value.
+    explanation: |
+      **Match the two-letter pairs first - O(n) time, O(1) space.** Walk through
+      the string; if the next two characters form one of the six special pairs,
+      add that pair's value and skip two positions, otherwise add the single
+      symbol's value.
+
+      **Compare with the next symbol - O(n) time, O(1) space.** For each index
+      `i`, if `value(s[i]) < value(s[i+1])` subtract `value(s[i])`, otherwise add
+      it. This handles all six pairs with one rule and no special cases. Scanning
+      right to left and subtracting whenever the current value is smaller than
+      the previous one is an equivalent formulation.
+    starterCode:
+      python: |
+        import sys
+
+
+        def roman_to_int(s: str) -> int:
+            # Return the integer value of the Roman numeral s.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(roman_to_int(s))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def roman_to_int(s: str) -> int:
+            values = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
+            total = 0
+            for i, ch in enumerate(s):
+                value = values[ch]
+                if i + 1 < len(s) and value < values[s[i + 1]]:
+                    total -= value
+                else:
+                    total += value
+            return total
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(roman_to_int(s))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          XLII
+        expectedOutput: |
+          42
+        hidden: false
+      - input: |
+          MCDLXXVI
+        expectedOutput: |
+          1476
+        hidden: false
+      - input: |
+          I
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          IX
+        expectedOutput: |
+          9
+        hidden: true
+      - input: |
+          CDXLIV
+        expectedOutput: |
+          444
+        hidden: true
+      - input: |
+          DCCCXC
+        expectedOutput: |
+          890
+        hidden: true
+      - input: |
+          MMXXIV
+        expectedOutput: |
+          2024
+        hidden: true
+      - input: |
+          MMMCMXCIX
+        expectedOutput: |
+          3999
+        hidden: true
+      - input: |
+          MMMDCCCLXXXVIII
+        expectedOutput: |
+          3888
+        hidden: true
+
+  - slug: string-to-integer-atoi
+    title: String to Integer (atoi)
+    difficulty: Medium
+    topic: Strings
+    subtopic: Medium Problems
+    tags: [string, parsing]
+    sourceUrl: https://leetcode.com/problems/string-to-integer-atoi/
+    statement: |
+      Implement a function that reads a 32-bit signed integer from the start of a
+      line of text, following these steps in order:
+
+      1. **Skip spaces.** Ignore any leading space characters.
+      2. **Sign.** If the next character is `+` or `-`, consume it; it decides
+         the sign. At most one sign character is read. Without a sign the number
+         is positive.
+      3. **Digits.** Read consecutive digits until a non-digit character or the
+         end of the line. Leading zeros are allowed. Everything after the digits
+         is ignored. If no digit was read, the result is `0`.
+      4. **Clamp.** If the value lies outside `[-2^31, 2^31 - 1]`, replace it by
+         the nearest bound: `-2147483648` or `2147483647`.
+    inputFormat: |
+      - Line 1: the text `s` (it may be empty and may contain spaces).
+    outputFormat: |
+      Print the parsed integer.
+    constraints:
+      - "0 <= |s| <= 200"
+      - "`s` consists of English letters, digits, spaces, `+`, `-` and `.`."
+    examples:
+      - input: "   -0032abc\n"
+        output: |
+          -32
+        explanation: "Spaces are skipped, '-' makes the number negative, the digits 0032 give 32, and parsing stops at 'a'."
+      - input: |
+          words 987
+        output: |
+          0
+        explanation: The first non-space character 'w' is neither a sign nor a digit, so no digits are read.
+    hints:
+      - Use an index that moves forward through the string, handling each step of the rules in turn.
+      - "Build the value with `value = value * 10 + digit`."
+      - In languages with fixed-width integers you must detect overflow before it happens; you can stop reading as soon as the value exceeds the limit.
+    explanation: |
+      **Direct simulation - O(n) time, O(1) space.** Keep an index `i`.
+      Advance it past spaces. If `s[i]` is `+` or `-`, record the sign and
+      advance once. Then, while `s[i]` is a digit, update
+      `value = value * 10 + digit`. Finally apply the sign and clamp to the
+      32-bit range.
+
+      **Early overflow check.** In languages with 32-bit or 64-bit integers,
+      accumulating a 200-digit number overflows. Before each update check whether
+      `value > (LIMIT - digit) // 10`; if so, return the clamped bound
+      immediately. Stopping as soon as the value passes `2^31` also keeps the
+      Python version fast and bounded.
+
+      A regular expression such as `^\s*([+-]?\d+)` can express steps 1-3, but
+      the manual scan is clearer about the edge cases (`+-12`, an empty line, a
+      lone sign).
+    starterCode:
+      python: |
+        import sys
+
+
+        def my_atoi(s: str) -> int:
+            # Parse a clamped 32-bit signed integer from the start of s.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().rstrip("\r\n")
+            print(my_atoi(s))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def my_atoi(s: str) -> int:
+            int_max = 2**31 - 1
+            int_min = -(2**31)
+            i, n = 0, len(s)
+            while i < n and s[i] == " ":
+                i += 1
+            sign = 1
+            if i < n and s[i] in "+-":
+                if s[i] == "-":
+                    sign = -1
+                i += 1
+            value = 0
+            while i < n and "0" <= s[i] <= "9":
+                value = value * 10 + (ord(s[i]) - 48)
+                if value > int_max:
+                    return int_max if sign == 1 else int_min
+                i += 1
+            return sign * value
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().rstrip("\r\n")
+            print(my_atoi(s))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: "   -0032abc\n"
+        expectedOutput: |
+          -32
+        hidden: false
+      - input: |
+          words 987
+        expectedOutput: |
+          0
+        hidden: false
+      - input: |
+          +1
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          +-12
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          2147483648
+        expectedOutput: |
+          2147483647
+        hidden: true
+      - input: |
+          -91283472332
+        expectedOutput: |
+          -2147483648
+        hidden: true
+      - input: |
+          -2147483648
+        expectedOutput: |
+          -2147483648
+        hidden: true
+      - input: "    \n"
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          00000000000123456 7
+        expectedOutput: |
+          123456
+        hidden: true
+      - input: "  3.14159\n"
+        expectedOutput: |
+          3
+        hidden: true
+
+  - slug: longest-palindromic-substring
+    title: Longest Palindromic Substring
+    difficulty: Medium
+    topic: Strings
+    subtopic: Medium Problems
+    tags: [string, two-pointers, dynamic-programming]
+    sourceUrl: ""
+    statement: |
+      A **palindrome** reads the same forwards and backwards. Given a string `s`,
+      find its longest contiguous substring that is a palindrome.
+
+      If several palindromic substrings share the maximum length, print the
+      **leftmost** one (the one with the smallest starting index).
+    inputFormat: |
+      - Line 1: the string `s`.
+    outputFormat: |
+      Print the longest palindromic substring (leftmost on ties).
+    constraints:
+      - "1 <= |s| <= 1000"
+      - "`s` consists of lowercase English letters and digits."
+    examples:
+      - input: |
+          banana
+        output: |
+          anana
+        explanation: '"anana" (indices 1..5) is a palindrome of length 5, and "banana" itself is not a palindrome.'
+      - input: |
+          abcd
+        output: |
+          a
+        explanation: No two adjacent or mirrored letters match, so the longest palindromes have length 1. The leftmost is "a".
+    hints:
+      - "Brute force: check every substring - O(n^3). Where is the repeated work?"
+      - Every palindrome has a center, either a character (odd length) or a gap between two characters (even length).
+      - "Expand outward from each of the `2n - 1` centers while the characters match. Only replace the best answer when you find something strictly longer, scanning centers left to right."
+    explanation: |
+      **Brute force - O(n^3) time, O(1) space.** Enumerate all O(n^2) substrings
+      and test each for being a palindrome in O(n). Keep the first one of maximum
+      length.
+
+      **Dynamic programming - O(n^2) time, O(n^2) space.** `pal[i][j]` is true
+      when `s[i] == s[j]` and either `j - i < 2` or `pal[i+1][j-1]` is true. Fill
+      the table by increasing length and track the longest range, preferring the
+      smaller start on ties.
+
+      **Expand around centers - O(n^2) time, O(1) space.** For each center
+      (character `i`, then gap `i, i+1`), expand while the ends match to get the
+      longest palindrome at that center. Centers are visited from left to right,
+      and a leftmost maximum-length palindrome has an earlier center than any
+      other of the same length, so updating only on a strictly longer result
+      yields the leftmost answer.
+
+      **Manacher's algorithm - O(n) time, O(n) space** reuses mirror information
+      between centers; it is optional for these limits.
+    starterCode:
+      python: |
+        import sys
+
+
+        def longest_palindrome(s: str) -> str:
+            # Return the longest palindromic substring of s (leftmost on ties).
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(longest_palindrome(s))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def longest_palindrome(s: str) -> str:
+            n = len(s)
+            best_start, best_len = 0, 1 if n else 0
+
+            def expand(left: int, right: int) -> int:
+                while left >= 0 and right < n and s[left] == s[right]:
+                    left -= 1
+                    right += 1
+                return right - left - 1
+
+            for i in range(n):
+                for length in (expand(i, i), expand(i, i + 1)):
+                    if length > best_len:
+                        best_len = length
+                        best_start = i - (length - 1) // 2
+            return s[best_start:best_start + best_len]
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(longest_palindrome(s))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          banana
+        expectedOutput: |
+          anana
+        hidden: false
+      - input: |
+          abcd
+        expectedOutput: |
+          a
+        hidden: false
+      - input: |
+          z
+        expectedOutput: |
+          z
+        hidden: true
+      - input: |
+          abccbaxyzzyx
+        expectedOutput: |
+          abccba
+        hidden: true
+      - input: |
+          noonracecar
+        expectedOutput: |
+          racecar
+        hidden: true
+      - input: |
+          x1221y
+        expectedOutput: |
+          1221
+        hidden: true
+      - input: |
+          aacbacbacaaacaababbabbabccbacbcabaaabcaacbcbbaccbcbbacbabaaacbaaacbabcaabcaccaaacbcccbbbbbcabbabcaacbbcabacaaacacbbaabbbcbaabaaacaccbbaacbaaacaabcbabbcaccccaababbcaacaaaabaccbacbcbcbbcbabbacbaacccaababbbaacaccacabbbabaabaaccacbbccccbbbacabaaababcacabbcabccbaccbaacabbcacabaabcababcbbcaaaaaabbcabaccbcxyzzyxabcabaaaabaacccbbbbbcccbaabbabbcacbbacacbaacbaaccbaccabccbccbbbacabacabacaabcbaaccababaaaccbaccabcabbabbcaacacbbccbbcbcbbbabbaaabcbabccbaaccbaacaabacbcccabccccbabbabababcbabacbbabcacccbbbcacccaaaacabcaccccbabbcbcccbaccbcbaaaabbabaabbcaccabbccbcccbcbccacabcccbcacccbaaabaccaccbbbcccbabababcaaabbabcbcaqwertytrewqaaabbbbbcbcccbccaaabccbcacabcabaacaaccacbbccbaccbccbcabbaaaaaaccacabcabbbcbaaccbabaccabcaaabcabbbcaccbacaaabaacaccaabbaababbacacaaabcbaccccbccacacbcbbabcababaabccbbacccccbbaacccbccbcbabcacccbababababcbcbccbcabbcbaababacaaacaaabbcaaaaacabacbabcccaaccbbaabcbbbccabccaabacbcbbbccbbcaacabaaacabcbaaaccbcc
+        expectedOutput: |
+          aqwertytrewqa
+        hidden: true
+      - input: |
+          bbbabaaaaaabaababababbbbbbbaaababaababbbaabbaaabababbbbaaaabbaababaabbbbabababaaabaaaabbbababbbbbbabbabaaaabbbbaabbaaabaaaaaabaaababbbabaaababbbbabaababbbbbaaabbbabababaababaabaaaaaaaaabaabababbabababaababbbbbaaabbaaabaaabaaaabaabbabbaaaababbbbbbbabaaaaababbabaabbbbaaaaaaaaabbbaababbbbbbaabaaabbbabbbaabaaabbbbbababbbbabaaabaabbababaaabaaababaaabababbbbabaaabaaabbababbaaaabbbaaaababbbbbaabbabbbaabaaaaabbabaaaabbabbbbbbabaabbaaabbbbbababbabaaababbaabaababaabaaaababbbabaabbabbbabaababbbbbabbbaaababbbabbaabbaaabbbbaaaaaabbaabaabaaabaaaaabbbbbbabaaaabbbbabbaabbaabbabbabbbbbaaaaaabbaabbaabbaaaababbbbaaabaabbbbabbbaabbaaaaabaabbbbbabababaabaaaabbbbababbbbababbbbaababaaabaaabaabbbabbbbbbabaaabaababaaaaaaababaaaabaaabbaaabaabbababaaaabbbbaabbababbbbabbbbababbabaababbababbabbaabbbababaaaabaaabaabbabaabbaabbaaabbbbababababbbbbbabbabbaaaaaabbbabbbabbabbbabbabaababaaabbabaabbbbabbaaaaabbbbbaaabaabbaababaababaabbbaaaaababbaababbabbbaabbababbabbaabbbbaaaaaaabaabbaaabbbabbbbaabbbbabaaaaaaabaabaaababba
+        expectedOutput: |
+          ababaabaaaaaaaaabaababa
+        hidden: true
+      - input: |
+          aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        expectedOutput: |
+          aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        hidden: true
+  - sheetId: prob-5-2-5-count-number-of-substring
+    slug: count-number-of-substrings
+    title: Count Number of Substrings
+    difficulty: Easy
+    topic: Strings
+    subtopic: Medium String Problems
+    tags: [string, sliding window, hashing]
+    sourceUrl: ""
+    statement: |
+      A **substring** is a contiguous stretch of a string. The string `abc` has six
+      non-empty substrings: `a`, `b`, `c`, `ab`, `bc` and `abc`. Two substrings that
+      happen to be equal but start at different positions are counted separately.
+
+      You are given a string `s` of lowercase English letters and an integer `k`.
+      Count the substrings of `s` that contain **exactly `k` distinct** characters.
+
+      A string of length `n` has `n(n+1)/2` substrings, which is far too many to
+      inspect one by one for the given limit, so the counting has to be done with a
+      sliding window.
+    inputFormat: |
+      - Line 1: the string `s`.
+      - Line 2: a single integer `k`.
+    outputFormat: |
+      Print one integer: the number of substrings of `s` with exactly `k` distinct
+      characters.
+    constraints:
+      - "1 <= |s| <= 10^4"
+      - "1 <= k <= 26"
+      - "`s` consists of lowercase English letters only."
+    examples:
+      - input: |
+          aabc
+          2
+        output: |
+          3
+        explanation: "Three substrings use exactly two distinct letters: aab (positions 1-3), ab (positions 2-3) and bc (positions 3-4). The substrings a, aa, b and c use one letter, and abc and aabc use three."
+      - input: |
+          aaaa
+          1
+        output: |
+          10
+        explanation: "Every one of the 4 x 5 / 2 = 10 substrings consists only of the letter a, so all of them have exactly one distinct character."
+    hints:
+      - "Counting substrings with *at most* k distinct characters is much easier than counting those with exactly k: a window can always be shrunk from the left until the condition holds again."
+      - "exactly(k) = atMost(k) - atMost(k - 1), because every substring with at most k distinct characters either has exactly k or has at most k - 1."
+      - "For atMost(limit): extend the right end one character at a time, shrink from the left while the window holds more than `limit` distinct characters, and add (right - left + 1) - the number of windows that end at `right` - to the answer."
+    explanation: |
+      **Brute force - O(n^2) time (O(n^2 x 26) if written carelessly), O(1) space.**
+      Fix the left end and extend the right end, maintaining a 26-slot frequency table
+      and a running count of distinct letters; add one to the answer whenever that
+      count equals `k`, and stop early once it exceeds `k`. Correct, but quadratic.
+
+      **Sliding window - O(n) time, O(1) space.** The trick is to solve an easier
+      problem twice. Define `atMost(limit)` as the number of substrings that contain
+      **at most** `limit` distinct characters, and observe:
+
+      ```
+      exactly(k) = atMost(k) - atMost(k - 1)
+      ```
+
+      `atMost` is easy with a window because the property is *monotone*: if a window
+      has at most `limit` distinct characters, so does every window inside it. Move
+      `right` forward one step at a time, adding `s[right]` to the frequency table;
+      while the window holds more than `limit` distinct characters, drop `s[left]` and
+      move `left` forward. After the shrinking, `[left..right]` is the longest valid
+      window ending at `right`, and every one of its suffixes
+      (`[left..right]`, `[left+1..right]`, ..., `[right..right]`) is valid too, so add
+      `right - left + 1` to the total.
+
+      Each index enters and leaves the window at most once, so every call to `atMost`
+      is O(n) and the whole answer is O(n) with an O(26) = O(1) table. Use 64-bit
+      arithmetic in languages that need it: for `n = 10^4` the count can reach about
+      `5 x 10^7`, and for larger limits it easily exceeds a 32-bit integer.
+    starterCode:
+      python: |
+        import sys
+
+
+        def count_substrings_with_k_distinct(s: str, k: int) -> int:
+            # Count the substrings of s that hold exactly k distinct characters.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            s = data[0]
+            k = int(data[1])
+            print(count_substrings_with_k_distinct(s, k))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def count_substrings_with_k_distinct(s: str, k: int) -> int:
+            def at_most(limit: int) -> int:
+                if limit <= 0:
+                    return 0
+                counts = [0] * 26
+                distinct = 0
+                left = 0
+                total = 0
+                for right in range(len(s)):
+                    index = ord(s[right]) - 97
+                    if counts[index] == 0:
+                        distinct += 1
+                    counts[index] += 1
+                    while distinct > limit:
+                        out = ord(s[left]) - 97
+                        counts[out] -= 1
+                        if counts[out] == 0:
+                            distinct -= 1
+                        left += 1
+                    total += right - left + 1
+                return total
+
+            return at_most(k) - at_most(k - 1)
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            s = data[0]
+            k = int(data[1])
+            print(count_substrings_with_k_distinct(s, k))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          aabc
+          2
+        expectedOutput: |
+          3
+        hidden: false
+      - input: |
+          aaaa
+          1
+        expectedOutput: |
+          10
+        hidden: false
+      - input: |
+          a
+          1
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          a
+          2
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          abcdefghijklmnopqrstuvwxyz
+          26
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          abababab
+          2
+        expectedOutput: |
+          28
+        hidden: true
+      - input: |
+          zyxwvutsrqponmlkjihgfedcba
+          3
+        expectedOutput: |
+          24
+        hidden: true
+      - input: |
+          adadbabaebbbaabbededbeaaadcbbcdcebbbdeeaabcbbbdaaedbbdcbcbdacccceddcbacbeeecabbaecadccbadbcddaeacaabbcbbdadeeccedeaadbedacddcbaadecdbabaeeaebbcbedeeeedbebedcdcbcaecbcdebaadbbbdcbdceebcaadeccebdcbdaddbbbccccababedddcbdaadbcdaacdcccbecdbbebecaebacedcdeccddbebdaebbadccaeacbddbaccadbedebaadddcddacbbadcaedcedbdbadadddbecdbecadabecbbddbcccdcceddcabbcbaaccddbaeaceddcbddbaceccceacaebeeeebcbecdedececaebbbdebddbbdebecddbdcadcbbdcbbadedcbaecbaaaacebbacddceacdaaadbecbacaebdcacbbedceddbcaebbeabeacbdbcdbcdcbcccdcdbddeeaadeceeddaeeeddeeeaabeadcdcadbbdebdbdbbeeeccaccaaddadeadaeddcbaccbecccbabceaabdacedbcaaedeaaaebbcadeaaaabcdccaceabdedbdbeeaaeceebebbadbeeeaedecacdceceedecadeabcabbadbbcebcaccddcecbcbadeccebbedaaeccececccedeeaeebdecaecccdadaaaeecbddddecbaeabeabdadeedcebaebdcdaeccbaceacdeebecebcadbdebeeeecbdadadeccbcedabcabdaacdaccdbcabbaddbcccdbcdcbcedbbcceecceceaccbaebbcedadaabacdaddbddeccedcbbcebbebedadedceeaceaddacecdcbbcdaeecadaeecebbbdbdbdbbaadebbaeddbdbceecaeccbadeaededdcdebaebceebaddabbdeabbdadaceaeaceadbedaebdebedecdeaaadecccadaecabecedaacdccbccceadaecddddabbeeabebdcaddabcddeccbdbbaccdeacacadedebcebaabeaacddabbdaddaabadbabbcbbcdcdedbdcecaeddaabceddcbacabccbbdacddcccaaeabadbabedcbbbddebccbacdadaecebbebbaacebcbabddabbddabbcaaadcdacebbaaeeacedabebdeedbdcccedbddddbebbdcbdcaeaeeabdcacdddccbbdeeeccaadbcbcebbdaddaeaadddcdeaeaaeedbabecabebddaaaaacbdeaddaeacccbccdabbaaeedccbdbabebebdadbeaccddbccdceaeaccdbeabddbdbedebeedbbcdacdeeaeabdecbebcceccddbbcacddaaecbbeddebccacceddadeeeeacddcddacdabdccaeaabaeabaadeabcbcbabecadbbeccecdddddbcccbbdbacbedcebceceacdebeaeddeaeecaebaadddbedcbddecdbebaedaceaaaecaebbadccdedcedbeadcbcabcccabdbadeeaabcbebbdcbededddccbdeeccacabbebbedcdadeabacbabbdadbaaacbeceaeacedcbaebcacdecddbacbaececeeaceeddedacacbeceeaabceaebedcedcdabcbaccbbdcaeacceccbabbaeadebaeacdbecadadebbccacbeedeacddaaceebdbaeddbdaabeedebabadbbbababdaedcbecbedacdadbdbedacdebbdcaeccaccadceaeabeecdebccadbdceddccbbcdccededbcecdbdabcdeecdbcbdabceacdcacaacabedabcaaacaeddabddeacedbaeeeecabcebbbbbacaebacbe
+          3
+        expectedOutput: |
+          5169
+        hidden: true
+      - input: |
+          adadbabaebbbaabbededbeaaadcbbcdcebbbdeeaabcbbbdaaedbbdcbcbdacccceddcbacbeeecabbaecadccbadbcddaeacaabbcbbdadeeccedeaadbedacddcbaadecdbabaeeaebbcbedeeeedbebedcdcbcaecbcdebaadbbbdcbdceebcaadeccebdcbdaddbbbccccababedddcbdaadbcdaacdcccbecdbbebecaebacedcdeccddbebdaebbadccaeacbddbaccadbedebaadddcddacbbadcaedcedbdbadadddbecdbecadabecbbddbcccdcceddcabbcbaaccddbaeaceddcbddbaceccceacaebeeeebcbecdedececaebbbdebddbbdebecddbdcadcbbdcbbadedcbaecbaaaacebbacddceacdaaadbecbacaebdcacbbedceddbcaebbeabeacbdbcdbcdcbcccdcdbddeeaadeceeddaeeeddeeeaabeadcdcadbbdebdbdbbeeeccaccaaddadeadaeddcbaccbecccbabceaabdacedbcaaedeaaaebbcadeaaaabcdccaceabdedbdbeeaaeceebebbadbeeeaedecacdceceedecadeabcabbadbbcebcaccddcecbcbadeccebbedaaeccececccedeeaeebdecaecccdadaaaeecbddddecbaeabeabdadeedcebaebdcdaeccbaceacdeebecebcadbdebeeeecbdadadeccbcedabcabdaacdaccdbcabbaddbcccdbcdcbcedbbcceecceceaccbaebbcedadaabacdaddbddeccedcbbcebbebedadedceeaceaddacecdcbbcdaeecadaeecebbbdbdbdbbaadebbaeddbdbceecaeccbadeaededdcdebaebceebaddabbdeabbdadaceaeaceadbedaebdebedecdeaaadecccadaecabecedaacdccbccceadaecddddabbeeabebdcaddabcddeccbdbbaccdeacacadedebcebaabeaacddabbdaddaabadbabbcbbcdcdedbdcecaeddaabceddcbacabccbbdacddcccaaeabadbabedcbbbddebccbacdadaecebbebbaacebcbabddabbddabbcaaadcdacebbaaeeacedabebdeedbdcccedbddddbebbdcbdcaeaeeabdcacdddccbbdeeeccaadbcbcebbdaddaeaadddcdeaeaaeedbabecabebddaaaaacbdeaddaeacccbccdabbaaeedccbdbabebebdadbeaccddbccdceaeaccdbeabddbdbedebeedbbcdacdeeaeabdecbebcceccddbbcacddaaecbbeddebccacceddadeeeeacddcddacdabdccaeaabaeabaadeabcbcbabecadbbeccecdddddbcccbbdbacbedcebceceacdebeaeddeaeecaebaadddbedcbddecdbebaedaceaaaecaebbadccdedcedbeadcbcabcccabdbadeeaabcbebbdcbededddccbdeeccacabbebbedcdadeabacbabbdadbaaacbeceaeacedcbaebcacdecddbacbaececeeaceeddedacacbeceeaabceaebedcedcdabcbaccbbdcaeacceccbabbaeadebaeacdbecadadebbccacbeedeacddaaceebdbaeddbdaabeedebabadbbbababdaedcbecbedacdadbdbedacdebbdcaeccaccadceaeabeecdebccadbdceddccbbcdccededbcecdbdabcdeecdbcbdabceacdcacaacabedabcaaacaeddabddeacedbaeeeecabcebbbbbacaebacbe
+          5
+        expectedOutput: |
+          1980066
+        hidden: true
+  - sheetId: prob-5-2-7-sum-of-beauty-of-all-subs
+    slug: sum-of-beauty-of-all-substrings
+    title: Sum of Beauty of All Substrings
+    difficulty: Medium
+    topic: Strings
+    subtopic: Medium String Problems
+    tags: [string, hashing, counting]
+    sourceUrl: "https://leetcode.com/problems/sum-of-beauty-of-all-substrings/"
+    statement: |
+      The **beauty** of a string is the difference between the largest and the
+      smallest number of times any of its characters occurs. Characters that do not
+      occur in the string are ignored.
+
+      For example the beauty of `aabcb` is `1`: the letter `a` occurs twice, `b`
+      occurs twice and `c` occurs once, so the largest count is `2` and the smallest
+      is `1`. The beauty of `abc` is `0`, because every letter occurs exactly once.
+
+      Given a string `s` of lowercase English letters, compute the sum of the beauty
+      of **all** of its substrings (each occurrence counted separately).
+    inputFormat: |
+      - Line 1: the string `s`.
+    outputFormat: |
+      Print one integer: the sum of the beauty over all substrings of `s`.
+    constraints:
+      - "1 <= |s| <= 500"
+      - "`s` consists of lowercase English letters only."
+    examples:
+      - input: |
+          aabcb
+        output: |
+          5
+        explanation: "Five substrings have beauty 1 - aab, aabc, aabcb, abcb and bcb - and every other substring has all its letters appearing equally often, so the sum is 5."
+      - input: |
+          abaa
+        output: |
+          4
+        explanation: "aba has beauty 1 (a twice, b once), baa has beauty 1, and abaa has beauty 2 (a three times, b once). The total is 4."
+    hints:
+      - "There are about n^2 / 2 substrings, so an answer that rebuilds a frequency table for each of them from scratch does O(n^3) work."
+      - "Fix the left end of the substring and extend the right end one character at a time: the frequency table of the previous substring only needs one increment to become the table of the next one."
+      - "With only 26 possible letters, the largest and smallest non-zero counts can be re-derived in 26 steps after each increment - remember to skip letters whose count is still 0 when looking for the minimum."
+    explanation: |
+      **Brute force - O(n^3) time, O(1) space.** Enumerate every substring, build its
+      frequency table from scratch and take `max - min` over the letters present.
+      Building the table dominates: about `n^2 / 2` substrings of average length `n/3`.
+
+      **Growing window - O(n^2 x 26) time, O(1) space.** Fix the left end `i` and
+      start with an empty table of 26 counters. Then extend `j` from `i` to `n - 1`,
+      adding one occurrence of `s[j]` at each step - so the table for `s[i..j]` is
+      built incrementally in O(1) per substring instead of O(length). After each
+      increment, sweep the 26 counters once: the maximum is the largest counter, the
+      minimum is the smallest counter **that is not zero** (a letter absent from the
+      substring must not be treated as a count of 0). Add `max - min` to the answer.
+
+      That is `n^2 / 2` substrings with a 26-step sweep each, which for `n = 500` is
+      around 3 million elementary operations - comfortably fast. The extra space is
+      one array of 26 integers, i.e. O(1).
+
+      Two details are worth care. First, the minimum must ignore absent letters,
+      otherwise every substring that does not use all 26 letters gets beauty
+      `max - 0`. Second, the running total can grow large - roughly `n^3` in the worst
+      case - so a 64-bit accumulator is needed outside Python.
+
+      There is no obvious way below O(n^2): the answer sums a quantity over every
+      substring, and neighbouring substrings can have unrelated beauties, so all of
+      them have to be visited.
+    starterCode:
+      python: |
+        import sys
+
+
+        def sum_of_beauty(s: str) -> int:
+            # Sum max(freq) - min(non-zero freq) over every substring of s.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(sum_of_beauty(s))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def sum_of_beauty(s: str) -> int:
+            n = len(s)
+            total = 0
+            for i in range(n):
+                counts = [0] * 26
+                for j in range(i, n):
+                    counts[ord(s[j]) - 97] += 1
+                    highest = 0
+                    lowest = n + 1
+                    for value in counts:
+                        if value > 0:
+                            if value > highest:
+                                highest = value
+                            if value < lowest:
+                                lowest = value
+                    total += highest - lowest
+            return total
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(sum_of_beauty(s))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          aabcb
+        expectedOutput: |
+          5
+        hidden: false
+      - input: |
+          abaa
+        expectedOutput: |
+          4
+        hidden: false
+      - input: |
+          a
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          ab
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          aaaaa
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          abcdefghijklmnopqrstuvwxyz
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          aabaababbbabbbbaaabaaaaabaaaababaabbbbaaabbaaaaaaaaaaaabbbbaabbaabaabbaabbbbabaabaababbbaaababbaabaabbbabbabaaabbaaababbbbabbbbbbbbaabbbaaabaabaaaabbabbabaabababaababbabbabababbbbbbbbaaabbabbbaaababaa
+        expectedOutput: |
+          116045
+        hidden: true
+      - input: |
+          ggaaacgbfgfgccebeaefbdfdgfgecedecagacdcddebebbbabcbbeecefebdgdfegcgeccgdbgdffdfebdcdeeggcfddcefefddfbcgfgbecgdccgfgeeeefeedcfbdecfeaggcfagbfaaefacebfagebgcbgbadfgaaccbbfaaaaaafaccbgbfbefadeagbbaacefffaccdacdegefacgdgefbd
+        expectedOutput: |
+          226111
+        hidden: true
+  - sheetId: prob-5-2-8-reverse-every-word-in-a-s
+    slug: reverse-every-word-in-a-string
+    title: Reverse every word in a string
+    difficulty: Medium
+    topic: Strings
+    subtopic: Medium String Problems
+    tags: [string, two pointers, parsing]
+    sourceUrl: "https://leetcode.com/problems/reverse-words-in-a-string/"
+    statement: |
+      You are given a line of text. A **word** is a maximal run of non-space
+      characters; words are separated by one or more spaces, and the line may also
+      begin or end with spaces.
+
+      Print the words in the opposite order, separated by exactly one space, with no
+      space at the start or at the end. The words themselves are not altered - only
+      their order is.
+    inputFormat: |
+      - Line 1: the string `s`. It may contain leading spaces, trailing spaces and
+        several spaces between two words.
+    outputFormat: |
+      Print the words of `s` in reverse order, joined by single spaces.
+    constraints:
+      - "1 <= |s| <= 10^4"
+      - "`s` consists of English letters, digits and spaces only."
+      - "`s` contains at least one word."
+    examples:
+      - input: |
+          the sky is blue
+        output: |
+          blue is sky the
+        explanation: "The four words are read back to front. Nothing else about them changes."
+      - input: |2
+             a good   example  
+        output: |
+          example good a
+        explanation: "The words are a, good and example. The leading spaces, the trailing spaces and the run of three spaces all disappear, and the output is joined with single spaces."
+    hints:
+      - "Splitting on a single space is not enough: consecutive spaces would produce empty pieces that must be discarded."
+      - "Scan the string from right to left. When you meet a non-space character, you are at the end of a word - walk left to its start, then copy that slice to the answer."
+      - "Collect the words in a list and join them once at the end; building the answer with repeated string concatenation is quadratic."
+    explanation: |
+      **Split, reverse, join - O(n) time, O(n) space.** Most languages have a split
+      that treats any run of whitespace as one separator and drops empty pieces
+      (Python's `s.split()` with no argument, for instance). Reverse the resulting
+      list and join it with single spaces. This is the practical answer.
+
+      **Right-to-left scan - O(n) time, O(n) space.** The version an interviewer
+      usually wants, because it shows the parsing explicitly. Start at index `n - 1`:
+
+      - skip spaces while moving left;
+      - if the scan is finished, stop;
+      - remember `end = i`, then move left while the character is not a space;
+      - the word is `s[i+1 .. end]`; append it to the answer list.
+
+      Every index is looked at once, so the pass is linear. Because the scan goes
+      backwards, the words are collected in reverse order already and a single join
+      finishes the job. The O(n) space is the output itself - unavoidable for
+      immutable strings.
+
+      **Reverse twice, in place - O(n) time, O(1) extra space.** In a language with a
+      mutable character buffer, reverse the entire buffer, then reverse each word
+      back, then squeeze the runs of spaces. This is the classic constant-space
+      solution, but it is not available in Python, where strings cannot be modified.
+
+      The edge cases are what actually break submissions here: leading spaces,
+      trailing spaces, and several spaces between two words. All three must collapse
+      to a single separator, and the output must have no leading or trailing space.
+    starterCode:
+      python: |
+        import sys
+
+
+        def reverse_words(s: str) -> str:
+            # Return the words of s in reverse order, separated by single spaces.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().rstrip("\n")
+            print(reverse_words(s))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def reverse_words(s: str) -> str:
+            words: List[str] = []
+            i = len(s) - 1
+            while i >= 0:
+                while i >= 0 and s[i] == " ":
+                    i -= 1
+                if i < 0:
+                    break
+                end = i
+                while i >= 0 and s[i] != " ":
+                    i -= 1
+                words.append(s[i + 1:end + 1])
+            return " ".join(words)
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().rstrip("\n")
+            print(reverse_words(s))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          the sky is blue
+        expectedOutput: |
+          blue is sky the
+        hidden: false
+      - input: |2
+             a good   example  
+        expectedOutput: |
+          example good a
+        hidden: false
+      - input: |
+          word
+        expectedOutput: |
+          word
+        hidden: true
+      - input: |2
+            hello  
+        expectedOutput: |
+          hello
+        hidden: true
+      - input: |
+          a b c d e f g
+        expectedOutput: |
+          g f e d c b a
+        hidden: true
+      - input: |
+          dsa 2024 forge 7
+        expectedOutput: |
+          7 forge 2024 dsa
+        hidden: true
+      - input: |2
+             oujxeo    lmpy    ruzf    i    wy    bsdtgq    sucvs    bbrxftwhs    eyszzpazh    ymt    vdfqkncse    rrnqgzqsu    sarnsp    oe    dgjx    vstkhztml    kopjspeaz    nzfgxd    j    fa    px    slwle    rkal    atdu    qu    ftthwmve    puwlctpka    qqgh    fpzlzlft    su    q    nmwrj    y    tttzc    phge    pbvaqfy    phpiaag    ecisj    wrirg    mlvjkm     
+        expectedOutput: |
+          mlvjkm wrirg ecisj phpiaag pbvaqfy phge tttzc y nmwrj q su fpzlzlft qqgh puwlctpka ftthwmve qu atdu rkal slwle px fa j nzfgxd kopjspeaz vstkhztml dgjx oe sarnsp rrnqgzqsu vdfqkncse ymt eyszzpazh bbrxftwhs sucvs bsdtgq wy i ruzf lmpy oujxeo
+        hidden: true
+      - input: |
+          oujxeo  lmpy  ruzf  i  wy  bsdtgq  sucvs  bbrxftwhs  eyszzpazh  ymt  vdfqkncse  rrnqgzqsu  sarnsp  oe  dgjx  vstkhztml  kopjspeaz  nzfgxd  j  fa  px  slwle  rkal  atdu  qu  ftthwmve  puwlctpka  qqgh  fpzlzlft  su  q  nmwrj  y  tttzc  phge  pbvaqfy  phpiaag  ecisj  wrirg  mlvjkm  cxt  uxvquk  gcyb  tc  wfriiuru  jrwljgnm  fevheekc  fjij  e  nmxaq  zey  kbbct  e  fhfclxyhx  cg  wtaxy  jskk  rac  wdrrmt  pdmj  qpjso  kvyqmnub  bvmplavrk  pustom  zt  tm  zw  rzcuuu  kzmafh  pnvjmcw  pufxh  lyvbj  evwg  gzjslv  jj  g  dn  kytguugy  zhk  ohbvhmbi  sfgkqkvm  bufdtjc  ubfstdoed  bcst  thlzc  gqrcsyu  udcqre  nei  pqyb  m  ondjd  hefc  rnmait  odbxzrd  o  bnra  z  dwwryhktm  fyqwy  waecawtr  kcfsquh  kgfwi  vx  bwksql  po  aidsfkvd  pmyjt  ich  dl  lajng  mfcitstv  kaca  eon  hcfr  il  xak  lm  h  awlbw  wm  uhd  ivj  vszhu  auzpc  svv  fxeaa  ubt  hreofqq  cb  whcykb  qmafthxdr  hxhav  llbs  hnezx  aikfdw  ainp  pdzlwktda  qfdy  pu  ar  seh  rpihm  d  fuauv  eolnbcl  jnsgkxq  wkgenwhn  d  bz  gef  qqajg  mg  jhwecu  rjnwr  uieeczr  ldib  dbnusou  xzthprrpv  zuhi  fihn
+        expectedOutput: |
+          fihn zuhi xzthprrpv dbnusou ldib uieeczr rjnwr jhwecu mg qqajg gef bz d wkgenwhn jnsgkxq eolnbcl fuauv d rpihm seh ar pu qfdy pdzlwktda ainp aikfdw hnezx llbs hxhav qmafthxdr whcykb cb hreofqq ubt fxeaa svv auzpc vszhu ivj uhd wm awlbw h lm xak il hcfr eon kaca mfcitstv lajng dl ich pmyjt aidsfkvd po bwksql vx kgfwi kcfsquh waecawtr fyqwy dwwryhktm z bnra o odbxzrd rnmait hefc ondjd m pqyb nei udcqre gqrcsyu thlzc bcst ubfstdoed bufdtjc sfgkqkvm ohbvhmbi zhk kytguugy dn g jj gzjslv evwg lyvbj pufxh pnvjmcw kzmafh rzcuuu zw tm zt pustom bvmplavrk kvyqmnub qpjso pdmj wdrrmt rac jskk wtaxy cg fhfclxyhx e kbbct zey nmxaq e fjij fevheekc jrwljgnm wfriiuru tc gcyb uxvquk cxt mlvjkm wrirg ecisj phpiaag pbvaqfy phge tttzc y nmwrj q su fpzlzlft qqgh puwlctpka ftthwmve qu atdu rkal slwle px fa j nzfgxd kopjspeaz vstkhztml dgjx oe sarnsp rrnqgzqsu vdfqkncse ymt eyszzpazh bbrxftwhs sucvs bsdtgq wy i ruzf lmpy oujxeo
+        hidden: true

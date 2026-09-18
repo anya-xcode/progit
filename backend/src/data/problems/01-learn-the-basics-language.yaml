@@ -1,0 +1,2007 @@
+section: learn-the-basics
+problems:
+  # ---------------------------------------------------------------------------
+  # Sub-step 1.1 — Things to Know in C++/Java/Python or any language
+  # ---------------------------------------------------------------------------
+  - sheetId: prob-1-1-1-input-output
+    slug: input-output
+    title: Input Output
+    difficulty: Easy
+    topic: "Language Basics"
+    subtopic: "Things to Know in C++/Java/Python or any language"
+    tags: [basics, io]
+    sourceUrl: ""
+    statement: |
+      Every judged problem works the same way: your program reads the whole test
+      from standard input, computes something, and prints the answer to standard
+      output. Nothing else counts — no prompts, no decorations, no extra blank
+      words. This first exercise is only about getting that pipe right.
+
+      You are given a `name` (one word) and two integers `a` and `b`. Greet the
+      person, then report the sum and the product of the two numbers, each on its
+      own line.
+    inputFormat: |
+      - Line 1: a single word `name` made of Latin letters only (no spaces).
+      - Line 2: two space-separated integers `a` and `b`.
+    outputFormat: |
+      Print exactly three lines:
+
+      - Line 1: `Hello, <name>!` — the word `Hello`, a comma, a space, the name, then `!`.
+      - Line 2: the value of `a + b`.
+      - Line 3: the value of `a * b`.
+    constraints:
+      - "1 <= length of name <= 20"
+      - "name contains only the letters a-z and A-Z"
+      - "-10^6 <= a, b <= 10^6"
+    examples:
+      - input: |
+          Ada
+          3 4
+        output: |
+          Hello, Ada!
+          7
+          12
+        explanation: "3 + 4 = 7 and 3 * 4 = 12, printed on separate lines after the greeting."
+      - input: |
+          Grace
+          -5 9
+        output: |
+          Hello, Grace!
+          4
+          -45
+        explanation: "-5 + 9 = 4 and -5 * 9 = -45. Negative results are printed with a minus sign."
+    hints:
+      - "Read everything from standard input first, then decide what each token means."
+      - "The output is three separate lines, so print three times (or join with newlines)."
+    explanation: |
+      **Reading input.** Two common shapes work for almost every problem on this
+      sheet. If the values are just whitespace-separated tokens, `sys.stdin.read().split()`
+      gives you a flat list you can index — the newline between the name and the
+      numbers is whitespace like any other. If a line may contain spaces that
+      matter (a sentence, a name with a space in it), read that line on its own
+      with `sys.stdin.readline().rstrip("\n")` instead.
+
+      **Producing output.** Build the three lines and print them in order. The
+      judge compares line by line, so the number of lines and their order matter;
+      the exact amount of spacing inside a line does not.
+
+      **Cost.** Reading a fixed number of tokens and printing three lines is
+      O(1) time and O(1) extra space — but the habit is what matters here:
+      parse, compute, print, and never print anything the statement did not ask
+      for.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def build_lines(name: str, a: int, b: int) -> List[str]:
+            # Return the three output lines: the greeting, then a + b, then a * b.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            name = data[0]
+            a, b = int(data[1]), int(data[2])
+            for line in build_lines(name, a, b):
+                print(line)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def build_lines(name: str, a: int, b: int) -> List[str]:
+            return [f"Hello, {name}!", str(a + b), str(a * b)]
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            name = data[0]
+            a, b = int(data[1]), int(data[2])
+            for line in build_lines(name, a, b):
+                print(line)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          Ada
+          3 4
+        expectedOutput: |
+          Hello, Ada!
+          7
+          12
+        hidden: false
+      - input: |
+          Grace
+          -5 9
+        expectedOutput: |
+          Hello, Grace!
+          4
+          -45
+        hidden: false
+      - input: |
+          Bob
+          0 0
+        expectedOutput: |
+          Hello, Bob!
+          0
+          0
+        hidden: true
+      - input: |
+          Linus
+          1000000 1000000
+        expectedOutput: |
+          Hello, Linus!
+          2000000
+          1000000000000
+        hidden: true
+      - input: |
+          Zoe
+          -7 -8
+        expectedOutput: |
+          Hello, Zoe!
+          -15
+          56
+        hidden: true
+      - input: |
+          Al
+          1 -1
+        expectedOutput: |
+          Hello, Al!
+          0
+          -1
+        hidden: true
+      - input: |
+          Katherine
+          123456 0
+        expectedOutput: |
+          Hello, Katherine!
+          123456
+          0
+        hidden: true
+      - input: |
+          X
+          -1000000 999999
+        expectedOutput: |
+          Hello, X!
+          -1
+          -999999000000
+        hidden: true
+
+  - sheetId: prob-1-1-2-cpp-basics
+    type: reference
+    slug: cpp-basics
+    title: Cpp Basics
+    difficulty: Easy
+    topic: "Language Basics"
+    subtopic: "Things to Know in C++/Java/Python or any language"
+    tags: [basics, theory, cpp]
+    sourceUrl: ""
+    statement: |
+      DSAForge judges **Python 3**, so there is nothing to submit here. Treat this
+      entry as the checklist of language features you must be fluent in before
+      data structures make any sense — written once, language-agnostically, with
+      the C++ specifics called out where they differ.
+
+      **The checklist.**
+
+      - *Program shape.* Every program has one entry point. In C++ that is
+        `int main() { ... }`, compiled ahead of time; in Python it is the module
+        body, usually guarded by `if __name__ == "__main__":`.
+      - *Variables and types.* C++ is statically typed: you declare
+        `int n;`, `long long total;`, `double x;`, `char c;`, `bool ok;` and the
+        compiler enforces them. Python infers types at runtime. The practical
+        consequence is **overflow**: a C++ `int` holds roughly ±2·10⁹ and silently
+        wraps past that, so sums of large arrays need `long long`. Python integers
+        grow without limit, which removes a whole class of bugs — but do not let
+        that make you forget the issue exists, because interviewers ask about it.
+      - *Operators.* Arithmetic, comparison and logical operators are the same
+        ideas everywhere, with two traps: integer division (`7 / 2` is `3` in C++,
+        `3.5` in Python — use `//` for the C++ behaviour), and the sign of the
+        remainder for negative operands.
+      - *Control flow.* `if / else if / else`, `switch`, `for`, `while`,
+        `do-while`, plus `break` and `continue`. The next few entries drill each
+        one.
+      - *Functions.* Parameters, return values, and the difference between
+        copying an argument and sharing it — the "pass by value / pass by
+        reference" entry below.
+      - *Input and output.* `cin >> x` and `cout << x` in C++; `input()` or
+        `sys.stdin` in Python. For large inputs C++ needs
+        `ios_base::sync_with_stdio(false)` and Python needs `sys.stdin.read()`
+        instead of a loop of `input()` calls.
+
+      If any line above is unfamiliar, spend an hour on it now. Everything in the
+      remaining seventeen steps is built out of exactly these pieces.
+    explanation: |
+      **Why the sheet starts here.** Almost every "I cannot solve this" moment in
+      the first few steps is really a language problem wearing a costume: an
+      off-by-one in a loop bound, an integer overflow, a list copied when it
+      should have been shared. Fixing the language layer first makes the
+      algorithmic layer visible.
+
+      **A translation table worth memorising.**
+
+      | Idea | C++ | Python |
+      | --- | --- | --- |
+      | Dynamic array | `vector<int> v;` | `v = []` |
+      | Size | `v.size()` | `len(v)` |
+      | Append | `v.push_back(x)` | `v.append(x)` |
+      | Fixed loop | `for (int i = 0; i < n; i++)` | `for i in range(n):` |
+      | Range-for | `for (int x : v)` | `for x in v:` |
+      | Text | `string s;` (mutable) | `s = ""` (immutable) |
+      | Big sum | `long long` | plain `int` |
+      | Swap | `swap(a, b)` | `a, b = b, a` |
+
+      **One habit to build now.** Whatever language you use on this sheet, write
+      the solution as a *function* that takes arguments and returns a value, and
+      keep the reading and printing in a separate driver. Every problem in
+      DSAForge is laid out that way on purpose: it is how interview code is
+      written, and it makes your solution testable without retyping input.
+  - sheetId: prob-1-1-3-if-elseif
+    slug: if-elseif
+    title: If ElseIf
+    difficulty: Easy
+    topic: "Language Basics"
+    subtopic: "Things to Know in C++/Java/Python or any language"
+    tags: [basics, conditionals]
+    sourceUrl: ""
+    statement: |
+      A chain of `if / else if / else` picks **exactly one** branch: the
+      conditions are tested top to bottom and the first true one wins, so the
+      order you write them in is part of the logic.
+
+      You are given `q` exam scores. Convert each score to a letter grade using
+      these bands:
+
+      | Score | Grade |
+      | --- | --- |
+      | 90 to 100 | `A` |
+      | 75 to 89 | `B` |
+      | 60 to 74 | `C` |
+      | 40 to 59 | `D` |
+      | 0 to 39 | `F` |
+
+      The bands do not overlap and together they cover every allowed score.
+    inputFormat: |
+      - Line 1: an integer `q`, the number of scores.
+      - Next `q` lines: one integer `score` each.
+    outputFormat: |
+      Print `q` lines. Line `i` is the single uppercase letter grade of the `i`-th score.
+    constraints:
+      - "1 <= q <= 1000"
+      - "0 <= score <= 100"
+    examples:
+      - input: |
+          4
+          95
+          78
+          61
+          12
+        output: |
+          A
+          B
+          C
+          F
+        explanation: "95 falls in 90-100, 78 in 75-89, 61 in 60-74 and 12 in 0-39."
+      - input: |
+          3
+          90
+          89
+          40
+        output: |
+          A
+          B
+          D
+        explanation: "The boundaries belong to the higher band: 90 is already an A, while 89 is still a B and 40 is the lowest D."
+    hints:
+      - "Write the conditions from the highest band downwards; then each test only needs a lower bound."
+      - "Once a branch is taken the rest are skipped, so you never need to write `score >= 75 and score <= 89`."
+    explanation: |
+      **The idea.** Sort the bands by their lower bound, largest first, and write
+      one comparison per band:
+
+      ```
+      if score >= 90:  A
+      elif score >= 75: B
+      elif score >= 60: C
+      elif score >= 40: D
+      else:             F
+      ```
+
+      Because `elif` is only reached when every earlier condition failed, the
+      upper bound of each band is implied. Writing the chain in the other order
+      (`if score >= 40: D` first) would label a 95 as a `D` — the classic bug
+      this exercise exists to teach.
+
+      **Alternative — a table scan.** Keep a list of `(threshold, letter)` pairs
+      in descending order and return the first letter whose threshold the score
+      reaches. That is the same logic expressed as data instead of code, and it
+      is what you would do if the bands came from a config file or if there were
+      fifty of them.
+
+      **Alternative — arithmetic.** For evenly spaced bands you can index
+      directly, e.g. `"FFFFDDCCBA"[min(score, 99) // 10]` works for these bands.
+      Cute, but fragile: it silently breaks the moment a boundary moves. Prefer
+      the explicit chain unless the spacing is genuinely part of the problem.
+
+      **Cost.** O(1) per score, O(q) overall, O(1) extra space.
+    starterCode:
+      python: |
+        import sys
+
+
+        def grade_of(score: int) -> str:
+            # Return "A", "B", "C", "D" or "F" for the given score.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            q = int(data[0])
+            out = [grade_of(int(data[1 + i])) for i in range(q)]
+            print("\n".join(out))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def grade_of(score: int) -> str:
+            if score >= 90:
+                return "A"
+            elif score >= 75:
+                return "B"
+            elif score >= 60:
+                return "C"
+            elif score >= 40:
+                return "D"
+            else:
+                return "F"
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            q = int(data[0])
+            out = [grade_of(int(data[1 + i])) for i in range(q)]
+            print("\n".join(out))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          4
+          95
+          78
+          61
+          12
+        expectedOutput: |
+          A
+          B
+          C
+          F
+        hidden: false
+      - input: |
+          3
+          90
+          89
+          40
+        expectedOutput: |
+          A
+          B
+          D
+        hidden: false
+      - input: |
+          1
+          0
+        expectedOutput: |
+          F
+        hidden: true
+      - input: |
+          1
+          100
+        expectedOutput: |
+          A
+        hidden: true
+      - input: |
+          8
+          39
+          40
+          59
+          60
+          74
+          75
+          89
+          90
+        expectedOutput: |
+          F
+          D
+          D
+          C
+          C
+          B
+          B
+          A
+        hidden: true
+      - input: |
+          5
+          60
+          60
+          60
+          60
+          60
+        expectedOutput: |
+          C
+          C
+          C
+          C
+          C
+        hidden: true
+      - input: |
+          2
+          74
+          75
+        expectedOutput: |
+          C
+          B
+        hidden: true
+      - input: |
+          14
+          100
+          99
+          90
+          89
+          76
+          75
+          74
+          60
+          59
+          41
+          40
+          39
+          1
+          0
+        expectedOutput: |
+          A
+          A
+          A
+          B
+          B
+          B
+          C
+          C
+          D
+          D
+          D
+          F
+          F
+          F
+        hidden: true
+
+  - sheetId: prob-1-1-4-switch-case
+    slug: switch-case
+    title: Switch Case
+    difficulty: Easy
+    topic: "Language Basics"
+    subtopic: "Things to Know in C++/Java/Python or any language"
+    tags: [basics, conditionals, dispatch]
+    sourceUrl: ""
+    statement: |
+      A `switch` picks one branch out of many by matching a value against a list
+      of labels, with a `default` branch for everything that matches nothing.
+      Python has no `switch` keyword before 3.10, so the same job is done with an
+      `if / elif / else` chain or — more idiomatically — a dictionary that maps
+      each label to the action it should trigger.
+
+      Build a tiny calculator. You are given `q` commands; each command is an
+      operation name followed by two integers `a` and `b`:
+
+      | Operation | Result |
+      | --- | --- |
+      | `add` | `a + b` |
+      | `sub` | `a - b` |
+      | `mul` | `a * b` |
+      | `div` | `a / b`, rounded down to an integer |
+      | `mod` | the remainder of `a / b` |
+
+      Any other operation name is unsupported: print `invalid` for it — that is
+      the `default` case.
+    inputFormat: |
+      - Line 1: an integer `q`, the number of commands.
+      - Next `q` lines: a word `op` (lowercase Latin letters) and two integers `a` and `b`, space-separated.
+
+      For every `div` and `mod` command it is guaranteed that `a >= 0` and `b >= 1`,
+      so the result is an ordinary non-negative integer.
+    outputFormat: |
+      Print `q` lines. Line `i` is the integer result of the `i`-th command, or the
+      word `invalid` if its operation is not one of the five supported names.
+    constraints:
+      - "1 <= q <= 1000"
+      - "1 <= length of op <= 10, lowercase Latin letters only"
+      - "-10^6 <= a, b <= 10^6"
+      - "For `div` and `mod`: 0 <= a <= 10^6 and 1 <= b <= 10^6"
+    examples:
+      - input: |
+          5
+          add 7 5
+          sub 7 5
+          mul 7 5
+          div 7 5
+          mod 7 5
+        output: |
+          12
+          2
+          35
+          1
+          2
+        explanation: "7 + 5 = 12, 7 - 5 = 2, 7 * 5 = 35, 7 divided by 5 is 1 with remainder 2."
+      - input: |
+          3
+          pow 2 10
+          add -4 9
+          mul -3 -6
+        output: |
+          invalid
+          5
+          18
+        explanation: "`pow` is not one of the five supported names, so it falls through to the default branch."
+    hints:
+      - "A dictionary from the operation name to a small lambda is the Python spelling of a switch."
+      - "Handle the unknown name once, where the lookup fails, instead of testing for it in every branch."
+    explanation: |
+      **Chain of comparisons.** The direct translation of a `switch` is
+      `if op == "add": ... elif op == "sub": ... else: invalid`. It is clear and
+      costs O(number of labels) comparisons per command — irrelevant for five
+      labels, noticeable for fifty.
+
+      **Dictionary dispatch — the idiomatic version.** Build the table once,
+      outside the loop:
+
+      ```
+      OPS = {
+          "add": lambda a, b: a + b,
+          "sub": lambda a, b: a - b,
+          "mul": lambda a, b: a * b,
+          "div": lambda a, b: a // b,
+          "mod": lambda a, b: a % b,
+      }
+      ```
+
+      Then each command is a single hash lookup: `fn = OPS.get(op)`, and
+      `fn is None` *is* the default branch. This is O(1) per command no matter how
+      many operations exist, and adding a sixth one touches one line.
+
+      **A note on `div` and `mod`.** Languages disagree about negative operands:
+      C++ truncates toward zero (`-7 / 2 == -3`) while Python floors
+      (`-7 // 2 == -4`), and the remainder follows the same split. The statement
+      sidesteps the disagreement by guaranteeing non-negative operands for those
+      two operations, where every language agrees. In an interview, say this out
+      loud rather than assuming.
+
+      **Cost.** O(q) time, O(1) extra space beyond the output.
+    starterCode:
+      python: |
+        import sys
+
+
+        def apply_operation(op: str, a: int, b: int) -> str:
+            # Return the result of op applied to a and b as a string,
+            # or "invalid" when op is not one of add/sub/mul/div/mod.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            q = int(data[0])
+            out = []
+            for i in range(q):
+                op = data[1 + 3 * i]
+                a, b = int(data[2 + 3 * i]), int(data[3 + 3 * i])
+                out.append(apply_operation(op, a, b))
+            print("\n".join(out))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+        OPERATIONS = {
+            "add": lambda a, b: a + b,
+            "sub": lambda a, b: a - b,
+            "mul": lambda a, b: a * b,
+            "div": lambda a, b: a // b,
+            "mod": lambda a, b: a % b,
+        }
+
+
+        def apply_operation(op: str, a: int, b: int) -> str:
+            action = OPERATIONS.get(op)
+            if action is None:
+                return "invalid"
+            return str(action(a, b))
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            q = int(data[0])
+            out = []
+            for i in range(q):
+                op = data[1 + 3 * i]
+                a, b = int(data[2 + 3 * i]), int(data[3 + 3 * i])
+                out.append(apply_operation(op, a, b))
+            print("\n".join(out))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          5
+          add 7 5
+          sub 7 5
+          mul 7 5
+          div 7 5
+          mod 7 5
+        expectedOutput: |
+          12
+          2
+          35
+          1
+          2
+        hidden: false
+      - input: |
+          3
+          pow 2 10
+          add -4 9
+          mul -3 -6
+        expectedOutput: |
+          invalid
+          5
+          18
+        hidden: false
+      - input: |
+          1
+          div 0 7
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          1
+          mod 0 7
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          4
+          sub -1000000 1000000
+          mul 1000000 1000000
+          add 0 0
+          divide 8 2
+        expectedOutput: |
+          -2000000
+          1000000000000
+          0
+          invalid
+        hidden: true
+      - input: |
+          3
+          mod 100 7
+          div 100 7
+          mod 7 100
+        expectedOutput: |
+          2
+          14
+          7
+        hidden: true
+      - input: |
+          2
+          sub 0 -5
+          mul 1 0
+        expectedOutput: |
+          5
+          0
+        hidden: true
+      - input: |
+          6
+          add 2 3
+          xor 2 3
+          sub 2 3
+          mul 2 3
+          div 2 3
+          mod 2 3
+        expectedOutput: |
+          5
+          invalid
+          -1
+          6
+          0
+          2
+        hidden: true
+
+  - sheetId: prob-1-1-5-what-are-arrays-strings
+    slug: what-are-arrays-strings
+    title: "What are arrays, strings?"
+    difficulty: Easy
+    topic: "Arrays"
+    subtopic: "Things to Know in C++/Java/Python or any language"
+    tags: [array, string, indexing, slicing]
+    sourceUrl: ""
+    statement: |
+      An **array** is a block of values laid out one after another, addressed by
+      position: `nums[0]` is the first, `nums[n - 1]` is the last, and reaching
+      any of them costs the same tiny amount of time. A **string** is the same
+      idea with characters instead of numbers.
+
+      This exercise is pure position arithmetic — no algorithm, just the three
+      things you will use in every later step: read an element by index, walk a
+      subset of the indices, and reverse a sequence.
+
+      You are given an array `nums` of `n` integers and a string `s`. Report:
+
+      1. the first and the last element of `nums`,
+      2. the elements of `nums` sitting at **even indices** (`0`, `2`, `4`, ...),
+      3. the string `s` written backwards.
+    inputFormat: |
+      - Line 1: an integer `n`, the size of the array.
+      - Line 2: `n` space-separated integers, the array `nums`.
+      - Line 3: the string `s` (letters and digits, no spaces).
+    outputFormat: |
+      Print exactly three lines:
+
+      - Line 1: `nums[0]` and `nums[n - 1]`, separated by a space.
+      - Line 2: the elements at indices `0, 2, 4, ...`, in increasing index order, separated by spaces.
+      - Line 3: the characters of `s` in reverse order.
+    constraints:
+      - "1 <= n <= 10^4"
+      - "-10^9 <= nums[i] <= 10^9"
+      - "1 <= length of s <= 10^4"
+      - "s contains only the characters a-z, A-Z and 0-9"
+    examples:
+      - input: |
+          5
+          4 8 15 16 23
+          dsaforge
+        output: |
+          4 23
+          4 15 23
+          egrofasd
+        explanation: "The first element is 4 and the last is 23. Indices 0, 2 and 4 hold 4, 15 and 23. Reading `dsaforge` backwards gives `egrofasd`."
+      - input: |
+          1
+          7
+          a
+        output: |
+          7 7
+          7
+          a
+        explanation: "With a single element, the first and the last element are the same one, and index 0 is the only even index."
+    hints:
+      - "The last position of a sequence of length n is n - 1, never n."
+      - "A step of 2 over the index range gives you the even positions in one pass."
+    explanation: |
+      **Line 1 — direct indexing.** `nums[0]` and `nums[n - 1]`. An array stores
+      its elements contiguously, so the machine finds element `i` by computing
+      `base + i * element_size`: one multiplication and one addition, no searching.
+      That constant-time random access is the entire reason arrays are the
+      default data structure. (Python also allows `nums[-1]` for the last
+      element, which is the same thing spelled more safely.)
+
+      **Line 2 — a strided walk.** Loop `i` from `0` while `i < n`, stepping by
+      `2`, and collect `nums[i]`; in Python that is `range(0, n, 2)` or the slice
+      `nums[::2]`. You touch about `n / 2` elements, so O(n) time. Note that the
+      last even index is `n - 1` when `n` is odd and `n - 2` when `n` is even —
+      the loop condition handles both without a special case.
+
+      **Line 3 — reversal.** Either build the answer by walking from the last
+      character down to the first, or swap the characters at `i` and
+      `len(s) - 1 - i` for `i` below `len(s) / 2`. Both are O(len(s)).
+
+      **A difference worth knowing.** Python strings are **immutable** — `s[0] = 'x'`
+      is an error, and every "modification" produces a new string. C++ `std::string`
+      and Java `char[]` can be edited in place. When a problem asks you to change a
+      string in Python, convert it to a list of characters first, edit, then
+      `"".join(...)` it back.
+
+      **Cost.** O(n + len(s)) time, O(n + len(s)) space for the printed answer.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def describe(nums: List[int], s: str) -> List[str]:
+            # Return the three output lines:
+            #   1) first and last element of nums
+            #   2) the elements at even indices
+            #   3) s reversed
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            nums = [int(x) for x in data[1:1 + n]]
+            s = data[1 + n]
+            for line in describe(nums, s):
+                print(line)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def describe(nums: List[int], s: str) -> List[str]:
+            ends = f"{nums[0]} {nums[len(nums) - 1]}"
+            evens = " ".join(str(nums[i]) for i in range(0, len(nums), 2))
+            reversed_s = s[::-1]
+            return [ends, evens, reversed_s]
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            nums = [int(x) for x in data[1:1 + n]]
+            s = data[1 + n]
+            for line in describe(nums, s):
+                print(line)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          5
+          4 8 15 16 23
+          dsaforge
+        expectedOutput: |
+          4 23
+          4 15 23
+          egrofasd
+        hidden: false
+      - input: |
+          1
+          7
+          a
+        expectedOutput: |
+          7 7
+          7
+          a
+        hidden: false
+      - input: |
+          4
+          -3 0 9 -3
+          ab
+        expectedOutput: |
+          -3 -3
+          -3 9
+          ba
+        hidden: true
+      - input: |
+          6
+          1 2 3 4 5 6
+          racecar
+        expectedOutput: |
+          1 6
+          1 3 5
+          racecar
+        hidden: true
+      - input: |
+          2
+          100 -100
+          Xy9
+        expectedOutput: |
+          100 -100
+          100
+          9yX
+        hidden: true
+      - input: |
+          3
+          5 5 5
+          zzz
+        expectedOutput: |
+          5 5
+          5 5
+          zzz
+        hidden: true
+      - input: |
+          7
+          10 20 30 40 50 60 70
+          Hello
+        expectedOutput: |
+          10 70
+          10 30 50 70
+          olleH
+        hidden: true
+      - input: |
+          8
+          -1 -2 -3 -4 -5 -6 -7 -8
+          abcdef
+        expectedOutput: |
+          -1 -8
+          -1 -3 -5 -7
+          fedcba
+        hidden: true
+
+  - sheetId: prob-1-1-6-for-loops
+    slug: for-loops
+    title: For loops
+    difficulty: Easy
+    topic: "Language Basics"
+    subtopic: "Things to Know in C++/Java/Python or any language"
+    tags: [basics, loops]
+    sourceUrl: ""
+    statement: |
+      A `for` loop is the tool for repeating something a **known number of times**.
+      It bundles three decisions in one place: where the counter starts, when the
+      loop stops, and how the counter moves.
+
+      Print the multiplication table of an integer `k`, from `1` up to `n`.
+      Row `i` must read exactly:
+
+      ```
+      k x i = k*i
+      ```
+
+      with single spaces around the `x` and the `=`.
+    inputFormat: |
+      - Line 1: two space-separated integers `k` and `n`.
+    outputFormat: |
+      Print `n` lines. Line `i` (for `i` from `1` to `n`) is `k x i = p`, where `p` is
+      the product `k * i`.
+    constraints:
+      - "-1000 <= k <= 1000"
+      - "1 <= n <= 100"
+    examples:
+      - input: |
+          3 5
+        output: |
+          3 x 1 = 3
+          3 x 2 = 6
+          3 x 3 = 9
+          3 x 4 = 12
+          3 x 5 = 15
+        explanation: "Five rows, one per value of i from 1 to 5."
+      - input: |
+          -4 4
+        output: |
+          -4 x 1 = -4
+          -4 x 2 = -8
+          -4 x 3 = -12
+          -4 x 4 = -16
+        explanation: "k may be negative; only the products change sign, the layout does not."
+    hints:
+      - "The counter runs from 1 to n inclusive, so a range starting at 0 needs a shift."
+      - "Build each line as a string and print the lines in order; do not print anything before the first row."
+    explanation: |
+      **The idea.** One counted loop:
+
+      ```
+      for i in range(1, n + 1):
+          print(f"{k} x {i} = {k * i}")
+      ```
+
+      The only thing to be careful about is the *inclusive* upper bound: the table
+      must contain row `n`, and `range(1, n)` stops one short. This off-by-one is
+      the single most common bug in beginner loops, and it is worth forming the
+      habit of asking "how many times does this body run?" — here, `n` times.
+
+      **Anatomy, across languages.** C++ writes the three decisions explicitly,
+      `for (int i = 1; i <= n; i++)`: initialise, test before each pass, advance
+      after each pass. Python hides them inside `range(start, stop, step)`, where
+      `stop` is always excluded. Once you see that `range(1, n + 1)` and
+      `i = 1; i <= n; i++` describe the same `n` iterations, translating loops
+      between languages stops being guesswork.
+
+      **Output buffering.** Printing inside the loop is fine for 100 rows. When a
+      problem asks for tens of thousands of lines, collect them in a list and emit
+      one `print("\n".join(lines))` (or `sys.stdout.write`) — each `print` call has
+      real overhead, and that single change often turns a timeout into an accepted
+      solution.
+
+      **Cost.** O(n) time, O(1) extra space if you print as you go.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def multiplication_table(k: int, n: int) -> List[str]:
+            # Return the n rows "k x i = k*i" for i from 1 to n.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            k, n = int(data[0]), int(data[1])
+            print("\n".join(multiplication_table(k, n)))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def multiplication_table(k: int, n: int) -> List[str]:
+            rows = []
+            for i in range(1, n + 1):
+                rows.append(f"{k} x {i} = {k * i}")
+            return rows
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            k, n = int(data[0]), int(data[1])
+            print("\n".join(multiplication_table(k, n)))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          3 5
+        expectedOutput: |
+          3 x 1 = 3
+          3 x 2 = 6
+          3 x 3 = 9
+          3 x 4 = 12
+          3 x 5 = 15
+        hidden: false
+      - input: |
+          -4 4
+        expectedOutput: |
+          -4 x 1 = -4
+          -4 x 2 = -8
+          -4 x 3 = -12
+          -4 x 4 = -16
+        hidden: false
+      - input: |
+          7 1
+        expectedOutput: |
+          7 x 1 = 7
+        hidden: true
+      - input: |
+          0 3
+        expectedOutput: |
+          0 x 1 = 0
+          0 x 2 = 0
+          0 x 3 = 0
+        hidden: true
+      - input: |
+          12 10
+        expectedOutput: |
+          12 x 1 = 12
+          12 x 2 = 24
+          12 x 3 = 36
+          12 x 4 = 48
+          12 x 5 = 60
+          12 x 6 = 72
+          12 x 7 = 84
+          12 x 8 = 96
+          12 x 9 = 108
+          12 x 10 = 120
+        hidden: true
+      - input: |
+          1 2
+        expectedOutput: |
+          1 x 1 = 1
+          1 x 2 = 2
+        hidden: true
+      - input: |
+          1000 3
+        expectedOutput: |
+          1000 x 1 = 1000
+          1000 x 2 = 2000
+          1000 x 3 = 3000
+        hidden: true
+      - input: |
+          -1 6
+        expectedOutput: |
+          -1 x 1 = -1
+          -1 x 2 = -2
+          -1 x 3 = -3
+          -1 x 4 = -4
+          -1 x 5 = -5
+          -1 x 6 = -6
+        hidden: true
+
+  - sheetId: prob-1-1-7-while-loops
+    slug: while-loops
+    title: While loops
+    difficulty: Easy
+    topic: "Language Basics"
+    subtopic: "Things to Know in C++/Java/Python or any language"
+    tags: [basics, loops, simulation]
+    sourceUrl: ""
+    statement: |
+      A `for` loop suits a count you know in advance. A `while` loop suits the
+      other case: **repeat until a condition stops being true**, however long that
+      takes. Getting one right means making sure the state you test actually moves
+      towards the exit — otherwise the loop never ends.
+
+      Here is a rule that shrinks any positive integer to `1`:
+
+      - if `n` is even, replace it with `n / 2`;
+      - if `n` is odd, replace it with `3 * n + 1`.
+
+      Applying the rule once counts as **one step**. Starting from `1`, zero steps
+      are needed. For each given starting value, report how many steps it takes to
+      reach `1`.
+
+      For example, starting at `3` the values are
+      `3 -> 10 -> 5 -> 16 -> 8 -> 4 -> 2 -> 1`, which is 7 steps.
+    inputFormat: |
+      - Line 1: an integer `q`, the number of starting values.
+      - Next `q` lines: one integer `n` each.
+    outputFormat: |
+      Print `q` lines. Line `i` is the number of steps needed to bring the `i`-th
+      starting value down to `1`.
+    constraints:
+      - "1 <= q <= 100"
+      - "1 <= n <= 10^6"
+      - "Every starting value in the tests does reach 1."
+    examples:
+      - input: |
+          4
+          1
+          2
+          3
+          6
+        output: |
+          0
+          1
+          7
+          8
+        explanation: "1 is already done. 2 halves once. 3 needs the seven steps listed above. 6 halves to 3 and then needs those same seven steps."
+      - input: |
+          2
+          7
+          27
+        output: |
+          16
+          111
+        explanation: "Small starting values can take surprisingly long: the value grows several times before it finally collapses to 1."
+    hints:
+      - "The loop condition is `n != 1`, not a fixed count — you cannot know the number of steps beforehand."
+      - "Every pass must change `n`; forget that and the loop spins forever."
+    explanation: |
+      **The idea.** Simulate the rule directly:
+
+      ```
+      steps = 0
+      while n != 1:
+          n = n // 2 if n % 2 == 0 else 3 * n + 1
+          steps += 1
+      return steps
+      ```
+
+      Three things make this a textbook `while` loop. The exit test is a *property*
+      of the state, not a counter. The body is guaranteed to change that state.
+      And the number of iterations is not known until you run it — which is exactly
+      when a `for` loop is the wrong tool.
+
+      **Why the intermediate value can exceed the input.** An odd step multiplies
+      by three, so from `n = 10^6` the sequence can climb well above the starting
+      value before coming back down. In C++ this is a real trap: use `long long`,
+      because repeated `3 * n + 1` on an `int` can overflow. Python integers are
+      unbounded, so the concern disappears — but the reason it disappears is worth
+      understanding.
+
+      **Cost.** O(steps) per query with O(1) extra space. Within these limits no
+      starting value needs more than a few hundred steps, so the whole input is
+      handled in well under a millisecond.
+
+      **Going faster for repeated queries.** If `q` were large and the values
+      overlapped, you could memoise: cache the step count of every value you pass
+      through, and stop the loop as soon as you land on a cached one. That trades
+      memory for time and is the first taste of dynamic programming.
+    starterCode:
+      python: |
+        import sys
+
+
+        def steps_to_one(n: int) -> int:
+            # Repeatedly halve n when it is even, or replace it with 3n + 1 when it
+            # is odd, and return how many steps it takes to reach 1.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            q = int(data[0])
+            out = [str(steps_to_one(int(data[1 + i]))) for i in range(q)]
+            print("\n".join(out))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def steps_to_one(n: int) -> int:
+            steps = 0
+            while n != 1:
+                if n % 2 == 0:
+                    n //= 2
+                else:
+                    n = 3 * n + 1
+                steps += 1
+            return steps
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            q = int(data[0])
+            out = [str(steps_to_one(int(data[1 + i]))) for i in range(q)]
+            print("\n".join(out))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          4
+          1
+          2
+          3
+          6
+        expectedOutput: |
+          0
+          1
+          7
+          8
+        hidden: false
+      - input: |
+          2
+          7
+          27
+        expectedOutput: |
+          16
+          111
+        hidden: false
+      - input: |
+          1
+          1
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          5
+          4
+          8
+          16
+          5
+          9
+        expectedOutput: |
+          2
+          3
+          4
+          5
+          19
+        hidden: true
+      - input: |
+          3
+          97
+          871
+          6171
+        expectedOutput: |
+          118
+          178
+          261
+        hidden: true
+      - input: |
+          2
+          77031
+          837799
+        expectedOutput: |
+          350
+          524
+        hidden: true
+      - input: |
+          2
+          1000000
+          999999
+        expectedOutput: |
+          152
+          258
+        hidden: true
+      - input: |
+          6
+          2
+          2
+          2
+          3
+          3
+          3
+        expectedOutput: |
+          1
+          1
+          1
+          7
+          7
+          7
+        hidden: true
+
+  - sheetId: prob-1-1-8-functions-pass-by-referen
+    slug: functions-pass-by-reference-and-value
+    title: "Functions (Pass by Reference and Value)"
+    difficulty: Easy
+    topic: "Language Basics"
+    subtopic: "Things to Know in C++/Java/Python or any language"
+    tags: [basics, functions, mutability]
+    sourceUrl: ""
+    statement: |
+      When you hand a value to a function, one of two things happens. Either the
+      function works on its **own copy** — and the caller's data survives untouched —
+      or it works on the **same object** the caller holds, and any edit is visible
+      outside. C++ spells the difference out (`void f(vector<int> v)` copies,
+      `void f(vector<int>& v)` does not). Python decides it for you by type: numbers,
+      strings and tuples are immutable, so they behave like copies, while lists,
+      dictionaries and sets are shared and can be changed from inside.
+
+      Write both versions of the same operation and watch the difference.
+
+      You are given an array `nums` of `n` integers and a non-zero integer `x`.
+      Implement two functions:
+
+      - one that returns a **new** array with `x` added to every element, leaving
+        `nums` exactly as it was;
+      - one that adds `x` to every element of `nums` **itself**, changing the
+        caller's array.
+
+      The driver calls them in that order and reports what happened after each.
+    inputFormat: |
+      - Line 1: two space-separated integers `n` and `x`.
+      - Line 2: `n` space-separated integers, the array `nums`.
+    outputFormat: |
+      Print exactly four lines:
+
+      - Line 1: the array returned by the copying function, space-separated.
+      - Line 2: `true` if `nums` is still unchanged after that call, `false` otherwise.
+      - Line 3: `nums` after the in-place function has run, space-separated.
+      - Line 4: `true` if the in-place call did change `nums`, `false` otherwise.
+    constraints:
+      - "1 <= n <= 10^4"
+      - "-10^9 <= nums[i] <= 10^9"
+      - "-10^6 <= x <= 10^6 and x != 0"
+    examples:
+      - input: |
+          5 10
+          1 2 3 4 5
+        output: |
+          11 12 13 14 15
+          true
+          11 12 13 14 15
+          true
+        explanation: "The copying call produces the shifted array but leaves the original alone, so line 2 is `true`. The in-place call then shifts the original itself, so line 4 is `true`."
+      - input: |
+          3 -2
+          0 -5 7
+        output: |
+          -2 -7 5
+          true
+          -2 -7 5
+          true
+        explanation: "x may be negative; the same two behaviours apply."
+    hints:
+      - "`copy = nums` does not copy anything — both names then point at the same list."
+      - "To change the caller's list you must edit it in place (assign to `nums[i]`), not rebind the parameter name."
+    explanation: |
+      **The copying function.** Build a fresh list and never touch the argument:
+      `return [value + x for value in nums]`. A list comprehension (or an explicit
+      loop appending to a new list) allocates new storage, so the caller's array is
+      untouched. Cost: O(n) time, O(n) extra space.
+
+      **The in-place function.** Overwrite each slot of the object you were given:
+
+      ```
+      for i in range(len(nums)):
+          nums[i] += x
+      ```
+
+      Cost: O(n) time, O(1) extra space. The caller sees the change because both
+      names refer to the same list object.
+
+      **The trap this exercise exists for.** Writing `nums = [v + x for v in nums]`
+      inside the in-place function looks right and does nothing: it rebinds the
+      *local parameter name* to a brand-new list and drops it when the function
+      returns. The caller's list never moves. The same mistake in reverse —
+      writing `copy = nums` and then editing `copy` — silently corrupts the
+      caller's data, and is a genuinely common source of wrong answers later in
+      this sheet (think of a backtracking routine that must not mutate the path it
+      was handed).
+
+      **How to reason about it.** In Python, arguments are always passed by
+      *object reference*: the function receives another name for the same object.
+      Assigning to that name changes only the name; calling a mutating method
+      (`append`, `sort`, item assignment) changes the shared object. In C++ the
+      same distinction is made at the signature — by value, by `&` reference, or by
+      pointer — and in Java every object is handed over by reference while the
+      primitives (`int`, `double`, `char`) are copied.
+
+      **Defensive habit.** When a function must not disturb its input, take a copy
+      at the top (`nums = nums[:]`) and say so in the name or a comment. When it is
+      meant to mutate, return `None` so the call site cannot mistake it for the
+      pure version — that is exactly the convention Python's own `list.sort()`
+      (mutates, returns `None`) and `sorted()` (returns a new list) follow.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def add_to_copy(nums: List[int], x: int) -> List[int]:
+            # Return a NEW list with x added to every element. Leave nums untouched.
+            pass
+
+
+        def add_in_place(nums: List[int], x: int) -> None:
+            # Add x to every element of nums itself, so the caller sees the change.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n, x = int(data[0]), int(data[1])
+            nums = [int(v) for v in data[2:2 + n]]
+            original = nums[:]
+
+            copied = add_to_copy(nums, x)
+            print(" ".join(str(v) for v in copied))
+            print("true" if nums == original else "false")
+
+            add_in_place(nums, x)
+            print(" ".join(str(v) for v in nums))
+            print("true" if nums != original else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def add_to_copy(nums: List[int], x: int) -> List[int]:
+            return [value + x for value in nums]
+
+
+        def add_in_place(nums: List[int], x: int) -> None:
+            for i in range(len(nums)):
+                nums[i] += x
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n, x = int(data[0]), int(data[1])
+            nums = [int(v) for v in data[2:2 + n]]
+            original = nums[:]
+
+            copied = add_to_copy(nums, x)
+            print(" ".join(str(v) for v in copied))
+            print("true" if nums == original else "false")
+
+            add_in_place(nums, x)
+            print(" ".join(str(v) for v in nums))
+            print("true" if nums != original else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          5 10
+          1 2 3 4 5
+        expectedOutput: |
+          11 12 13 14 15
+          true
+          11 12 13 14 15
+          true
+        hidden: false
+      - input: |
+          3 -2
+          0 -5 7
+        expectedOutput: |
+          -2 -7 5
+          true
+          -2 -7 5
+          true
+        hidden: false
+      - input: |
+          1 1
+          0
+        expectedOutput: |
+          1
+          true
+          1
+          true
+        hidden: true
+      - input: |
+          4 100
+          -100 -100 -100 -100
+        expectedOutput: |
+          0 0 0 0
+          true
+          0 0 0 0
+          true
+        hidden: true
+      - input: |
+          6 -1
+          1 1 1 1 1 1
+        expectedOutput: |
+          0 0 0 0 0 0
+          true
+          0 0 0 0 0 0
+          true
+        hidden: true
+      - input: |
+          2 1000000
+          1000000000 -1000000000
+        expectedOutput: |
+          1001000000 -999000000
+          true
+          1001000000 -999000000
+          true
+        hidden: true
+      - input: |
+          8 3
+          1 2 3 4 5 6 7 8
+        expectedOutput: |
+          4 5 6 7 8 9 10 11
+          true
+          4 5 6 7 8 9 10 11
+          true
+        hidden: true
+      - input: |
+          1 -1
+          1000000
+        expectedOutput: |
+          999999
+          true
+          999999
+          true
+        hidden: true
+
+  - sheetId: prob-1-1-9-theory-with-examples
+    type: reference
+    slug: theory-with-examples
+    title: "Theory with examples"
+    difficulty: Easy
+    topic: "Complexity"
+    subtopic: "Things to Know in C++/Java/Python or any language"
+    tags: [complexity, theory, big-o]
+    sourceUrl: ""
+    statement: |
+      This entry is the sheet's introduction to **time and space complexity** —
+      the vocabulary you will use to justify every solution from here on. Nothing
+      to submit; read it, then start applying it out loud to each problem you
+      solve.
+
+      **What complexity measures.** Not seconds — machines differ. It measures how
+      the *amount of work* grows as the input grows. Count the operations that
+      dominate (comparisons, array accesses, recursive calls), throw away constant
+      factors and lower-order terms, and what remains is the growth rate. `3n + 7`
+      and `n / 2` are both **O(n)**: doubling the input roughly doubles the work.
+
+      **The ladder you will meet.**
+
+      | Notation | Name | Typical source |
+      | --- | --- | --- |
+      | O(1) | constant | arithmetic, one array access, a hash lookup |
+      | O(log n) | logarithmic | binary search, halving a range |
+      | O(n) | linear | one pass over the data |
+      | O(n log n) | linearithmic | sorting, divide and conquer with a linear merge |
+      | O(n²) | quadratic | a loop inside a loop over the same data |
+      | O(2ⁿ), O(n!) | exponential, factorial | trying every subset or every permutation |
+
+      **A rule of thumb for judges.** Most online judges allow roughly 10⁸ simple
+      operations per second in C++, and closer to 10⁷ in Python. So read the
+      constraints *before* choosing an approach: `n` up to 10⁵ rules out O(n²);
+      `n` up to 10³ makes it fine; `n` up to 20 is an invitation to try all 2ⁿ
+      subsets.
+
+      **Space complexity** is the same idea applied to extra memory — the storage
+      you allocate beyond the input. Sorting in place is O(1) auxiliary space;
+      building a frequency dictionary is O(n); recursion costs O(depth) in stack
+      frames, which is why a recursive walk of a skewed tree can overflow.
+
+      **Worst, average, best.** Unless a problem says otherwise, quote the
+      **worst case**. Quicksort is O(n log n) on average but O(n²) in the worst
+      case; a hash lookup is O(1) on average but O(n) if everything collides.
+      Saying which case you mean is half the answer in an interview.
+    explanation: |
+      **How to read complexity off your own code**
+
+      1. A loop over `n` items with O(1) work inside → O(n).
+      2. Nested loops both over `n` → O(n²). Nested loops where the inner one runs
+         over a *different* bound `m` → O(n·m), which is not the same thing.
+      3. A loop whose counter is multiplied or divided by a constant each pass
+         (`i *= 2`) → O(log n).
+      4. Sorting anywhere in the solution → at least O(n log n); there is no point
+         micro-optimising an O(n) pass that sits next to a sort.
+      5. Recursion → count the number of calls and the work per call. Halving the
+         input with one recursive call gives O(log n); two calls on halves plus a
+         linear merge gives O(n log n); two calls on `n - 1` gives O(2ⁿ).
+
+      **A worked pair.** Finding whether two numbers in an array sum to a target:
+      checking every pair is two nested loops, O(n²) time and O(1) space. Scanning
+      once while remembering seen values in a hash set is O(n) time and O(n) space.
+      Same problem, same answer — a deliberate trade of memory for time. Recognising
+      that trade is most of what the next seventeen steps teach.
+
+      **Amortised cost.** Appending to a dynamic array (`vector`, `list`) is O(1)
+      *amortised*: occasionally it must reallocate and copy everything, but the
+      cost of those rare copies, spread over all the appends, stays constant per
+      operation. The same reasoning explains why a hash table stays O(1) while
+      growing.
+
+      **Practise this way.** For every problem you finish, write one line:
+      "O(...) time, O(...) space, because ...". If you cannot finish the sentence,
+      you do not yet understand your own solution.
+
+  # ---------------------------------------------------------------------------
+  # Sub-step 1.2 — Build-up Logical Thinking
+  # ---------------------------------------------------------------------------
+  - sheetId: prob-1-2-1-easy-and-medium
+    type: reference
+    slug: easy-and-medium
+    title: "Easy and Medium"
+    difficulty: Easy
+    topic: "Problem Solving"
+    subtopic: "Build-up Logical Thinking"
+    tags: [patterns, practice, theory]
+    sourceUrl: ""
+    statement: |
+      This is not a single problem — it is the sheet's **easy and medium pattern
+      collection**, a batch of star/number/alphabet patterns to be printed with
+      nested loops. Work through them with pen and paper first, then tick this
+      entry off.
+
+      **Why patterns, before any real algorithm?** Because they force you to
+      convert a picture into index arithmetic, which is the same skill every
+      array, matrix and string problem needs. A pattern gives you instant,
+      unambiguous feedback: the shape either matches or it does not.
+
+      **A method that works on every one of them.**
+
+      1. Count the rows. That is your outer loop, usually `for i in range(n)`.
+      2. For one fixed row, count the characters — spaces included. That is your
+         inner loop's bound, and it is almost always a small formula in `i`:
+         `i + 1`, `n - i`, `2 * i + 1`, `2 * (n - i) - 1`.
+      3. Decide what each inner position prints: a star, a digit derived from `i`
+         or `j`, or a letter such as `chr(ord('A') + j)`.
+      4. Handle leading spaces as their own inner loop before the visible
+         characters — that is what turns a left-aligned triangle into a centred
+         pyramid.
+      5. Print the row, then move to the next.
+
+      **The shapes to be comfortable with:** solid and hollow squares; left,
+      right, inverted and double-sided triangles; centred pyramids and inverted
+      pyramids; diamonds; number triangles counting up, counting down and
+      restarting per row; Floyd's triangle; Pascal's triangle; alphabet
+      triangles; and the "butterfly".
+
+      **How to practise.** Do not look up the formula. Draw the 4-row version on
+      paper, index the rows `0..3`, write down how many spaces and how many
+      symbols each row has, and only then fit a formula to the table you just
+      built. DSAForge has the individual patterns as runnable problems in the
+      Patterns sub-step; the practice links on this entry point at the sheet's
+      own collection and video walkthrough.
+    explanation: |
+      **A worked example of the method.** Centred pyramid, `n = 4`:
+
+      ```
+         *
+        ***
+       *****
+      *******
+      ```
+
+      Row `i` (0-indexed) has `n - 1 - i` leading spaces and `2 * i + 1` stars.
+      Check the table before writing code — row 0: 3 spaces, 1 star; row 3:
+      0 spaces, 7 stars. Both fit. Now the code is two inner loops and there is
+      nothing left to debug.
+
+      **Common traps.**
+
+      - Off-by-one at the bottom row: decide once whether `i` is 0-indexed or
+        1-indexed and keep it consistent through *all* the formulas.
+      - Trailing spaces: harmless on most judges (whitespace inside a line is
+        normalised), but do not rely on that when the shape itself is made of
+        spaces, such as a hollow square.
+      - Building the row with string concatenation inside the inner loop is
+        O(width²); append the pieces to a list and join once.
+
+      **Cost.** Every pattern here is O(rows × width) time — you print each
+      character once — and O(width) extra space for the row you are assembling.
+
+      **When you are done.** You should be able to look at an unfamiliar shape and
+      write the row formula within a minute, without running anything. That is the
+      readiness signal for moving on to the harder collection.
+
+  - sheetId: prob-1-2-2-hard
+    type: reference
+    slug: hard
+    title: Hard
+    difficulty: Easy
+    topic: "Problem Solving"
+    subtopic: "Build-up Logical Thinking"
+    tags: [patterns, practice, theory]
+    sourceUrl: ""
+    statement: |
+      The second half of the sheet's **logical-thinking pattern collection**: the
+      same "print a shape with nested loops" game, but with shapes whose row
+      formula is no longer obvious at a glance. Read, practise, tick off.
+
+      **What makes these harder.** In the easy set, one formula in `i` describes a
+      row. Here a row usually has *several segments* that must be reasoned about
+      separately, and some shapes are only symmetric if you deliberately build
+      them that way.
+
+      **The shapes worth mastering:**
+
+      - **The butterfly** — stars, spaces, stars in every row, with the space
+        count shrinking to zero at the waist and growing again. Three segments per
+        row, and the top and bottom halves are mirror images.
+      - **Hollow shapes** — a hollow pyramid or diamond prints a symbol only on
+        the border. The condition is positional: print `*` when
+        `j == 0 or j == width - 1 or i == 0 or i == n - 1`, a space otherwise.
+      - **Symmetric number patterns** — `1 2 3 2 1` style rows, where the value
+        depends on the *distance from the centre*, not on `j` directly.
+      - **The "0 1 0 1" triangle** — the digit comes from the parity of `i + j`.
+      - **Pascal's triangle** — row `i` holds the binomial coefficients; build
+        each entry from the previous one with `value = value * (i - j) // (j + 1)`
+        instead of recomputing factorials.
+      - **Concentric squares** — the value at `(i, j)` is determined by the
+        distance to the nearest edge: `min(i, j, n - 1 - i, n - 1 - j)`.
+
+      **The technique that unlocks all of them.** Stop thinking "what do I print
+      next" and start thinking "what is the value at position `(i, j)`". Write a
+      single expression `f(i, j)` for the character, then the whole program is two
+      plain loops and one `print`. Every pattern above collapses once you find its
+      `f`.
+
+      **How to practise.** Draw the `n = 5` version, write the grid of `(i, j)`
+      values on paper, and look for what the printed character depends on: `i`,
+      `j`, `i + j`, `i - j`, or a distance to an edge or centre. Then verify
+      against `n = 4` too — an even size exposes the off-by-one that an odd one
+      hides.
+    explanation: |
+      **Worked example — the butterfly, `n = 4`.**
+
+      ```
+      *      *
+      **    **
+      ***  ***
+      ********
+      ***  ***
+      **    **
+      *      *
+      ```
+
+      Top half, row `i` from 0 to `n - 1`: `i + 1` stars, then
+      `2 * (n - 1 - i)` spaces, then `i + 1` stars. Check row 0 — 1 star, 6
+      spaces, 1 star, width 8 — and row 3 — 4 stars, 0 spaces, 4 stars, width 8.
+      The width is constant at `2n`, which is the invariant that tells you the
+      formula is right. The bottom half is the top half printed in reverse row
+      order, so generate the rows into a list and emit `rows + rows[-2::-1]`
+      rather than writing the loop twice.
+
+      **Worked example — concentric squares, `n = 5`.** The value at `(i, j)` is
+      `n - min(i, j, n - 1 - i, n - 1 - j)`, giving `5` on the border, `4` one
+      ring in, and `3` in the middle. One expression, no case analysis — this is
+      the `f(i, j)` idea in its purest form.
+
+      **Checklist before you call a pattern done.**
+
+      - Does it hold for `n = 1`?
+      - Does it hold for an even `n` as well as an odd one?
+      - Is every row the same width when the shape says it should be?
+      - Did you build each row into a list and `"".join` it, rather than
+        concatenating in a loop?
+
+      **Cost.** O(n²) time for an `n`-row pattern, since you emit on the order of
+      `n²` characters, and O(n) extra space for one row at a time.
+
+      **Where this pays off.** Matrix problems in Step 3 (spiral traversal,
+      rotation, diagonal sums) are exactly this skill with a payload instead of a
+      star, and Step 15's string questions lean on the same index reasoning.
+
+  # ---------------------------------------------------------------------------
+  # Sub-step 1.4 — Learn STL / Java Collections
+  # ---------------------------------------------------------------------------
+  - sheetId: prob-1-4-1-stl
+    type: reference
+    slug: stl
+    title: STL
+    difficulty: Easy
+    topic: "Language Tools"
+    subtopic: "Learn STL/Java-Collections or similar thing in your language"
+    tags: [stl, containers, theory, cpp]
+    sourceUrl: ""
+    statement: |
+      The **Standard Template Library** is C++'s box of ready-made containers and
+      algorithms. You are expected to know what is in the box, what each piece
+      costs, and — crucially — which one to reach for. DSAForge judges Python, so
+      the table below pairs every STL container with the Python tool that plays
+      the same role.
+
+      **Sequence containers.**
+
+      | STL | Python | Notes |
+      | --- | --- | --- |
+      | `vector<T>` | `list` | Dynamic array. O(1) indexing, O(1) amortised append, O(n) insert in the middle. The default choice. |
+      | `deque<T>` | `collections.deque` | Push and pop at **both** ends in O(1). The right container for BFS queues and sliding windows. |
+      | `array<T, N>` | tuple / fixed list | Fixed size, no growth. |
+
+      **Adapters.**
+
+      | STL | Python | Notes |
+      | --- | --- | --- |
+      | `stack<T>` | `list` with `append` / `pop` | LIFO, all O(1). |
+      | `queue<T>` | `deque` with `append` / `popleft` | FIFO. Never use a plain list for this — `pop(0)` is O(n). |
+      | `priority_queue<T>` | `heapq` | O(log n) push and pop. C++ gives a **max**-heap by default; `heapq` is a **min**-heap, so push negated values for a max-heap. |
+
+      **Associative containers.**
+
+      | STL | Python | Notes |
+      | --- | --- | --- |
+      | `unordered_map` / `unordered_set` | `dict` / `set` | Hashed. O(1) average lookup, no order. |
+      | `map` / `set` | `sortedcontainers` or a sorted list | **Ordered**, O(log n), backed by a balanced tree. Python has no built-in equivalent — this is the one real gap. |
+      | `multiset` / `multimap` | `Counter`, or a heap | Duplicate keys allowed. |
+
+      **Algorithms worth knowing by name:** `sort`, `stable_sort`, `reverse`,
+      `min_element` / `max_element`, `accumulate`, `count`, `find`, `next_permutation`,
+      and the two binary searches `lower_bound` (first element `>=` x) and
+      `upper_bound` (first element `>` x) — in Python, `bisect_left` and
+      `bisect_right`.
+    explanation: |
+      **Choosing a container — the questions to ask, in order.**
+
+      1. *Do I need order by key?* Yes and you also need range queries or the
+         smallest key on demand → ordered map/set (`bisect` on a sorted list in
+         Python). No → hash map/set.
+      2. *Do I only need the extreme element?* → heap, not a sorted structure.
+         Sorting to find one minimum is doing O(n log n) work for an O(n) answer.
+      3. *Do I add and remove at both ends?* → deque.
+      4. *Anything else?* → plain dynamic array. It is cache-friendly and beats
+         cleverer structures at small sizes far more often than people expect.
+
+      **The Python cheat sheet you will actually use on this sheet.**
+
+      ```
+      from collections import Counter, defaultdict, deque
+      import heapq, bisect
+
+      freq   = Counter(nums)                 # value -> count, in one pass
+      groups = defaultdict(list)             # no "key not found" checks
+      dq     = deque([1, 2]); dq.appendleft(0); dq.pop()
+      heapq.heappush(h, (cost, node)); cost, node = heapq.heappop(h)
+      i      = bisect.bisect_left(sorted_a, x)   # first index with a[i] >= x
+      nums.sort(key=lambda p: (p[0], -p[1]))     # multi-key sort
+      ```
+
+      **Two habits that matter more than memorising APIs.** First, know the cost
+      of every call you make — `list.insert(0, x)` and `x in some_list` are both
+      O(n) and both quietly turn an O(n) solution into an O(n²) one. Second, when
+      an interviewer asks "which container?", answer with the operation profile
+      ("I need O(1) membership and I do not care about order, so a hash set")
+      rather than the name alone. The name is the conclusion; the profile is the
+      reasoning.
+
+  - sheetId: prob-1-4-2-java-collections
+    type: reference
+    slug: java-collections
+    title: "Java Collections"
+    difficulty: Easy
+    topic: "Language Tools"
+    subtopic: "Learn STL/Java-Collections or similar thing in your language"
+    tags: [java, collections, containers, theory]
+    sourceUrl: ""
+    statement: |
+      The **Java Collections Framework** is Java's answer to the STL: a set of
+      interfaces (`List`, `Set`, `Map`, `Queue`, `Deque`) with several concrete
+      implementations each, so you program against the interface and pick the
+      implementation by its cost profile. DSAForge judges Python, so read this as
+      the third column of the same table — and as preparation for interviews where
+      Java is the house language.
+
+      **The four interfaces and what to instantiate.**
+
+      | Interface | Pick | Cost | Python analogue |
+      | --- | --- | --- | --- |
+      | `List` | `ArrayList` | O(1) get/set, amortised O(1) add at the end | `list` |
+      | | `LinkedList` | O(1) add/remove at the ends, O(n) get | `deque` |
+      | `Set` | `HashSet` | O(1) average add/contains, unordered | `set` |
+      | | `LinkedHashSet` | as above, keeps insertion order | `dict.fromkeys` trick |
+      | | `TreeSet` | O(log n), **sorted**, with `floor`/`ceiling`/`headSet` | no built-in equivalent |
+      | `Map` | `HashMap` | O(1) average, unordered | `dict` |
+      | | `LinkedHashMap` | insertion-ordered (and the usual LRU building block) | `dict` (ordered since 3.7) |
+      | | `TreeMap` | O(log n), sorted keys, `firstKey`, `floorKey` | `bisect` on a sorted list |
+      | `Queue` / `Deque` | `ArrayDeque` | O(1) at both ends — the default stack **and** queue | `collections.deque` |
+      | | `PriorityQueue` | O(log n) offer/poll, **min**-heap by default | `heapq` |
+
+      **Things that trip people up.**
+
+      - Generics cannot hold primitives: it is `List<Integer>`, not `List<int>`.
+        Autoboxing hides this until you compare with `==`, which compares
+        references — always use `.equals()` (or `intValue()`) for boxed numbers.
+      - `Arrays.sort` on a primitive array uses a dual-pivot quicksort with an
+        O(n²) worst case; on an object array it uses a stable merge sort. Sorting
+        `Integer[]` instead of `int[]` is the usual defence in adversarial tests.
+      - `java.util.Stack` is legacy and synchronised — use `ArrayDeque` instead.
+      - `HashMap` iteration order is unspecified. If a problem's expected output
+        depends on order, sort explicitly.
+
+      **Useful helpers:** `Collections.sort/reverse/max/min`, `Arrays.asList`,
+      `map.getOrDefault(k, 0)`, `map.merge(k, 1, Integer::sum)` for frequency
+      counting, and `Arrays.binarySearch`.
+    explanation: |
+      **The same decision procedure, in Java words.** Need key order or range
+      queries → `TreeMap`/`TreeSet`. Need only the extreme element →
+      `PriorityQueue`. Need both ends → `ArrayDeque`. Otherwise → `ArrayList` plus
+      `HashMap`/`HashSet`. That covers well over ninety per cent of the problems
+      on this sheet.
+
+      **Frequency counting, three ways, all O(n):**
+
+      ```java
+      map.put(k, map.getOrDefault(k, 0) + 1);
+      map.merge(k, 1, Integer::sum);
+      map.compute(k, (key, v) -> v == null ? 1 : v + 1);
+      ```
+
+      The Python equivalent is one line — `Counter(nums)` — which is a fair
+      summary of the difference in verbosity between the two languages. The
+      algorithmic content is identical, and that is the only part an interviewer
+      is grading.
+
+      **Why `TreeMap` has no Python twin.** A balanced binary search tree keeps
+      keys sorted while supporting O(log n) insert, delete and "nearest key"
+      queries. Python's standard library ships no such structure, so on this sheet
+      you will emulate it with a sorted list plus the `bisect` module (O(log n)
+      search but O(n) insert — fine up to a few thousand elements), with a heap
+      when only the extreme matters, or by sorting offline and processing queries
+      in a clever order. Knowing *why* you are reaching for a workaround is the
+      point; it is a question that comes up often.
+
+      **What to actually do with this entry.** Skim the table, then look up the
+      concrete class the next time you need one rather than trying to memorise all
+      of it today. Tick it off and move on to Step 1's maths and recursion
+      problems, where these containers start earning their keep.

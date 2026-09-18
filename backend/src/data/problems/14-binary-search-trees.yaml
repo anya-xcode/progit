@@ -1,0 +1,3715 @@
+section: binary-search-trees
+problems:
+  - slug: search-in-a-binary-search-tree
+    title: "Search in a BST"
+    difficulty: Easy
+    topic: "Binary Search Trees"
+    subtopic: "Concepts"
+    tags: [bst, tree]
+    sourceUrl: "https://leetcode.com/problems/search-in-a-binary-search-tree/"
+    statement: |
+      You are given the root of a **binary search tree** (every value in a node's
+      left subtree is smaller than the node, every value in its right subtree is
+      larger; all values are distinct) and a target value `val`.
+
+      Locate the node whose value equals `val` and return it. The driver prints
+      the **preorder traversal of the subtree rooted at that node**. If no node has
+      the value, return nothing and the driver prints `null`.
+    inputFormat: |
+      - Line 1: level-order values of the BST (`N` for a missing child, `N` alone for the empty tree).
+      - Line 2: the integer `val`.
+    outputFormat: |
+      Print the preorder traversal (space-separated) of the subtree whose root has value `val`, or `null` if `val` is not in the tree.
+    constraints:
+      - "0 <= number of nodes <= 1000"
+      - "1 <= node value, val <= 10^5"
+      - "All node values are distinct"
+    examples:
+      - input: |
+          8 4 12 2 6 10 14
+          4
+        output: |
+          4 2 6
+        explanation: "The node 4 is the left child of the root; its subtree in preorder is 4, 2, 6."
+      - input: |
+          8 4 12 2 6 10 14
+          5
+        output: |
+          null
+        explanation: "5 would have to be the left child of 6, which does not exist, so the value is absent."
+    hints:
+      - "You do not need to look at both subtrees — the BST ordering tells you which side can contain val."
+      - "Walk down from the root with a loop: go left when val is smaller, right when it is larger."
+    explanation: |
+      **Full traversal — O(n) time, O(h) space.** Search every node with DFS, ignoring
+      the ordering. Correct but wasteful.
+
+      **BST descent — O(h) time, O(1) space.** Start at the root. If the current value
+      equals `val`, return the node. If `val` is smaller, only the left subtree can
+      contain it; otherwise only the right subtree can. Stop when you fall off the
+      tree. `h` is `O(log n)` for a balanced tree and `O(n)` for a skewed one.
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def search_bst(root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
+            # Return the node whose value is val, or None.
+            pass
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split())
+            val = int(lines[1])
+            found = search_bst(root, val)
+            if found is None:
+                print("null")
+            else:
+                values: List[int] = []
+                stack = [found]
+                while stack:
+                    node = stack.pop()
+                    values.append(node.val)
+                    if node.right:
+                        stack.append(node.right)
+                    if node.left:
+                        stack.append(node.left)
+                print(" ".join(map(str, values)))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def search_bst(root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
+            node = root
+            while node and node.val != val:
+                node = node.left if val < node.val else node.right
+            return node
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split())
+            val = int(lines[1])
+            found = search_bst(root, val)
+            if found is None:
+                print("null")
+            else:
+                values: List[int] = []
+                stack = [found]
+                while stack:
+                    node = stack.pop()
+                    values.append(node.val)
+                    if node.right:
+                        stack.append(node.right)
+                    if node.left:
+                        stack.append(node.left)
+                print(" ".join(map(str, values)))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          8 4 12 2 6 10 14
+          4
+        expectedOutput: |
+          4 2 6
+        hidden: false
+      - input: |
+          8 4 12 2 6 10 14
+          5
+        expectedOutput: |
+          null
+        hidden: false
+      - input: |
+          N
+          5
+        expectedOutput: |
+          null
+        hidden: true
+      - input: |
+          7
+          7
+        expectedOutput: |
+          7
+        hidden: true
+      - input: |
+          7
+          3
+        expectedOutput: |
+          null
+        hidden: true
+      - input: |
+          169 4 429 3 15 289 707 N N N 71 222 380 651 999 44 149 188 242 337 417 491 665 864 N 35 68 119 159 186 192 238 273 299 378 411 420 487 525 661 682 812 987 24 39 59 N 91 128 155 165 175 N N 203 228 239 252 N 295 326 352 N 398 N 418 N 439 488 518 541 N N 674 690 808 828 956 994 21 28 38 N 54 N 77 96 126 143 150 N 163 168 173 179 N 214 N N N 241 248 254 N 297 314 327 350 374 396 404 N N 430 448 N N 510 519 535 600 666 675 686 700 770 N 813 838 944 968 N N N N N N 36 N 51 N 73 N N 116 N N N N N N N 164 167 N N N N N 206 N N N N N N 265 N N N N N N 341 N 357 N 384 N N N N N 440 453 497 514 N N 533 539 554 631 N N N N 683 N 693 N 711 790 N 823 829 840 897 N 962 980 N N N N 72 N 106 N N N N N N N 255 N N 347 355 N N 385 N N 450 465 495 508 N N N N N N 549 566 614 638 N N N N N 757 773 799 N 825 N 834 N 847 887 916 N N 975 982 N N N N N 259 N N N N N N N N 463 482 N N 504 N N N 564 595 612 624 N 642 746 759 N 782 796 N N N N N 845 855 867 N 900 937 N N N N N N N N N N 503 N N N 574 N 605 N N N N N 736 748 N 767 781 N 793 N N N 854 863 N 872 N 907 921 940 N N 573 586 N N 734 N 747 N 760 N N N N N N N N N N 886 N N N 936 N N 570 N 576 N N N N N N 764
+          169
+        expectedOutput: |
+          169 4 3 15 71 44 35 24 21 28 39 38 36 68 59 54 51 149 119 91 77 73 72 96 116 106 128 126 143 159 155 150 165 163 164 168 167 429 289 222 188 186 175 173 179 192 203 214 206 242 238 228 239 241 273 252 248 254 265 255 259 380 337 299 295 297 326 314 327 378 352 350 341 347 374 357 355 417 411 398 396 384 385 404 420 418 707 651 491 487 439 430 448 440 453 450 465 463 482 488 525 518 510 497 495 508 504 503 514 519 541 535 533 539 600 554 549 566 564 595 574 573 570 586 576 631 614 612 605 624 638 642 665 661 682 674 666 675 690 686 683 700 693 999 864 812 808 770 711 757 746 736 734 748 747 759 767 760 764 790 773 782 781 799 796 793 828 813 823 825 838 829 834 840 847 845 855 854 863 987 956 944 897 887 867 872 886 916 900 907 937 921 936 940 968 962 980 975 982 994
+        hidden: true
+      - input: |
+          169 4 429 3 15 289 707 N N N 71 222 380 651 999 44 149 188 242 337 417 491 665 864 N 35 68 119 159 186 192 238 273 299 378 411 420 487 525 661 682 812 987 24 39 59 N 91 128 155 165 175 N N 203 228 239 252 N 295 326 352 N 398 N 418 N 439 488 518 541 N N 674 690 808 828 956 994 21 28 38 N 54 N 77 96 126 143 150 N 163 168 173 179 N 214 N N N 241 248 254 N 297 314 327 350 374 396 404 N N 430 448 N N 510 519 535 600 666 675 686 700 770 N 813 838 944 968 N N N N N N 36 N 51 N 73 N N 116 N N N N N N N 164 167 N N N N N 206 N N N N N N 265 N N N N N N 341 N 357 N 384 N N N N N 440 453 497 514 N N 533 539 554 631 N N N N 683 N 693 N 711 790 N 823 829 840 897 N 962 980 N N N N 72 N 106 N N N N N N N 255 N N 347 355 N N 385 N N 450 465 495 508 N N N N N N 549 566 614 638 N N N N N 757 773 799 N 825 N 834 N 847 887 916 N N 975 982 N N N N N 259 N N N N N N N N 463 482 N N 504 N N N 564 595 612 624 N 642 746 759 N 782 796 N N N N N 845 855 867 N 900 937 N N N N N N N N N N 503 N N N 574 N 605 N N N N N 736 748 N 767 781 N 793 N N N 854 863 N 872 N 907 921 940 N N 573 586 N N 734 N 747 N 760 N N N N N N N N N N 886 N N N 936 N N 570 N 576 N N N N N N 764
+          465
+        expectedOutput: |
+          465 463 482
+        hidden: true
+      - input: |
+          169 4 429 3 15 289 707 N N N 71 222 380 651 999 44 149 188 242 337 417 491 665 864 N 35 68 119 159 186 192 238 273 299 378 411 420 487 525 661 682 812 987 24 39 59 N 91 128 155 165 175 N N 203 228 239 252 N 295 326 352 N 398 N 418 N 439 488 518 541 N N 674 690 808 828 956 994 21 28 38 N 54 N 77 96 126 143 150 N 163 168 173 179 N 214 N N N 241 248 254 N 297 314 327 350 374 396 404 N N 430 448 N N 510 519 535 600 666 675 686 700 770 N 813 838 944 968 N N N N N N 36 N 51 N 73 N N 116 N N N N N N N 164 167 N N N N N 206 N N N N N N 265 N N N N N N 341 N 357 N 384 N N N N N 440 453 497 514 N N 533 539 554 631 N N N N 683 N 693 N 711 790 N 823 829 840 897 N 962 980 N N N N 72 N 106 N N N N N N N 255 N N 347 355 N N 385 N N 450 465 495 508 N N N N N N 549 566 614 638 N N N N N 757 773 799 N 825 N 834 N 847 887 916 N N 975 982 N N N N N 259 N N N N N N N N 463 482 N N 504 N N N 564 595 612 624 N 642 746 759 N 782 796 N N N N N 845 855 867 N 900 937 N N N N N N N N N N 503 N N N 574 N 605 N N N N N 736 748 N 767 781 N 793 N N N 854 863 N 872 N 907 921 940 N N 573 586 N N 734 N 747 N 760 N N N N N N N N N N 886 N N N 936 N N 570 N 576 N N N N N N 764
+          1
+        expectedOutput: |
+          null
+        hidden: true
+  - slug: floor-and-ceil-in-a-bst
+    title: "Floor and Ceil in a BST"
+    difficulty: Medium
+    topic: "Binary Search Trees"
+    subtopic: "Concepts"
+    tags: [bst, tree, binary-search]
+    sourceUrl: ""
+    statement: |
+      Given a non-empty binary search tree with distinct values and an integer
+      `key`, find:
+
+      - the **floor** of `key`: the largest value in the tree that is `<= key`;
+      - the **ceil** of `key`: the smallest value in the tree that is `>= key`.
+
+      If no value qualifies for the floor (or ceil), report `-1` for it.
+    inputFormat: |
+      - Line 1: level-order values of the BST (`N` for a missing child).
+      - Line 2: the integer `key`.
+    outputFormat: |
+      Print two integers separated by a space: the floor and the ceil of `key` (`-1` when one does not exist).
+    constraints:
+      - "1 <= number of nodes <= 1000"
+      - "1 <= node value, key <= 10^5"
+      - "All node values are distinct"
+    examples:
+      - input: |
+          8 4 12 2 6 10 14
+          11
+        output: |
+          10 12
+        explanation: "10 is the largest value not above 11, and 12 is the smallest value not below 11."
+      - input: |
+          8 4 12 2 6 10 14
+          1
+        output: |
+          -1 2
+        explanation: "Every value is larger than 1, so there is no floor; the ceil is the minimum, 2."
+    hints:
+      - "An inorder traversal gives a sorted list — but can you avoid visiting every node?"
+      - "While walking down, every node with value <= key is a floor candidate, and moving right can only find a better one."
+      - "If a node equals the key, it is both the floor and the ceil."
+    explanation: |
+      **Sorted list — O(n) time, O(n) space.** Collect values with an inorder
+      traversal and binary search (or scan) for the floor and ceil.
+
+      **Two BST descents — O(h) time, O(1) space.** For the floor, start at the root:
+      if `node.val == key` it is the answer; if `node.val < key` record it as the
+      best floor so far and go right (a larger candidate may exist); otherwise go
+      left. The ceil is symmetric: record nodes with `node.val > key` and go left.
+      Both walks visit at most `h` nodes.
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def floor_and_ceil(root: Optional[TreeNode], key: int) -> List[int]:
+            # Return [floor, ceil] of key, using -1 when a value does not exist.
+            pass
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split())
+            key = int(lines[1])
+            print(" ".join(map(str, floor_and_ceil(root, key))))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def floor_and_ceil(root: Optional[TreeNode], key: int) -> List[int]:
+            floor_value, ceil_value = -1, -1
+            node = root
+            while node:
+                if node.val == key:
+                    return [key, key]
+                if node.val < key:
+                    floor_value = node.val
+                    node = node.right
+                else:
+                    node = node.left
+            node = root
+            while node:
+                if node.val > key:
+                    ceil_value = node.val
+                    node = node.left
+                else:
+                    node = node.right
+            return [floor_value, ceil_value]
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split())
+            key = int(lines[1])
+            print(" ".join(map(str, floor_and_ceil(root, key))))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          8 4 12 2 6 10 14
+          11
+        expectedOutput: |
+          10 12
+        hidden: false
+      - input: |
+          8 4 12 2 6 10 14
+          1
+        expectedOutput: |
+          -1 2
+        hidden: false
+      - input: |
+          10
+          10
+        expectedOutput: |
+          10 10
+        hidden: true
+      - input: |
+          10
+          3
+        expectedOutput: |
+          -1 10
+        hidden: true
+      - input: |
+          10
+          30
+        expectedOutput: |
+          10 -1
+        hidden: true
+      - input: |
+          8 4 12 2 6 10 14
+          14
+        expectedOutput: |
+          14 14
+        hidden: true
+      - input: |
+          8 4 12 2 6 10 14
+          100
+        expectedOutput: |
+          14 -1
+        hidden: true
+      - input: |
+          1150 194 1988 175 988 1510 3663 56 192 653 1103 1468 1899 2832 4925 34 150 179 N 407 914 1000 1111 1166 1479 1558 1956 2206 3523 4522 4985 6 N 75 N N N 397 502 722 984 N 1051 N 1146 N 1405 1478 1480 1512 1614 1948 1987 2163 2617 3454 3539 4349 4728 4946 N N 28 N N 265 403 476 515 702 742 979 N N N 1113 N 1209 1466 N N N N N 1516 1585 1651 1912 1954 1958 N 2117 2204 2546 2675 3221 3501 3537 3552 4222 4357 4640 4830 N 4984 N N 207 303 402 N 427 N N 540 N N N 808 968 N N 1137 N 1404 1453 N 1515 1531 1567 1598 N 1773 N 1933 N N N N 2061 2121 2182 N 2290 2560 2630 2743 3062 3436 N 3521 N N N 3636 4148 4238 N 4450 4615 4715 4775 4880 N N 196 248 271 355 N N 415 466 525 627 792 828 963 N N N 1293 N 1438 1461 N N N 1543 1562 N N 1613 1702 1891 1920 N 2040 2089 N 2122 N N 2217 2329 N 2612 N 2640 2690 2806 2914 3083 3355 N N N 3634 3647 3760 4195 N 4319 4387 4478 4599 4638 4674 N 4773 4810 N 4890 N N 246 N N N 343 N N 422 445 470 N 535 558 636 761 797 N 908 923 966 1253 1298 N N N 1462 N N 1561 N N N 1681 1765 1863 N N 1924 N N 2080 2111 N 2156 N 2264 2294 2518 2561 N 2633 N N 2723 2790 2820 2861 2927 3070 3095 3255 3365 3559 N 3644 N 3711 3774 4177 4202 4293 4328 4378 4416 N 4518 4569 N N N N 4711 4759 N 4789 N N 4903 245 N 314 347 N N 429 N N N 534 N 546 N N N N N N 798 879 N N 930 N N N N N 1304 N N N N 1665 N N N 1783 N N N N N N N 2124 N N 2270 N 2306 2436 2544 N 2578 N N 2722 N 2772 2805 2813 N 2851 2899 N 2967 N N N 3133 3254 3300 N 3375 N 3630 N N N N N 4084 4152 4194 N 4212 4241 4299 N N N 4380 N 4434 4498 N 4557 N N N N N N N N N N N N 332 N N N N N N N N N N 846 N 924 N N 1326 N N N N N N N 2285 N N 2331 2484 N N N 2590 N N N N N N N N N N 2870 2910 2966 N 3112 3169 3229 N 3283 3324 N 3399 N N 3876 4097 N N N N N N N N 4297 4305 N N N 4448 N N N N N N N N N N 1310 N 2276 N N N 2445 2514 N N N 2886 2901 N N N 3111 N N N N N N N 3306 N N N 3850 3901 4086 4136 N N N 4313 N N N N N N N N N N N N N N N N N N 3805 N N 3987 N 4095 N N 4306 N 3804 N 3906 4015 4089 N N N N N N N 3988 4062
+          2107
+        expectedOutput: |
+          2089 2111
+        hidden: true
+      - input: |
+          1150 194 1988 175 988 1510 3663 56 192 653 1103 1468 1899 2832 4925 34 150 179 N 407 914 1000 1111 1166 1479 1558 1956 2206 3523 4522 4985 6 N 75 N N N 397 502 722 984 N 1051 N 1146 N 1405 1478 1480 1512 1614 1948 1987 2163 2617 3454 3539 4349 4728 4946 N N 28 N N 265 403 476 515 702 742 979 N N N 1113 N 1209 1466 N N N N N 1516 1585 1651 1912 1954 1958 N 2117 2204 2546 2675 3221 3501 3537 3552 4222 4357 4640 4830 N 4984 N N 207 303 402 N 427 N N 540 N N N 808 968 N N 1137 N 1404 1453 N 1515 1531 1567 1598 N 1773 N 1933 N N N N 2061 2121 2182 N 2290 2560 2630 2743 3062 3436 N 3521 N N N 3636 4148 4238 N 4450 4615 4715 4775 4880 N N 196 248 271 355 N N 415 466 525 627 792 828 963 N N N 1293 N 1438 1461 N N N 1543 1562 N N 1613 1702 1891 1920 N 2040 2089 N 2122 N N 2217 2329 N 2612 N 2640 2690 2806 2914 3083 3355 N N N 3634 3647 3760 4195 N 4319 4387 4478 4599 4638 4674 N 4773 4810 N 4890 N N 246 N N N 343 N N 422 445 470 N 535 558 636 761 797 N 908 923 966 1253 1298 N N N 1462 N N 1561 N N N 1681 1765 1863 N N 1924 N N 2080 2111 N 2156 N 2264 2294 2518 2561 N 2633 N N 2723 2790 2820 2861 2927 3070 3095 3255 3365 3559 N 3644 N 3711 3774 4177 4202 4293 4328 4378 4416 N 4518 4569 N N N N 4711 4759 N 4789 N N 4903 245 N 314 347 N N 429 N N N 534 N 546 N N N N N N 798 879 N N 930 N N N N N 1304 N N N N 1665 N N N 1783 N N N N N N N 2124 N N 2270 N 2306 2436 2544 N 2578 N N 2722 N 2772 2805 2813 N 2851 2899 N 2967 N N N 3133 3254 3300 N 3375 N 3630 N N N N N 4084 4152 4194 N 4212 4241 4299 N N N 4380 N 4434 4498 N 4557 N N N N N N N N N N N N 332 N N N N N N N N N N 846 N 924 N N 1326 N N N N N N N 2285 N N 2331 2484 N N N 2590 N N N N N N N N N N 2870 2910 2966 N 3112 3169 3229 N 3283 3324 N 3399 N N 3876 4097 N N N N N N N N 4297 4305 N N N 4448 N N N N N N N N N N 1310 N 2276 N N N 2445 2514 N N N 2886 2901 N N N 3111 N N N N N N N 3306 N N N 3850 3901 4086 4136 N N N 4313 N N N N N N N N N N N N N N N N N N 3805 N N 3987 N 4095 N N 4306 N 3804 N 3906 4015 4089 N N N N N N N 3988 4062
+          2306
+        expectedOutput: |
+          2306 2306
+        hidden: true
+      - input: |
+          50 40 N 30 N 20 N 10
+          35
+        expectedOutput: |
+          30 40
+        hidden: true
+  - slug: insert-into-a-binary-search-tree
+    title: "Insert into a BST"
+    difficulty: Medium
+    topic: "Binary Search Trees"
+    subtopic: "Concepts"
+    tags: [bst, tree]
+    sourceUrl: "https://leetcode.com/problems/insert-into-a-binary-search-tree/"
+    statement: |
+      You are given the root of a binary search tree with distinct values and a
+      value `val` that is **not** in the tree. Insert `val` as a **new leaf**: start
+      at the root and repeatedly move left if `val` is smaller than the current
+      node or right if it is larger, until you reach a missing child — attach the
+      new node there. Existing nodes must not be rearranged.
+
+      Return the root of the updated tree (which is the new node if the tree was
+      empty). The driver prints the **preorder traversal** of the result; because
+      the tree is a BST, preorder pins down its exact shape.
+    inputFormat: |
+      - Line 1: level-order values of the BST (`N` for a missing child, `N` alone for the empty tree).
+      - Line 2: the integer `val`.
+    outputFormat: |
+      Print the preorder traversal of the tree after insertion, space-separated.
+    constraints:
+      - "0 <= number of nodes <= 1000"
+      - "1 <= node value, val <= 10^5"
+      - "All values, including val, are distinct"
+    examples:
+      - input: |
+          8 4 12 2 6
+          5
+        output: |
+          8 4 2 6 5 12
+        explanation: "5 < 8 goes left, 5 > 4 goes right, 5 < 6 goes left — an empty spot, so 5 becomes the left child of 6."
+      - input: |
+          N
+          3
+        output: |
+          3
+        explanation: "Inserting into an empty tree makes the new node the root."
+    hints:
+      - "The position of a new leaf is found exactly like a failed search for val."
+      - "Keep track of the last real node you visited; the new node becomes its left or right child."
+    explanation: |
+      **Rebuild — O(n log n) time, O(n) space.** Collect all values plus `val` and
+      rebuild a tree. This generally produces a different shape and does not
+      satisfy the "new leaf" requirement, so it is not acceptable here.
+
+      **Recursive insert — O(h) time, O(h) space.** If the node is null, return a new
+      node. Otherwise recurse into the left or right child depending on the
+      comparison and store the returned subtree back into that child pointer.
+
+      **Iterative insert — O(h) time, O(1) space.** Walk down from the root while
+      remembering the parent. When the next child pointer is empty, attach the new
+      node on the correct side of the parent. Handle the empty tree separately.
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def insert_into_bst(root: Optional[TreeNode], val: int) -> TreeNode:
+            # Insert val as a new leaf and return the (possibly new) root.
+            pass
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split())
+            val = int(lines[1])
+            root = insert_into_bst(root, val)
+            values: List[int] = []
+            stack = [root] if root else []
+            while stack:
+                node = stack.pop()
+                values.append(node.val)
+                if node.right:
+                    stack.append(node.right)
+                if node.left:
+                    stack.append(node.left)
+            print(" ".join(map(str, values)))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def insert_into_bst(root: Optional[TreeNode], val: int) -> TreeNode:
+            new_node = TreeNode(val)
+            if root is None:
+                return new_node
+            node = root
+            while True:
+                if val < node.val:
+                    if node.left is None:
+                        node.left = new_node
+                        return root
+                    node = node.left
+                else:
+                    if node.right is None:
+                        node.right = new_node
+                        return root
+                    node = node.right
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split())
+            val = int(lines[1])
+            root = insert_into_bst(root, val)
+            values: List[int] = []
+            stack = [root] if root else []
+            while stack:
+                node = stack.pop()
+                values.append(node.val)
+                if node.right:
+                    stack.append(node.right)
+                if node.left:
+                    stack.append(node.left)
+            print(" ".join(map(str, values)))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          8 4 12 2 6
+          5
+        expectedOutput: |
+          8 4 2 6 5 12
+        hidden: false
+      - input: |
+          N
+          3
+        expectedOutput: |
+          3
+        hidden: false
+      - input: |
+          5
+          9
+        expectedOutput: |
+          5 9
+        hidden: true
+      - input: |
+          5
+          1
+        expectedOutput: |
+          5 1
+        hidden: true
+      - input: |
+          8 4 12 2 6 10 14
+          15
+        expectedOutput: |
+          8 4 2 6 12 10 14 15
+        hidden: true
+      - input: |
+          10 N 20 N 30 N 40
+          25
+        expectedOutput: |
+          10 20 30 25 40
+        hidden: true
+      - input: |
+          1188 343 2425 70 534 1257 2974 58 102 434 787 1249 1736 2541 2985 53 66 81 236 352 469 705 1096 1211 N 1554 2172 2539 2909 N N 49 N N N 74 96 145 338 N 404 447 490 671 728 906 1153 1210 1225 1467 1726 1821 2414 2428 N 2571 2941 17 N N N N 97 139 160 311 N 381 412 439 466 N 496 613 686 710 746 843 1059 1129 1182 1195 N 1220 1238 1288 1471 1569 1728 1767 1864 2317 2420 N 2528 2544 2695 N 2943 N N N N 104 N 152 230 285 322 376 N 410 424 N 445 453 N N N 584 666 676 696 N N 732 N 802 885 975 1083 1115 1150 1167 N N N N N N N N 1325 N 1512 N 1705 N 1731 1746 1811 1833 2041 2186 2344 2417 N 2498 N 2542 N 2632 2706 N 2951 N 124 N N 212 233 255 N N 336 354 N N N N N N N N N 571 600 658 N N 677 N N N N 792 806 N 895 925 978 1081 1088 N 1122 1136 N N N 1310 1355 1486 1515 1612 1721 N N 1742 1764 N N 1824 1863 1942 2100 2181 2221 2327 2347 N N 2447 N N N 2584 2661 N 2768 N N N N 176 N N N N N N N N 365 N 582 N N N N N 678 N N N 834 890 N 911 963 977 1037 N N N N N N N 1139 N N 1345 1418 N 1511 N 1545 1588 1698 1719 N N N N N 1822 N 1841 N 1909 1979 2059 2131 N N 2207 2249 2319 N N 2386 N 2479 N 2620 N 2690 2759 2897 N N N N N N N N N N N N N N 928 N N N 1018 1047 1137 N N N 1405 1432 N N 1520 1546 1573 N 1691 N N N N N N 1842 1881 1929 1967 2020 N N N 2167 N 2220 2235 2279 N N N N N N 2586 N 2682 N 2736 N 2815 N N N N N N N N N 1362 N N N N N N N N N 1678 N N N 1872 1896 N N 1957 N 2010 2040 2156 N 2209 N 2227 2246 2253 2286 N N N N N N 2790 2829 N 1384 1646 1687 N N N N N N N N N N N N N N N N 2236 N N 2277 2282 2292 N 2791 2818 2839 N 1386 N 1669 N N N N 2269 N N N N 2303 N N N 2821 2831 2866 N 1398 N N N N 2298 N N 2823
+          1500
+        expectedOutput: |
+          1188 343 70 58 53 49 17 66 102 81 74 96 97 236 145 139 104 124 160 152 230 212 176 233 338 311 285 255 322 336 534 434 352 404 381 376 354 365 412 410 424 469 447 439 445 466 453 490 496 787 705 671 613 584 571 582 600 666 658 686 676 677 678 696 728 710 746 732 1096 906 843 802 792 806 834 885 895 890 1059 975 925 911 963 928 978 977 1037 1018 1047 1083 1081 1088 1153 1129 1115 1122 1150 1136 1139 1137 1182 1167 2425 1257 1249 1211 1210 1195 1225 1220 1238 1736 1554 1467 1288 1325 1310 1355 1345 1418 1405 1362 1384 1386 1398 1432 1471 1512 1486 1511 1500 1515 1545 1520 1546 1726 1569 1705 1612 1588 1573 1698 1691 1678 1646 1669 1687 1721 1719 1728 1731 2172 1821 1767 1746 1742 1764 1811 1864 1833 1824 1822 1863 1841 1842 2041 1942 1909 1881 1872 1896 1929 1979 1967 1957 2020 2010 2040 2100 2059 2131 2167 2156 2414 2317 2186 2181 2221 2207 2220 2209 2249 2235 2227 2246 2236 2279 2253 2277 2269 2286 2282 2292 2303 2298 2344 2327 2319 2347 2386 2420 2417 2974 2541 2539 2428 2528 2498 2447 2479 2909 2571 2544 2542 2695 2632 2584 2620 2586 2661 2690 2682 2706 2768 2759 2736 2897 2815 2790 2791 2829 2818 2821 2823 2839 2831 2866 2941 2943 2951 2985
+        hidden: true
+      - input: |
+          1188 343 2425 70 534 1257 2974 58 102 434 787 1249 1736 2541 2985 53 66 81 236 352 469 705 1096 1211 N 1554 2172 2539 2909 N N 49 N N N 74 96 145 338 N 404 447 490 671 728 906 1153 1210 1225 1467 1726 1821 2414 2428 N 2571 2941 17 N N N N 97 139 160 311 N 381 412 439 466 N 496 613 686 710 746 843 1059 1129 1182 1195 N 1220 1238 1288 1471 1569 1728 1767 1864 2317 2420 N 2528 2544 2695 N 2943 N N N N 104 N 152 230 285 322 376 N 410 424 N 445 453 N N N 584 666 676 696 N N 732 N 802 885 975 1083 1115 1150 1167 N N N N N N N N 1325 N 1512 N 1705 N 1731 1746 1811 1833 2041 2186 2344 2417 N 2498 N 2542 N 2632 2706 N 2951 N 124 N N 212 233 255 N N 336 354 N N N N N N N N N 571 600 658 N N 677 N N N N 792 806 N 895 925 978 1081 1088 N 1122 1136 N N N 1310 1355 1486 1515 1612 1721 N N 1742 1764 N N 1824 1863 1942 2100 2181 2221 2327 2347 N N 2447 N N N 2584 2661 N 2768 N N N N 176 N N N N N N N N 365 N 582 N N N N N 678 N N N 834 890 N 911 963 977 1037 N N N N N N N 1139 N N 1345 1418 N 1511 N 1545 1588 1698 1719 N N N N N 1822 N 1841 N 1909 1979 2059 2131 N N 2207 2249 2319 N N 2386 N 2479 N 2620 N 2690 2759 2897 N N N N N N N N N N N N N N 928 N N N 1018 1047 1137 N N N 1405 1432 N N 1520 1546 1573 N 1691 N N N N N N 1842 1881 1929 1967 2020 N N N 2167 N 2220 2235 2279 N N N N N N 2586 N 2682 N 2736 N 2815 N N N N N N N N N 1362 N N N N N N N N N 1678 N N N 1872 1896 N N 1957 N 2010 2040 2156 N 2209 N 2227 2246 2253 2286 N N N N N N 2790 2829 N 1384 1646 1687 N N N N N N N N N N N N N N N N 2236 N N 2277 2282 2292 N 2791 2818 2839 N 1386 N 1669 N N N N 2269 N N N N 2303 N N N 2821 2831 2866 N 1398 N N N N 2298 N N 2823
+          2986
+        expectedOutput: |
+          1188 343 70 58 53 49 17 66 102 81 74 96 97 236 145 139 104 124 160 152 230 212 176 233 338 311 285 255 322 336 534 434 352 404 381 376 354 365 412 410 424 469 447 439 445 466 453 490 496 787 705 671 613 584 571 582 600 666 658 686 676 677 678 696 728 710 746 732 1096 906 843 802 792 806 834 885 895 890 1059 975 925 911 963 928 978 977 1037 1018 1047 1083 1081 1088 1153 1129 1115 1122 1150 1136 1139 1137 1182 1167 2425 1257 1249 1211 1210 1195 1225 1220 1238 1736 1554 1467 1288 1325 1310 1355 1345 1418 1405 1362 1384 1386 1398 1432 1471 1512 1486 1511 1515 1545 1520 1546 1726 1569 1705 1612 1588 1573 1698 1691 1678 1646 1669 1687 1721 1719 1728 1731 2172 1821 1767 1746 1742 1764 1811 1864 1833 1824 1822 1863 1841 1842 2041 1942 1909 1881 1872 1896 1929 1979 1967 1957 2020 2010 2040 2100 2059 2131 2167 2156 2414 2317 2186 2181 2221 2207 2220 2209 2249 2235 2227 2246 2236 2279 2253 2277 2269 2286 2282 2292 2303 2298 2344 2327 2319 2347 2386 2420 2417 2974 2541 2539 2428 2528 2498 2447 2479 2909 2571 2544 2542 2695 2632 2584 2620 2586 2661 2690 2682 2706 2768 2759 2736 2897 2815 2790 2791 2829 2818 2821 2823 2839 2831 2866 2941 2943 2951 2985 2986
+        hidden: true
+  - slug: kth-smallest-element-in-a-bst
+    title: "Kth Smallest Element in a BST"
+    difficulty: Medium
+    topic: "Binary Search Trees"
+    subtopic: "Medium Problems"
+    tags: [bst, tree, inorder]
+    sourceUrl: "https://leetcode.com/problems/kth-smallest-element-in-a-bst/"
+    statement: |
+      Given the root of a binary search tree with distinct values and an integer
+      `k`, return the `k`-th smallest value in the tree (counting from 1).
+    inputFormat: |
+      - Line 1: level-order values of the BST (`N` for a missing child).
+      - Line 2: the integer `k`.
+    outputFormat: |
+      Print the k-th smallest value.
+    constraints:
+      - "1 <= k <= number of nodes <= 1000"
+      - "1 <= node value <= 10^5"
+      - "All node values are distinct"
+    examples:
+      - input: |
+          8 4 12 2 6 10 14
+          3
+        output: |
+          6
+        explanation: "The sorted values are 2 4 6 8 10 12 14, and the third one is 6."
+      - input: |
+          5 3 N 1 N N 2
+          4
+        output: |
+          5
+        explanation: "The values in order are 1 2 3 5, so the 4th smallest is the root 5."
+    hints:
+      - "What order does an inorder traversal of a BST produce?"
+      - "You can stop the traversal as soon as you have visited k nodes."
+    explanation: |
+      **Collect and sort — O(n log n) time, O(n) space.** Gather all values with any
+      traversal, sort them and pick index `k - 1`.
+
+      **Inorder list — O(n) time, O(n) space.** Inorder traversal of a BST is already
+      sorted, so build that list and pick index `k - 1` without sorting.
+
+      **Early-stopping iterative inorder — O(h + k) time, O(h) space.** Use the stack
+      version of inorder traversal and count nodes as they are popped. The `k`-th
+      popped node is the answer, so the rest of the tree is never touched. (Morris
+      traversal brings the space down to O(1).)
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def kth_smallest(root: Optional[TreeNode], k: int) -> int:
+            # Return the k-th smallest value (1-indexed).
+            pass
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split())
+            k = int(lines[1])
+            print(kth_smallest(root, k))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def kth_smallest(root: Optional[TreeNode], k: int) -> int:
+            stack: List[TreeNode] = []
+            node = root
+            while node or stack:
+                while node:
+                    stack.append(node)
+                    node = node.left
+                node = stack.pop()
+                k -= 1
+                if k == 0:
+                    return node.val
+                node = node.right
+            return -1
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split())
+            k = int(lines[1])
+            print(kth_smallest(root, k))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          8 4 12 2 6 10 14
+          3
+        expectedOutput: |
+          6
+        hidden: false
+      - input: |
+          5 3 N 1 N N 2
+          4
+        expectedOutput: |
+          5
+        hidden: false
+      - input: |
+          42
+          1
+        expectedOutput: |
+          42
+        hidden: true
+      - input: |
+          8 4 12 2 6 10 14
+          1
+        expectedOutput: |
+          2
+        hidden: true
+      - input: |
+          8 4 12 2 6 10 14
+          7
+        expectedOutput: |
+          14
+        hidden: true
+      - input: |
+          93369 50183 99319 23933 76386 94956 99688 21933 28609 57853 87935 94507 96882 99647 99887 12031 22201 25441 37143 51285 61311 83254 89346 N 94547 96063 97388 99577 N N N 1667 19832 22106 23022 24315 28014 33281 39925 N 52892 58224 67751 80134 85064 89287 92522 N N 95580 96724 97359 97401 N N 1118 3693 15152 20671 22082 22123 22740 23808 24016 25047 25963 28053 32242 34920 37243 42844 51927 56961 N 59097 64397 71053 78181 82703 84401 86607 88831 N 89372 92611 N 95786 N N 96888 N N 97601 582 1652 2254 11157 12702 18757 20046 21369 N N N N N 22911 23497 N 23966 N 24623 N 25943 27073 N N 29587 32837 33997 35897 N 39714 40024 48104 51507 52458 53631 57510 58816 60633 64166 65505 69744 73697 77240 79211 81228 82927 84032 85026 85568 87180 88201 89032 N 90077 N 93251 N N N 96900 N 97988 446 N N N 2016 2543 9765 11749 12268 14792 17217 19109 N 20222 N 21485 N N N N N N N 24861 25674 N 26372 27925 28941 31799 32629 33132 33373 34205 35064 36926 38515 N N 41441 44425 48670 51474 N 52054 N N 53683 N 57789 58421 59071 59451 N 62856 N 64806 66250 68728 70625 71058 75547 76870 N 78269 79742 80941 81849 82917 83051 83466 84054 84637 N 85248 85587 86737 87869 N N N N 89913 92143 92716 N N N N 98090 N N N 2113 N 3110 4360 11080 11172 N N 12548 13610 14942 16518 17908 N N 20105 20264 N 21541 N N N N 25985 N N 28010 28689 N 30199 32089 32396 32664 N N 33371 N N 34385 N 35451 36182 36981 38162 39587 40735 42502 42990 47519 48566 49318 N N N N N 54954 N N 58230 58810 N N 59265 60361 62369 63096 N 65184 66069 66695 68497 69410 70423 70934 N 71201 75283 75858 76447 N 78206 78845 79262 80078 N N 81507 82569 N N N N N 83557 N N 84580 84982 N N N 85730 N N 87458 N N 89968 90716 92287 N N 98069 98527 N N N N 3887 9124 10682 N N N N N 13082 14552 N N N N 17531 18456 N N N 20398 N N N N 27993 N N N 29678 30368 32001 N N N N N N N N 34595 N N N 36450 N 37055 37689 38384 N N 40108 41077 41757 42697 N 44058 44748 47773 N N 48752 50074 53838 55173 N N 58741 N N N 59660 60505 61458 N N 64065 65069 N N 66111 66691 67744 68383 N 69191 69592 70329 N 70706 N N 72977 73901 N 75791 76182 N N N N 78722 N 79213 79508 80036 N N N 82080 N N N N N 84878 N N 86452 N N N N 90332 91840 92226 N N N N N N 4001 8721 9183 10317 10763 N N 14219 14724 17251 17725 18260 18531 N 20562 N N N 29951 30229 30721 N N N N N 36826 N N 37330 N N 38473 N 40484 40970 N N N N N 43613 N 44729 45132 47712 N 48678 N 49606 N N 54224 N N N N N N N N 61313 62326 63387 N N N N N N N 66736 N 68030 N N 69361 N N N N N N 72316 73281 N 74557 N N 75931 N N N N N 79338 N N N N N N N 86361 N N N N N N N N N 4425 8928 N 9534 9826 10602 N N N N N N N N N N 18153 N N 18644 N N 29939 30196 N N 30435 31123 N N N N N N 40124 N N N 43122 N 44664 N 45000 46924 N N N N 49354 49951 N N N N 62146 62356 N 63656 N N N 68148 N N N N 73060 N 73972 N N N N N N N 4422 7571 N N N N N 9984 N N N N N N N N N N N 30697 31089 31235 N 40260 N 43610 N 44675 44965 N 46827 47122 N N N 49978 61774 62273 N N N 63713 68094 N N N N N N N 4912 8306 N N N N N N 31174 31744 40220 40276 N N N N N N 46825 N N N N N 61616 N N N N N N N N 6378 8233 N N N 31654 N N N N N 45901 N N N 6071 6844 8127 N N N N N N N 6500
+          377
+        expectedOutput: |
+          93369
+        hidden: true
+      - input: |
+          93369 50183 99319 23933 76386 94956 99688 21933 28609 57853 87935 94507 96882 99647 99887 12031 22201 25441 37143 51285 61311 83254 89346 N 94547 96063 97388 99577 N N N 1667 19832 22106 23022 24315 28014 33281 39925 N 52892 58224 67751 80134 85064 89287 92522 N N 95580 96724 97359 97401 N N 1118 3693 15152 20671 22082 22123 22740 23808 24016 25047 25963 28053 32242 34920 37243 42844 51927 56961 N 59097 64397 71053 78181 82703 84401 86607 88831 N 89372 92611 N 95786 N N 96888 N N 97601 582 1652 2254 11157 12702 18757 20046 21369 N N N N N 22911 23497 N 23966 N 24623 N 25943 27073 N N 29587 32837 33997 35897 N 39714 40024 48104 51507 52458 53631 57510 58816 60633 64166 65505 69744 73697 77240 79211 81228 82927 84032 85026 85568 87180 88201 89032 N 90077 N 93251 N N N 96900 N 97988 446 N N N 2016 2543 9765 11749 12268 14792 17217 19109 N 20222 N 21485 N N N N N N N 24861 25674 N 26372 27925 28941 31799 32629 33132 33373 34205 35064 36926 38515 N N 41441 44425 48670 51474 N 52054 N N 53683 N 57789 58421 59071 59451 N 62856 N 64806 66250 68728 70625 71058 75547 76870 N 78269 79742 80941 81849 82917 83051 83466 84054 84637 N 85248 85587 86737 87869 N N N N 89913 92143 92716 N N N N 98090 N N N 2113 N 3110 4360 11080 11172 N N 12548 13610 14942 16518 17908 N N 20105 20264 N 21541 N N N N 25985 N N 28010 28689 N 30199 32089 32396 32664 N N 33371 N N 34385 N 35451 36182 36981 38162 39587 40735 42502 42990 47519 48566 49318 N N N N N 54954 N N 58230 58810 N N 59265 60361 62369 63096 N 65184 66069 66695 68497 69410 70423 70934 N 71201 75283 75858 76447 N 78206 78845 79262 80078 N N 81507 82569 N N N N N 83557 N N 84580 84982 N N N 85730 N N 87458 N N 89968 90716 92287 N N 98069 98527 N N N N 3887 9124 10682 N N N N N 13082 14552 N N N N 17531 18456 N N N 20398 N N N N 27993 N N N 29678 30368 32001 N N N N N N N N 34595 N N N 36450 N 37055 37689 38384 N N 40108 41077 41757 42697 N 44058 44748 47773 N N 48752 50074 53838 55173 N N 58741 N N N 59660 60505 61458 N N 64065 65069 N N 66111 66691 67744 68383 N 69191 69592 70329 N 70706 N N 72977 73901 N 75791 76182 N N N N 78722 N 79213 79508 80036 N N N 82080 N N N N N 84878 N N 86452 N N N N 90332 91840 92226 N N N N N N 4001 8721 9183 10317 10763 N N 14219 14724 17251 17725 18260 18531 N 20562 N N N 29951 30229 30721 N N N N N 36826 N N 37330 N N 38473 N 40484 40970 N N N N N 43613 N 44729 45132 47712 N 48678 N 49606 N N 54224 N N N N N N N N 61313 62326 63387 N N N N N N N 66736 N 68030 N N 69361 N N N N N N 72316 73281 N 74557 N N 75931 N N N N N 79338 N N N N N N N 86361 N N N N N N N N N 4425 8928 N 9534 9826 10602 N N N N N N N N N N 18153 N N 18644 N N 29939 30196 N N 30435 31123 N N N N N N 40124 N N N 43122 N 44664 N 45000 46924 N N N N 49354 49951 N N N N 62146 62356 N 63656 N N N 68148 N N N N 73060 N 73972 N N N N N N N 4422 7571 N N N N N 9984 N N N N N N N N N N N 30697 31089 31235 N 40260 N 43610 N 44675 44965 N 46827 47122 N N N 49978 61774 62273 N N N 63713 68094 N N N N N N N 4912 8306 N N N N N N 31174 31744 40220 40276 N N N N N N 46825 N N N N N 61616 N N N N N N N N 6378 8233 N N N 31654 N N N N N 45901 N N N 6071 6844 8127 N N N N N N N 6500
+          400
+        expectedOutput: |
+          99887
+        hidden: true
+      - input: |
+          60 50 N 40 N 30 N 20 N 10
+          2
+        expectedOutput: |
+          20
+        hidden: true
+  - slug: validate-binary-search-tree
+    title: "Validate BST"
+    difficulty: Medium
+    topic: "Binary Search Trees"
+    subtopic: "Medium Problems"
+    tags: [bst, tree, dfs]
+    sourceUrl: "https://leetcode.com/problems/validate-binary-search-tree/"
+    statement: |
+      Decide whether a binary tree is a valid **binary search tree**, meaning that
+      for every node:
+
+      - every value in its left subtree is **strictly smaller** than the node's value;
+      - every value in its right subtree is **strictly larger** than the node's value.
+
+      Equal values anywhere violate the rule. The empty tree is a valid BST.
+    inputFormat: |
+      A single line with the level-order values of the tree, using `N` for a missing child (the empty tree is `N`).
+    outputFormat: |
+      Print `true` if the tree is a valid BST, otherwise `false`.
+    constraints:
+      - "0 <= number of nodes <= 1000"
+      - "-2^31 <= node value <= 2^31 - 1"
+    examples:
+      - input: |
+          8 4 12 2 6 10 14
+        output: |
+          true
+        explanation: "Every node sits between the values allowed by its ancestors."
+      - input: |
+          8 4 12 2 9
+        output: |
+          false
+        explanation: "9 is the right child of 4, which is fine locally, but it lies in the root's left subtree and 9 > 8."
+    hints:
+      - "Comparing each node only with its direct children is not enough — look at example 2."
+      - "Pass down an allowed open interval (low, high) for each node and narrow it when descending."
+      - "Alternatively, the inorder traversal of a valid BST is strictly increasing."
+    explanation: |
+      **Subtree min/max — O(n²) time worst case.** For every node compute the maximum of
+      its left subtree and the minimum of its right subtree separately and compare
+      with the node.
+
+      **Range recursion — O(n) time, O(h) space.** `valid(node, low, high)` requires
+      `low < node.val < high`, then checks `valid(left, low, node.val)` and
+      `valid(right, node.val, high)`. Start with unbounded limits (use `None` or
+      infinities rather than a fixed integer sentinel, since values may reach the
+      32-bit extremes).
+
+      **Inorder check — O(n) time, O(h) space.** Traverse inorder while remembering
+      the previous value; the tree is valid exactly when each value is strictly
+      larger than the previous one.
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def is_valid_bst(root: Optional[TreeNode]) -> bool:
+            # Return True if the tree satisfies the strict BST property.
+            pass
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split() if lines else [])
+            print("true" if is_valid_bst(root) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def is_valid_bst(root: Optional[TreeNode]) -> bool:
+            stack: List[TreeNode] = []
+            previous: Optional[int] = None
+            node = root
+            while node or stack:
+                while node:
+                    stack.append(node)
+                    node = node.left
+                node = stack.pop()
+                if previous is not None and node.val <= previous:
+                    return False
+                previous = node.val
+                node = node.right
+            return True
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split() if lines else [])
+            print("true" if is_valid_bst(root) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          8 4 12 2 6 10 14
+        expectedOutput: |
+          true
+        hidden: false
+      - input: |
+          8 4 12 2 9
+        expectedOutput: |
+          false
+        hidden: false
+      - input: |
+          N
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          1
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          5 5
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          -2147483648 N 2147483647
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          -209453 -967834 611633 -995781 -551114 334757 943616 N -974473 -911098 -360890 -6849 588349 769025 952393 N N -927187 -798358 -463793 -358480 -110640 184340 440066 590639 768836 828104 943870 998527 -961284 -915010 -848045 -739132 -536917 -406823 N -338342 -130886 -15609 74410 234203 421988 528779 N N 745334 N 799446 926408 N N 982308 999443 -966332 -941348 -917291 N -852424 -837865 -781930 -586579 -539412 -509353 -447049 -362941 -355569 -247800 -153902 -115143 -33751 N 36277 150887 207745 310677 417947 435499 485189 529621 666105 748095 798267 800678 852439 939741 966129 987455 N N -967004 N N -932155 N N -854556 N -847018 -805755 -794006 -767794 -620544 -558091 -539721 N -518610 -468209 -457135 -431697 -386267 N -356306 -341605 -252796 -209767 -174671 -143767 -124939 N -110353 -21061 12376 58498 77396 180859 198394 222170 259446 333850 371282 N 428865 N 470053 496021 N 584389 619497 729757 746056 760452 N N N 807088 835345 853978 N N N 970975 982511 993423 N N -939938 -931524 -879185 -852944 N -842900 -835728 -804138 -797602 -787096 N -767004 -662501 -602807 N N -545240 N N -517349 -504388 N N -454378 -445937 -425971 -393039 -373761 N N N N -259255 N -215703 N N N N -142608 -127352 N N -62766 -33135 N 2438 23533 37812 N N 100274 173529 182027 187286 199995 220343 N 239362 297380 333276 N 368830 407391 N N 457470 480428 495730 505800 565619 584639 N 656528 713747 740824 N N N N 806007 820589 N 850096 N 879805 N N N 985276 N N N N N N -899883 -865387 N N -843627 N N N -805240 N N N N N N -742635 -733495 -639139 -607004 N N N N N N -502653 N N N N N -425770 -404406 N N N -265039 -255683 -225574 -211133 N N N N -86562 -41111 N N 149 N N N 37398 40631 79881 136810 157340 N N N N N N N 208434 221895 N 254880 282077 297609 318744 N 336390 N N N 448934 N N N N N N N 555012 N N N 651278 665052 687542 719857 N 742077 801989 N 814572 N 841714 N 871403 914886 983833 N N -884845 -869636 -855788 N N N -804161 N N -738459 -727140 -645066 -630248 N N N N N -420431 N -398553 -333134 N N N -239295 N N N -99891 -72454 -52207 -40519 N N N N N 53247 N 96623 133991 140430 N N N N N N 245011 255520 279550 296169 N 310152 N 333152 N 366039 N N N 559412 629833 N N N 675315 711981 714466 N N N N N N N N N N N 892285 924793 N N -896368 -880530 N N N N N N N -733786 -727518 -716725 -649334 -640756 -635441 N N N N N N -331882 -245605 -228472 N N -84371 N -59928 N N N 52997 56377 80850 N N N N N N N N N 263276 N 284592 N N N 323703 N N N N N N N N N 708013 N N N N 913372 915150 N N -890702 N N N N N N -726404 -691535 -656974 N N N N N N -315362 N -244900 -234015 N N N -60904 -56372 N N N N N 89407 N N N 290757 N N 689039 N N N N N N N N N -699497 -675153 N -651783 N -283239 N N N N N N N N 81943 92682 N N N 700960 N N -675404 -668534 N N N N N N N N 691160 701585 N N N N N N N 702442
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          -209453 -967834 611633 -995781 -551114 334757 943616 N -974473 -911098 -360890 -6849 588349 769025 952393 N N 297609 -798358 -463793 -358480 -110640 184340 440066 590639 768836 828104 943870 998527 -961284 -915010 -848045 -739132 -536917 -406823 N -338342 -130886 -15609 74410 234203 421988 528779 N N 745334 N 799446 926408 N N 982308 999443 -966332 -941348 -917291 N -852424 -837865 -781930 -586579 -539412 -509353 -447049 -362941 -355569 -247800 -153902 -115143 -33751 N 36277 150887 207745 310677 417947 435499 485189 529621 666105 748095 798267 800678 852439 939741 966129 987455 N N -967004 N N -932155 N N -854556 N -847018 -805755 -794006 -767794 -620544 -558091 -539721 N -518610 -468209 -457135 -431697 -386267 N -356306 -341605 -252796 -209767 -174671 -143767 -124939 N -110353 -21061 12376 58498 77396 180859 198394 222170 259446 333850 371282 N 428865 N 470053 496021 N 584389 619497 729757 746056 760452 N N N 807088 835345 853978 N N N 970975 982511 993423 N N -939938 -931524 -879185 -852944 N -842900 -835728 -804138 -797602 -787096 N -767004 -662501 -602807 N N -545240 N N -517349 -504388 N N -454378 -445937 -425971 -393039 -373761 N N N N -259255 N -215703 N N N N -142608 -127352 N N -62766 -33135 N 2438 23533 37812 N N 100274 173529 182027 187286 199995 220343 N 239362 297380 333276 N 368830 407391 N N 457470 480428 495730 505800 565619 584639 N 656528 713747 740824 N N N N 806007 820589 N 850096 N 879805 N N N 985276 N N N N N N -899883 -865387 N N -843627 N N N -805240 N N N N N N -742635 -733495 -639139 -607004 N N N N N N -502653 N N N N N -425770 -404406 N N N -265039 -255683 -225574 -211133 N N N N -86562 -41111 N N 149 N N N 37398 40631 79881 136810 157340 N N N N N N N 208434 221895 N 254880 282077 -927187 318744 N 336390 N N N 448934 N N N N N N N 555012 N N N 651278 665052 687542 719857 N 742077 801989 N 814572 N 841714 N 871403 914886 983833 N N -884845 -869636 -855788 N N N -804161 N N -738459 -727140 -645066 -630248 N N N N N -420431 N -398553 -333134 N N N -239295 N N N -99891 -72454 -52207 -40519 N N N N N 53247 N 96623 133991 140430 N N N N N N 245011 255520 279550 296169 N 310152 N 333152 N 366039 N N N 559412 629833 N N N 675315 711981 714466 N N N N N N N N N N N 892285 924793 N N -896368 -880530 N N N N N N N -733786 -727518 -716725 -649334 -640756 -635441 N N N N N N -331882 -245605 -228472 N N -84371 N -59928 N N N 52997 56377 80850 N N N N N N N N N 263276 N 284592 N N N 323703 N N N N N N N N N 708013 N N N N 913372 915150 N N -890702 N N N N N N -726404 -691535 -656974 N N N N N N -315362 N -244900 -234015 N N N -60904 -56372 N N N N N 89407 N N N 290757 N N 689039 N N N N N N N N N -699497 -675153 N -651783 N -283239 N N N N N N N N 81943 92682 N N N 700960 N N -675404 -668534 N N N N N N N N 691160 701585 N N N N N N N 702442
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          10 5 15 N N 6 20
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          3 1 5 N 2 4 6
+        expectedOutput: |
+          true
+        hidden: true
+  - slug: lowest-common-ancestor-of-a-binary-search-tree
+    title: "LCA in a BST"
+    difficulty: Medium
+    topic: "Binary Search Trees"
+    subtopic: "Medium Problems"
+    tags: [bst, tree]
+    sourceUrl: "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/"
+    statement: |
+      Given a binary search tree with distinct values and the values `p` and `q` of
+      two nodes in it, find their **lowest common ancestor**: the deepest node whose
+      subtree contains both. A node is considered part of its own subtree.
+
+      Try to use the BST ordering rather than a general binary-tree algorithm.
+    inputFormat: |
+      - Line 1: level-order values of the BST (`N` for a missing child).
+      - Line 2: two integers `p` and `q` (both present in the tree; they may be equal).
+    outputFormat: |
+      Print the value of the lowest common ancestor.
+    constraints:
+      - "1 <= number of nodes <= 1000"
+      - "1 <= node value <= 10^5"
+      - "All node values are distinct"
+    examples:
+      - input: |
+          8 4 12 2 6 10 14
+          2 6
+        output: |
+          4
+        explanation: "2 and 6 are on opposite sides of 4, and both are inside the root's left subtree."
+      - input: |
+          8 4 12 2 6 10 14
+          6 14
+        output: |
+          8
+        explanation: "6 is smaller than the root and 14 is larger, so the paths split at the root."
+    hints:
+      - "If both p and q are smaller than the current node, where must their LCA be?"
+      - "The first node on the root-down walk whose value lies between p and q (inclusive) is the answer."
+    explanation: |
+      **General binary-tree LCA — O(n) time, O(h) space.** Search both subtrees
+      recursively, ignoring the ordering.
+
+      **BST walk — O(h) time, O(1) space.** Start at the root. If both `p` and `q` are
+      smaller than the node, move left; if both are larger, move right. Otherwise
+      the values are split across this node (or one of them is this node), so it
+      is the lowest common ancestor.
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def lca_bst(root: Optional[TreeNode], p: int, q: int) -> int:
+            # Return the value of the lowest common ancestor of p and q.
+            pass
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split())
+            p, q = map(int, lines[1].split())
+            print(lca_bst(root, p, q))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def lca_bst(root: Optional[TreeNode], p: int, q: int) -> int:
+            low, high = min(p, q), max(p, q)
+            node = root
+            while node:
+                if high < node.val:
+                    node = node.left
+                elif low > node.val:
+                    node = node.right
+                else:
+                    return node.val
+            return -1
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split())
+            p, q = map(int, lines[1].split())
+            print(lca_bst(root, p, q))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          8 4 12 2 6 10 14
+          2 6
+        expectedOutput: |
+          4
+        hidden: false
+      - input: |
+          8 4 12 2 6 10 14
+          6 14
+        expectedOutput: |
+          8
+        hidden: false
+      - input: |
+          7
+          7 7
+        expectedOutput: |
+          7
+        hidden: true
+      - input: |
+          8 4 12 2 6 10 14
+          12 12
+        expectedOutput: |
+          12
+        hidden: true
+      - input: |
+          8 4 12 2 6 10 14
+          12 10
+        expectedOutput: |
+          12
+        hidden: true
+      - input: |
+          97949 26576 98008 7440 86441 N 99725 5471 16761 26891 95706 99302 99825 3774 5745 16298 22495 N 56684 89574 96603 N 99700 N 99945 1008 4036 N 7367 7723 16493 18902 26470 56309 78743 87381 94008 95991 97542 N N 99872 N 884 1069 3983 5312 5866 N 7455 13032 N N 16963 20446 26311 N 31779 56625 71306 81712 87306 88535 90768 94410 N 96233 97501 N N N 143 N N 2511 3798 N 4234 N 5779 6162 N N 9817 13656 N 17536 19915 21481 25871 N 29135 53627 56312 N 62555 78310 79578 83289 N N 88338 88961 90172 90843 N 95362 N 96555 N N N N 2044 2689 N N N 4361 N 5785 5902 6383 9809 11874 13190 14620 N 18854 19069 20239 N 22137 23991 26272 28377 31415 50946 55503 N N 60861 65895 76566 78664 79304 81345 81820 84462 N N N 89384 89817 90281 N 93598 94507 N N N 1747 N N 2984 4331 4466 N N N N N 7252 8391 N 10714 12618 13143 13581 14531 15211 18710 N N N N N 21656 N N 25593 N N 27118 28580 31180 31766 47747 53314 55113 56108 59950 61561 63332 71239 73548 78141 78483 N 79043 79481 80076 81526 81722 82216 84031 86168 89222 89504 N N 90223 90760 92600 93659 N N N N N 3106 N N N 4956 6967 N 7772 8748 10681 10977 12409 12904 13055 N N N N N N 15507 17606 N 21506 21990 24385 N 26986 27927 N 28623 30719 31391 N N 31936 50373 51128 53379 54665 55482 N 56112 57181 N 61339 62457 N 64304 70346 71263 71427 76224 78091 N N N 78996 N N N 79786 N N N N N N N N N 85007 N 89196 N N N N N N N 91477 93193 93621 N 3045 3688 N N 6440 7089 N 7909 8654 8820 N N N N N N N N 13047 N N N N 17652 N N N N N N N N 27772 N N 28812 30233 N N N N 38465 48493 50576 N 51800 N N N 54676 N N N N 57068 57626 N N 61648 N 63514 65558 66782 70962 N N N 71914 74396 76286 76799 78121 N N 79694 N 84952 85637 N N 91059 91731 92949 N N N N N N N N N N N N N N N N 9462 N N N N 27486 N N N N 30459 32840 41107 N 49665 N 50876 N 52670 N 54935 N N 57362 N N 61978 63407 N 65463 N 66085 67938 70386 N 71515 72788 N 76068 N 76527 N N N N N N N N N 86020 90964 N N 91770 N N N N N N N N N 36238 40125 41837 N N N N 52048 53021 N N N N N N N N 64568 N N N 67517 68319 N N N 71688 N N 74482 N N N N N N N N N 34267 38300 39859 40324 41460 42834 N N N N N N N 67559 N 68517 N 71780 N N 33557 36082 38240 N 38876 N N N N N 42160 46176 N N N 68804 N N 33020 N 34311 N 36265 38276 N 38881 41968 42395 45603 46384 68638 N N N N N N 36849 N N N N N N N 42448 45567 N N N N 68650 N N N 42503 44865
+          13055 7089
+        expectedOutput: |
+          7440
+        hidden: true
+      - input: |
+          97949 26576 98008 7440 86441 N 99725 5471 16761 26891 95706 99302 99825 3774 5745 16298 22495 N 56684 89574 96603 N 99700 N 99945 1008 4036 N 7367 7723 16493 18902 26470 56309 78743 87381 94008 95991 97542 N N 99872 N 884 1069 3983 5312 5866 N 7455 13032 N N 16963 20446 26311 N 31779 56625 71306 81712 87306 88535 90768 94410 N 96233 97501 N N N 143 N N 2511 3798 N 4234 N 5779 6162 N N 9817 13656 N 17536 19915 21481 25871 N 29135 53627 56312 N 62555 78310 79578 83289 N N 88338 88961 90172 90843 N 95362 N 96555 N N N N 2044 2689 N N N 4361 N 5785 5902 6383 9809 11874 13190 14620 N 18854 19069 20239 N 22137 23991 26272 28377 31415 50946 55503 N N 60861 65895 76566 78664 79304 81345 81820 84462 N N N 89384 89817 90281 N 93598 94507 N N N 1747 N N 2984 4331 4466 N N N N N 7252 8391 N 10714 12618 13143 13581 14531 15211 18710 N N N N N 21656 N N 25593 N N 27118 28580 31180 31766 47747 53314 55113 56108 59950 61561 63332 71239 73548 78141 78483 N 79043 79481 80076 81526 81722 82216 84031 86168 89222 89504 N N 90223 90760 92600 93659 N N N N N 3106 N N N 4956 6967 N 7772 8748 10681 10977 12409 12904 13055 N N N N N N 15507 17606 N 21506 21990 24385 N 26986 27927 N 28623 30719 31391 N N 31936 50373 51128 53379 54665 55482 N 56112 57181 N 61339 62457 N 64304 70346 71263 71427 76224 78091 N N N 78996 N N N 79786 N N N N N N N N N 85007 N 89196 N N N N N N N 91477 93193 93621 N 3045 3688 N N 6440 7089 N 7909 8654 8820 N N N N N N N N 13047 N N N N 17652 N N N N N N N N 27772 N N 28812 30233 N N N N 38465 48493 50576 N 51800 N N N 54676 N N N N 57068 57626 N N 61648 N 63514 65558 66782 70962 N N N 71914 74396 76286 76799 78121 N N 79694 N 84952 85637 N N 91059 91731 92949 N N N N N N N N N N N N N N N N 9462 N N N N 27486 N N N N 30459 32840 41107 N 49665 N 50876 N 52670 N 54935 N N 57362 N N 61978 63407 N 65463 N 66085 67938 70386 N 71515 72788 N 76068 N 76527 N N N N N N N N N 86020 90964 N N 91770 N N N N N N N N N 36238 40125 41837 N N N N 52048 53021 N N N N N N N N 64568 N N N 67517 68319 N N N 71688 N N 74482 N N N N N N N N N 34267 38300 39859 40324 41460 42834 N N N N N N N 67559 N 68517 N 71780 N N 33557 36082 38240 N 38876 N N N N N 42160 46176 N N N 68804 N N 33020 N 34311 N 36265 38276 N 38881 41968 42395 45603 46384 68638 N N N N N N 36849 N N N N N N N 42448 45567 N N N N 68650 N N N 42503 44865
+          17536 21506
+        expectedOutput: |
+          18902
+        hidden: true
+      - input: |
+          97949 26576 98008 7440 86441 N 99725 5471 16761 26891 95706 99302 99825 3774 5745 16298 22495 N 56684 89574 96603 N 99700 N 99945 1008 4036 N 7367 7723 16493 18902 26470 56309 78743 87381 94008 95991 97542 N N 99872 N 884 1069 3983 5312 5866 N 7455 13032 N N 16963 20446 26311 N 31779 56625 71306 81712 87306 88535 90768 94410 N 96233 97501 N N N 143 N N 2511 3798 N 4234 N 5779 6162 N N 9817 13656 N 17536 19915 21481 25871 N 29135 53627 56312 N 62555 78310 79578 83289 N N 88338 88961 90172 90843 N 95362 N 96555 N N N N 2044 2689 N N N 4361 N 5785 5902 6383 9809 11874 13190 14620 N 18854 19069 20239 N 22137 23991 26272 28377 31415 50946 55503 N N 60861 65895 76566 78664 79304 81345 81820 84462 N N N 89384 89817 90281 N 93598 94507 N N N 1747 N N 2984 4331 4466 N N N N N 7252 8391 N 10714 12618 13143 13581 14531 15211 18710 N N N N N 21656 N N 25593 N N 27118 28580 31180 31766 47747 53314 55113 56108 59950 61561 63332 71239 73548 78141 78483 N 79043 79481 80076 81526 81722 82216 84031 86168 89222 89504 N N 90223 90760 92600 93659 N N N N N 3106 N N N 4956 6967 N 7772 8748 10681 10977 12409 12904 13055 N N N N N N 15507 17606 N 21506 21990 24385 N 26986 27927 N 28623 30719 31391 N N 31936 50373 51128 53379 54665 55482 N 56112 57181 N 61339 62457 N 64304 70346 71263 71427 76224 78091 N N N 78996 N N N 79786 N N N N N N N N N 85007 N 89196 N N N N N N N 91477 93193 93621 N 3045 3688 N N 6440 7089 N 7909 8654 8820 N N N N N N N N 13047 N N N N 17652 N N N N N N N N 27772 N N 28812 30233 N N N N 38465 48493 50576 N 51800 N N N 54676 N N N N 57068 57626 N N 61648 N 63514 65558 66782 70962 N N N 71914 74396 76286 76799 78121 N N 79694 N 84952 85637 N N 91059 91731 92949 N N N N N N N N N N N N N N N N 9462 N N N N 27486 N N N N 30459 32840 41107 N 49665 N 50876 N 52670 N 54935 N N 57362 N N 61978 63407 N 65463 N 66085 67938 70386 N 71515 72788 N 76068 N 76527 N N N N N N N N N 86020 90964 N N 91770 N N N N N N N N N 36238 40125 41837 N N N N 52048 53021 N N N N N N N N 64568 N N N 67517 68319 N N N 71688 N N 74482 N N N N N N N N N 34267 38300 39859 40324 41460 42834 N N N N N N N 67559 N 68517 N 71780 N N 33557 36082 38240 N 38876 N N N N N 42160 46176 N N N 68804 N N 33020 N 34311 N 36265 38276 N 38881 41968 42395 45603 46384 68638 N N N N N N 36849 N N N N N N N 42448 45567 N N N N 68650 N N N 42503 44865
+          2511 21481
+        expectedOutput: |
+          7440
+        hidden: true
+      - input: |
+          1 N 2 N 3 N 4 N 5 N 6
+          6 3
+        expectedOutput: |
+          3
+        hidden: true
+  - slug: construct-bst-from-preorder-traversal
+    title: "Construct BST from Preorder Traversal"
+    difficulty: Medium
+    topic: "Binary Search Trees"
+    subtopic: "Medium Problems"
+    tags: [bst, tree, stack, recursion]
+    sourceUrl: "https://leetcode.com/problems/construct-binary-search-tree-from-preorder-traversal/"
+    statement: |
+      You are given the **preorder traversal** of a binary search tree whose values
+      are all distinct. Exactly one BST has this preorder, so rebuild it and return
+      its root.
+
+      The driver prints the rebuilt tree in the same level-order format used for
+      tree inputs, defined precisely as follows:
+
+      1. Start a queue with the root.
+      2. Pop the front entry. If it is a node, output its value and push its left
+         child and then its right child (missing children are pushed as empty
+         entries). If it is an empty entry, output `N` and push nothing.
+      3. Repeat until the queue is empty, then **remove all trailing `N` tokens**.
+    inputFormat: |
+      - Line 1: an integer `n`, the number of nodes.
+      - Line 2: `n` distinct integers, the preorder traversal of a BST.
+    outputFormat: |
+      Print the level-order serialization of the tree on one line, space-separated, with trailing `N` tokens removed.
+    constraints:
+      - "1 <= n <= 1000"
+      - "1 <= value <= 10^5"
+      - "All values are distinct and form a valid BST preorder"
+    examples:
+      - input: |
+          6
+          8 5 1 7 10 12
+        output: |
+          8 5 10 1 7 N 12
+        explanation: "8 is the root; 5, 1, 7 are smaller and form the left subtree; 10 and 12 form the right subtree, where 10 has no left child."
+      - input: |
+          3
+          1 2 3
+        output: |
+          1 N 2 N 3
+        explanation: "Each value is larger than all previous ones, so the tree is a chain of right children."
+    hints:
+      - "The first value is always the root. Which of the following values belong to its left subtree?"
+      - "Inserting the values one by one into an empty BST reproduces the tree, but can be O(n²)."
+      - "Recurse with an upper bound: build a subtree while the next value is below the bound, consuming values from a shared index."
+    explanation: |
+      **Repeated insertion — O(n²) worst case, O(n) space.** Insert every value, in the
+      given order, into an initially empty BST. Because a parent always appears
+      before its descendants in preorder, this recreates the exact tree.
+
+      **Split by root — O(n log n) to O(n²) time.** The root is `preorder[0]`; the
+      following values smaller than it form the left subtree and the rest form the
+      right subtree. Find the split point (linearly or with binary search) and
+      recurse on both parts.
+
+      **Upper-bound recursion — O(n) time, O(h) space.** Keep a global index into the
+      preorder array. `build(bound)` returns null if the array is exhausted or the
+      next value exceeds `bound`; otherwise it consumes the value as a node, builds
+      its left child with bound = node value and its right child with the
+      inherited bound. Every value is consumed exactly once. A monotonic stack
+      gives an equivalent iterative O(n) solution.
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def bst_from_preorder(preorder: List[int]) -> Optional[TreeNode]:
+            # Build and return the BST that has this preorder traversal.
+            pass
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            data = " ".join(lines).split()
+            n = int(data[0])
+            preorder = [int(x) for x in data[1:1 + n]]
+            root = bst_from_preorder(preorder)
+            tokens: List[str] = []
+            queue: List[Optional[TreeNode]] = [root]
+            head = 0
+            while head < len(queue):
+                node = queue[head]
+                head += 1
+                if node is None:
+                    tokens.append("N")
+                    continue
+                tokens.append(str(node.val))
+                queue.append(node.left)
+                queue.append(node.right)
+            while tokens and tokens[-1] == "N":
+                tokens.pop()
+            print(" ".join(tokens))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def bst_from_preorder(preorder: List[int]) -> Optional[TreeNode]:
+            if not preorder:
+                return None
+            root = TreeNode(preorder[0])
+            stack = [root]
+            for value in preorder[1:]:
+                node = TreeNode(value)
+                parent = stack[-1]
+                if value < parent.val:
+                    parent.left = node
+                else:
+                    while stack and stack[-1].val < value:
+                        parent = stack.pop()
+                    parent.right = node
+                stack.append(node)
+            return root
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            data = " ".join(lines).split()
+            n = int(data[0])
+            preorder = [int(x) for x in data[1:1 + n]]
+            root = bst_from_preorder(preorder)
+            tokens: List[str] = []
+            queue: List[Optional[TreeNode]] = [root]
+            head = 0
+            while head < len(queue):
+                node = queue[head]
+                head += 1
+                if node is None:
+                    tokens.append("N")
+                    continue
+                tokens.append(str(node.val))
+                queue.append(node.left)
+                queue.append(node.right)
+            while tokens and tokens[-1] == "N":
+                tokens.pop()
+            print(" ".join(tokens))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          6
+          8 5 1 7 10 12
+        expectedOutput: |
+          8 5 10 1 7 N 12
+        hidden: false
+      - input: |
+          3
+          1 2 3
+        expectedOutput: |
+          1 N 2 N 3
+        hidden: false
+      - input: |
+          1
+          84
+        expectedOutput: |
+          84
+        hidden: true
+      - input: |
+          2
+          62 90
+        expectedOutput: |
+          62 N 90
+        hidden: true
+      - input: |
+          7
+          9 7 3 5 10 17 14
+        expectedOutput: |
+          9 7 10 3 N N 17 N 5 14
+        hidden: true
+      - input: |
+          150
+          553 342 259 188 74 54 13 4 39 16 24 33 53 67 63 59 81 141 102 87 85 94 100 118 121 124 145 175 156 155 161 178 182 254 246 233 213 195 222 256 260 310 272 261 308 292 304 316 382 359 346 343 355 347 352 362 370 366 413 402 403 503 436 428 426 421 434 451 449 490 471 463 468 479 475 472 495 501 537 529 526 530 544 855 835 748 653 587 554 570 568 556 576 626 625 588 589 600 607 628 652 629 670 659 666 674 722 697 713 707 702 717 725 794 758 753 770 768 764 783 792 815 795 799 801 816 817 842 836 932 859 866 912 894 879 900 899 902 921 940 934 938 995 960 942 951 968 966 970 997
+        expectedOutput: |
+          553 342 855 259 382 835 932 188 260 359 413 748 842 859 940 74 254 N 310 346 362 402 503 653 794 836 N N 866 934 995 54 81 246 256 272 316 343 355 N 370 N 403 436 537 587 670 758 815 N N N 912 N 938 960 997 13 67 N 141 233 N N N 261 308 N N N N 347 N 366 N N N 428 451 529 544 554 626 659 674 753 770 795 816 894 921 N N 942 968 N N 4 39 63 N 102 145 213 N N N 292 N N 352 N N 426 434 449 490 526 530 N N N 570 625 628 N 666 N 722 N N 768 783 N 799 N 817 879 900 N N N 951 966 970 N N 16 53 59 N 87 118 N 175 195 222 N 304 N N 421 N N N N N 471 495 N N N N 568 576 588 N N 652 N N 697 725 764 N N 792 N 801 N N N N 899 902 N N N N N N N 24 N N N N 85 94 N 121 156 178 N N N N N N N N 463 479 N 501 556 N N N N 589 629 N N 713 N N N N N N N N N N N N N 33 N N N 100 N 124 155 161 N 182 N 468 475 N N N N N N 600 N N 707 717 N N N N N N N N N N N N N N 472 N N 607 702
+        hidden: true
+      - input: |
+          400
+          96543 455 384 217 23686 1905 1106 1368 1264 1541 8232 5566 3981 2661 2505 1939 3725 3048 2902 2790 2812 3212 3704 5394 5348 8199 7609 5724 5678 6624 6287 6150 5893 6479 6647 7441 7302 7518 10268 8675 8309 8541 9640 9189 9296 17988 13433 10391 11382 11186 11164 10672 12355 12285 12284 12968 12536 13272 16384 13563 13578 14166 14354 14526 14457 16213 16180 16148 16087 16268 16540 17055 16761 16978 17600 17766 21144 19692 19676 18311 18621 19975 19706 19825 20997 20929 21748 21207 21617 21674 21623 23556 22802 23392 23126 23481 46102 24931 24047 24563 24115 24654 24618 24663 29736 25142 25007 28030 26669 26565 26272 26231 25265 25217 25303 26753 27328 27332 29728 29082 29006 28902 29219 43170 38595 30505 30470 29839 36750 31997 31544 31463 30737 31619 36742 32081 32004 32028 32010 34921 34322 33918 33606 33344 33031 33936 34436 35953 35134 35323 36050 36874 36796 37402 37071 40933 39844 39454 38702 39036 40131 40259 40232 40148 40409 41669 42186 43066 42440 42817 45202 43524 43215 43470 43499 44311 44047 43704 43825 44104 44249 44487 44711 45825 45297 45768 81394 49936 48298 47927 47401 49075 48953 48805 49808 49370 49812 50291 50116 50267 60604 57301 56850 52508 51367 50467 51047 50962 51414 51427 52853 55071 53783 53380 54906 54748 56768 55782 55341 55163 56487 56352 57020 57005 57112 58200 58180 58152 57420 57872 58690 58504 58681 60504 59843 60398 79279 62592 61269 60958 61520 61323 61670 77972 64349 64204 63709 63203 63401 63488 63913 63773 63892 63857 64043 63969 64315 70119 66767 65860 65521 64712 64542 64354 64772 64910 65331 65795 65654 65693 66736 66257 65891 68298 68156 67902 68305 69388 69242 68994 69985 69810 70117 69993 74524 71541 70826 70825 70755 70161 70509 70232 71369 73195 71597 72891 72258 71864 72157 72073 72730 73037 74241 73425 73922 73655 76055 75180 76302 76864 77484 77111 77025 78324 77981 78254 78890 78430 79274 79704 79697 80685 80604 80483 80145 81202 86378 83213 82833 81593 81490 81456 82646 81848 86338 86259 85720 84219 83659 83759 84495 84604 84505 84678 85222 84986 87859 87040 86596 87528 94200 93769 90671 89808 88113 88110 88007 88847 90040 89861 91652 91210 91063 91364 91245 93013 91977 92912 92681 93577 94133 95210 94585 94576 94326 94597 96093 95582 95430 95703 95893 96198 97274 96563 96741 96802 97840 97434 97283 97426 97300 97727 98753 98080 98151 99992 98921 99289 99193 99223
+        expectedOutput: |
+          96543 455 97274 384 23686 96563 97840 217 N 1905 46102 N 96741 97434 98753 N N 1106 8232 24931 81394 N 96802 97283 97727 98080 99992 N 1368 5566 10268 24047 29736 49936 86378 N N N 97426 N N N 98151 98921 N 1264 1541 3981 8199 8675 17988 N 24563 25142 43170 48298 50291 83213 87859 97300 N N N N 99289 N N N N 2661 5394 7609 N 8309 9640 13433 21144 24115 24654 25007 28030 38595 45202 47927 49075 50116 60604 82833 86338 87040 94200 N N 99193 N 2505 3725 5348 N 5724 N N 8541 9189 N 10391 16384 19692 21748 N N 24618 24663 N N 26669 29728 30505 40933 43524 45825 47401 N 48953 49808 N 50267 57301 79279 81593 N 86259 N 86596 87528 93769 95210 N 99223 1939 N 3048 N N N 5678 6624 N N N 9296 N 11382 13563 16540 19676 19975 21207 23556 N N N N 26565 26753 29082 N 30470 36750 39844 41669 43215 44311 45297 N N N 48805 N 49370 49812 N N 56850 58200 62592 79704 81490 82646 85720 N N N N N 90671 94133 94585 96093 N N N N 2902 3212 N N 6287 6647 N N 11186 12355 N 13578 N 17055 18311 N 19706 20997 N 21617 22802 N 26272 N N 27328 29006 29219 29839 N 31997 36874 39454 40131 N 42186 N 43470 44047 44487 N 45768 N N N N N N 52508 57020 58180 58690 61269 77972 79697 80685 81456 N 81848 N 84219 N 89808 91652 N N 94576 94597 95582 96198 2790 N N 3704 6150 6479 N 7441 11164 N 12285 12968 N 14166 16761 17600 N 18621 N 19825 20929 N N 21674 N 23392 26231 N N 27332 28902 N N N N N 31544 36742 36796 37402 38702 N N 40259 N 43066 N 43499 43704 44104 N 44711 N N 51367 52853 57005 57112 58152 N 58504 60504 60958 61520 64349 78324 N N 80604 81202 N N N N 83659 84495 88113 90040 91210 93013 94326 N N N 95430 95703 N N N 2812 N N 5893 N N N 7302 7518 10672 N 12284 N 12536 13272 N 14354 N 16978 N 17766 N N N N N N 21623 N 23126 23481 25265 N N N N N 31463 31619 32081 N N N 37071 N N 39036 40232 40409 42440 N N N N 43825 N 44249 N N 50467 51414 N 55071 N N N N 57420 N N 58681 59843 N N N 61323 61670 64204 70119 77981 78890 80483 N N N N 83759 N 84604 88110 88847 89861 N 91063 91364 91977 93577 N N N N N 95893 N N N N N N N N N N N N N N N N N 14526 N N N N N N N N N N 25217 25303 30737 N N N 32004 34921 N N N N 40148 N N N N 42817 N N N N N 51047 N 51427 53783 56768 N 57872 N N N 60398 N N N N 63709 64315 66767 74524 N 78254 78430 79274 80145 N N N 84505 84678 88007 N N N N N N N 91245 N N 92912 N N N N 14457 16213 N N N N N N N 32028 34322 35953 N N N N 50962 N N N 53380 54906 55782 N N N N N 63203 63913 N N 65860 68298 71541 76055 N N N N N N N N N N N 85222 N N N N 92681 N N N 16180 16268 32010 N 33918 34436 35134 36050 N N N N 54748 N 55341 56487 N 63401 63773 64043 65521 66736 68156 68305 70826 73195 75180 76302 84986 N N N 16148 N N N N N 33606 33936 N N N 35323 N N N N 55163 N 56352 N N 63488 N 63892 63969 N 64712 65795 66257 N 67902 N N 69388 70825 71369 71597 74241 N N N 76864 N N 16087 N 33344 N N N N N N N N N N N 63857 N N N 64542 64772 65654 N 65891 N N N 69242 69985 70755 N N N N 72891 73425 N N 77484 N N 33031 N N N 64354 N N 64910 N 65693 N N 68994 N 69810 70117 70161 N 72258 73037 N 73922 77111 N N N N N N 65331 N N N N N N 69993 N N 70509 71864 72730 N N 73655 N 77025 N N N N N 70232 N N 72157 N N N N N N N N 72073
+        hidden: true
+      - input: |
+          5
+          50 40 30 20 10
+        expectedOutput: |
+          50 40 N 30 N 20 N 10
+        hidden: true
+
+  - sheetId: prob-14-1-1-introduction-to-bst
+    type: reference
+    slug: introduction-to-bst
+    title: "Introduction to Binary Search Trees"
+    difficulty: Easy
+    topic: "Binary Search Trees"
+    subtopic: "Concepts"
+    tags: [bst, tree, theory]
+    sourceUrl: ""
+    statement: |
+      A **binary search tree** is a binary tree with one extra promise, checked at
+      every node:
+
+      > every value in the node's **left** subtree is smaller than the node's
+      > value, and every value in its **right** subtree is larger.
+
+      Read that carefully: the rule is about whole *subtrees*, not just the two
+      children. A tree where each node is larger than its left child and smaller
+      than its right child can still fail — `10` with left child `5`, and `5` with
+      right child `20`, breaks the promise because `20` sits in `10`'s left
+      subtree. Nothing to submit here; read it and move on to the problems.
+
+      **What the promise buys you.** At any node you can throw away half the tree:
+      if the value you want is smaller than the node, it can only be on the left.
+      So searching, inserting and deleting all cost `O(h)` steps, where `h` is the
+      height — about `log2(n)` when the tree is balanced.
+
+      **What it costs.** Nothing keeps a plain BST balanced. Insert `1, 2, 3, 4, 5`
+      in that order and you get a right-going chain of height 4: every operation
+      becomes `O(n)` and the structure is a linked list with extra pointers. Real
+      libraries therefore use *self-balancing* variants (AVL, red-black) that
+      rotate after each update to keep the height `O(log n)`; `std::map`,
+      `TreeMap` and Java's `TreeSet` are red-black trees underneath.
+
+      **Duplicates.** Unless a problem says otherwise, assume values are distinct.
+      When duplicates must be supported the usual fix is a counter stored in the
+      node rather than a second node with the same value, because "equal" has no
+      side to go to.
+
+      **The single most useful fact.** The **inorder traversal of a BST is sorted**,
+      in strictly increasing order. Most BST problems are a sorted-array problem in
+      disguise: "k-th smallest" is an index, "two sum" is two pointers, "validate"
+      is "is this sequence increasing", "recover two swapped nodes" is "find the
+      out-of-order pairs".
+    explanation: |
+      **The three basic operations, in one place.**
+
+      | Operation | How | Cost |
+      | --- | --- | --- |
+      | Search | compare with the node; go left if smaller, right if larger, stop on equal | `O(h)` |
+      | Insert | search for the value; the null slot where the search fails is where the new leaf goes | `O(h)` |
+      | Find min / max | walk left as far as possible / right as far as possible | `O(h)` |
+      | Delete | see below | `O(h)` |
+
+      **Deletion has three cases.** Once the node is found:
+
+      1. *No children* — detach it.
+      2. *One child* — replace the node with that child.
+      3. *Two children* — the node cannot simply vanish, so replace its value with
+         its **inorder successor** (the smallest value in its right subtree, found
+         by going right once and then left as far as possible) and then delete that
+         successor from the right subtree, where it has at most one child. Using the
+         inorder **predecessor** instead is equally valid; a problem that checks the
+         resulting shape must say which one it wants.
+
+      **Validation, done right.** Checking `left.val < node.val < right.val` at each
+      node is the classic wrong answer. Carry a permitted range down instead: the
+      root may be anything, the left child inherits the upper bound `node.val`, the
+      right child inherits the lower bound `node.val`. Equivalently, run an inorder
+      traversal and check that it strictly increases.
+
+      **Bounds you should be able to state.** A BST with `n` nodes has height
+      between `floor(log2 n)` and `n - 1`. Building one by inserting `n` values
+      costs `O(n log n)` when they arrive in random order and `O(n²)` when they
+      arrive sorted. Inorder traversal is `O(n)` and gives the values sorted, so
+      "sort by inserting into a BST" is a genuine — if fragile — sorting algorithm.
+
+      **How to recognise a BST problem.** If the statement mentions a search tree
+      and a target value, the answer almost always walks **one root-to-leaf path**
+      and costs `O(h)`; if it mentions order, rank or a range, think about the
+      sorted inorder sequence. Solutions that traverse the whole tree when the BST
+      property was available are the common miss.
+
+  - sheetId: prob-14-1-3-find-minmax-in-bst
+    slug: find-min-max-in-bst
+    title: "Minimum and Maximum in a BST"
+    difficulty: Easy
+    topic: "Binary Search Trees"
+    subtopic: "Concepts"
+    tags: [bst, tree]
+    sourceUrl: ""
+    statement: |
+      In a binary search tree every value in a node's left subtree is smaller than
+      the node and every value in its right subtree is larger.
+
+      Given a non-empty binary search tree, print its smallest and its largest
+      value. Do not traverse the whole tree — the ordering tells you exactly where
+      each of them has to be.
+    inputFormat: |
+      A single line with the level-order values of the BST, using `N` for a missing child. The tree has at least one node.
+    outputFormat: |
+      Print two integers separated by a space: the minimum value and the maximum value.
+    constraints:
+      - "1 <= number of nodes <= 2000"
+      - "-10^5 <= node value <= 10^5"
+      - "All node values are distinct and the tree is a valid BST"
+    examples:
+      - input: |
+          8 4 12 2 6 10 14
+        output: |
+          2 14
+        explanation: "Going left from the root reaches 4 and then 2, which has no left child, so 2 is the minimum. Going right reaches 12 and then 14, the maximum."
+      - input: |
+          5 N 9 N 11
+        output: |
+          5 11
+        explanation: "The root has no left child at all, so the root itself is the minimum; following the right chain to its end gives 11."
+    hints:
+      - "Where can a value smaller than the root possibly be stored?"
+      - "The minimum is the node you reach by going left until there is no left child — no comparisons needed."
+      - "Two independent walks, each at most the height of the tree."
+    explanation: |
+      **Scan every node — O(n) time, O(h) space.** Traverse the tree and keep a
+      running minimum and maximum. It works on any binary tree, and it throws away
+      the only thing that makes this tree special.
+
+      **Two descents — O(h) time, O(1) space.** The smallest value cannot be to the
+      right of anything, so start at the root and follow `left` until a node has no
+      left child: that node holds the minimum. Symmetrically, follow `right` to the
+      end for the maximum. Each walk visits one node per level, so together they
+      cost `O(h)` — about 20 steps for a balanced tree of a million nodes, against a
+      million steps for the full scan.
+
+      **Inorder shortcut.** Since the inorder traversal of a BST is sorted, the
+      minimum is its first element and the maximum its last. That is the same two
+      nodes reached above, and it is worth remembering because "leftmost node" is
+      exactly what the successor/predecessor and deletion routines need later.
+
+      **A degenerate tree** — a chain of `n` nodes — still costs `O(n)`, because
+      then `h = n - 1`. The `O(h)` bound is honest about that; it is the balance of
+      the tree, not the algorithm, that makes the difference.
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def min_and_max(root: Optional[TreeNode]) -> List[int]:
+            # Return [minimum, maximum] of the BST.
+            pass
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split())
+            print(" ".join(map(str, min_and_max(root))))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def min_and_max(root: Optional[TreeNode]) -> List[int]:
+            node = root
+            while node.left is not None:
+                node = node.left
+            smallest = node.val
+            node = root
+            while node.right is not None:
+                node = node.right
+            return [smallest, node.val]
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split())
+            print(" ".join(map(str, min_and_max(root))))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          8 4 12 2 6 10 14
+        expectedOutput: |
+          2 14
+        hidden: false
+      - input: |
+          5 N 9 N 11
+        expectedOutput: |
+          5 11
+        hidden: false
+      - input: |
+          7
+        expectedOutput: |
+          7 7
+        hidden: true
+      - input: |
+          -100000 N 100000
+        expectedOutput: |
+          -100000 100000
+        hidden: true
+      - input: |
+          5 4 N 3 N 2 N 1
+        expectedOutput: |
+          1 5
+        hidden: true
+      - input: |
+          1 N 2 N 3 N 4 N 5
+        expectedOutput: |
+          1 5
+        hidden: true
+      - input: |
+          0 -5 5 -7 -1 3 9 N N N N N N N 20
+        expectedOutput: |
+          -7 20
+        hidden: true
+      - input: |
+          50 25 75 10 35 60 90 5 15 30 40 55 65 80 95
+        expectedOutput: |
+          5 95
+        hidden: true
+
+  - sheetId: prob-14-2-2-floor-in-a-binary-search-
+    slug: floor-in-a-binary-search-tree
+    title: "Floor Queries on a BST"
+    difficulty: Easy
+    topic: "Binary Search Trees"
+    subtopic: "Practice Problems"
+    tags: [bst, tree, binary-search]
+    sourceUrl: ""
+    statement: |
+      The **floor** of a value `key` in a set of numbers is the largest number in
+      the set that is not greater than `key`. In a binary search tree that means
+      the largest node value `v` with `v <= key`; if every node is larger than
+      `key`, the floor does not exist.
+
+      You are given a binary search tree and `q` query values. Answer every query
+      with the floor of that value, or `-1` when there is none. Each query must be
+      answered by walking **one root-to-leaf path**, not by scanning the tree.
+    inputFormat: |
+      - Line 1: level-order values of the BST (`N` for a missing child); the tree has at least one node.
+      - Line 2: an integer `q`, the number of queries.
+      - Line 3: `q` space-separated integers, the query values.
+    outputFormat: |
+      Print `q` lines: the floor of each query value in the order given, or `-1` if the tree has no value `<= key`.
+    constraints:
+      - "1 <= number of nodes <= 2000"
+      - "1 <= q <= 2000"
+      - "1 <= node value, key <= 10^5, and all node values are distinct"
+      - "The tree is a valid BST"
+    examples:
+      - input: |
+          8 4 12 2 6 10 14
+          4
+          11 8 1 100
+        output: |
+          10
+          8
+          -1
+          14
+        explanation: "For 11 the largest value not above it is 10; 8 is present so it is its own floor; every value is above 1, so the answer is -1; and 14 is the largest value in the tree, so it is the floor of 100."
+      - input: |
+          10 5 20 N 7 15 N
+          3
+          6 7 9
+        output: |
+          5
+          7
+          7
+        explanation: "For 6 the candidates are 5 and 10 and 15 and 7 — the largest one not above 6 is 5. For 7 the node itself qualifies. For 9 the answer is 7."
+    hints:
+      - "Start at the root with 'no candidate yet' and walk down once per query."
+      - "A node whose value is <= key is a candidate — and going right can only find a bigger candidate, so record it and move right."
+      - "A node whose value is > key can never be the floor, so move left without recording anything."
+    explanation: |
+      **Sorted inorder + binary search — O(n) time once, then O(log n) per query.**
+      The inorder traversal of a BST is sorted, so collect it into a list and binary
+      search for the rightmost value `<= key`. Excellent when there are many
+      queries, but it copies the whole tree into an array and ignores the structure
+      that is already there.
+
+      **Descend once per query — O(h) time, O(1) space.** Keep `answer = -1` and
+      start at the root:
+
+      - if `node.val == key`, the floor is `key` itself — stop;
+      - if `node.val < key`, the node is a valid candidate, so set
+        `answer = node.val` and move **right**, where any value is still `<= key`
+        only if it is larger than this one, i.e. strictly better;
+      - if `node.val > key`, it cannot be the floor and neither can anything in its
+        right subtree, so move **left**.
+
+      When you fall off the bottom, `answer` holds the best candidate seen. The walk
+      touches one node per level, so a query costs `O(h)` — `O(log n)` for a
+      balanced tree — with no extra memory.
+
+      **Why the candidate is never lost.** Every time you move right from a
+      candidate you are looking for something between it and `key`; if the right
+      subtree contains nothing suitable, the recorded candidate is still the answer.
+      Overwriting `answer` only ever improves it.
+
+      **The ceil** is the mirror image: record nodes with `node.val > key` and move
+      left, otherwise move right.
+
+      **Total cost here** is `O(q·h)` time and `O(1)` extra space beyond the output.
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def floor_queries(root: Optional[TreeNode], keys: List[int]) -> List[int]:
+            # Return the floor of every key, using -1 when no value is <= key.
+            pass
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split())
+            q = int(lines[1])
+            keys = [int(x) for x in lines[2].split()] if q > 0 else []
+            print("\n".join(map(str, floor_queries(root, keys))))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def floor_queries(root: Optional[TreeNode], keys: List[int]) -> List[int]:
+            answers: List[int] = []
+            for key in keys:
+                best = -1
+                node = root
+                while node is not None:
+                    if node.val == key:
+                        best = key
+                        break
+                    if node.val < key:
+                        best = node.val
+                        node = node.right
+                    else:
+                        node = node.left
+                answers.append(best)
+            return answers
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split())
+            q = int(lines[1])
+            keys = [int(x) for x in lines[2].split()] if q > 0 else []
+            print("\n".join(map(str, floor_queries(root, keys))))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          8 4 12 2 6 10 14
+          4
+          11 8 1 100
+        expectedOutput: |
+          10
+          8
+          -1
+          14
+        hidden: false
+      - input: |
+          10 5 20 N 7 15 N
+          3
+          6 7 9
+        expectedOutput: |
+          5
+          7
+          7
+        hidden: false
+      - input: |
+          1
+          2
+          1 2
+        expectedOutput: |
+          1
+          1
+        hidden: true
+      - input: |
+          50
+          1
+          49
+        expectedOutput: |
+          -1
+        hidden: true
+      - input: |
+          5 4 N 3 N 2 N 1
+          5
+          1 2 3 4 5
+        expectedOutput: |
+          1
+          2
+          3
+          4
+          5
+        hidden: true
+      - input: |
+          1 N 2 N 3 N 4 N 5
+          6
+          1 2 3 4 5 99999
+        expectedOutput: |
+          1
+          2
+          3
+          4
+          5
+          5
+        hidden: true
+      - input: |
+          100 50 150 25 75 125 175 10 30 60 90 110 140 160 190
+          8
+          9 10 61 74 100 149 176 100000
+        expectedOutput: |
+          -1
+          10
+          60
+          60
+          100
+          140
+          175
+          190
+        hidden: true
+      - input: |
+          8 4 12 2 6 10 14
+          7
+          2 3 5 7 9 13 15
+        expectedOutput: |
+          2
+          2
+          4
+          6
+          8
+          12
+          14
+        hidden: true
+
+  - sheetId: prob-14-2-4-delete-a-node-in-bst
+    slug: delete-a-node-in-bst
+    title: "Delete a Node in a BST"
+    difficulty: Medium
+    topic: "Binary Search Trees"
+    subtopic: "Practice Problems"
+    tags: [bst, tree, recursion]
+    sourceUrl: "https://leetcode.com/problems/delete-node-in-a-bst/"
+    statement: |
+      Remove the node holding a given `key` from a binary search tree, so that the
+      result is still a valid BST containing exactly the other values. If no node
+      holds `key`, the tree is unchanged.
+
+      A node with two children cannot simply be dropped, and several repairs are
+      possible, so the required one is fixed here:
+
+      > replace the node's value with the **smallest value in its right subtree**
+      > (its inorder successor), then delete that successor from the right subtree.
+
+      With that rule the resulting tree is unique, and the driver prints its
+      level-order form so both shape and values are checked.
+    inputFormat: |
+      - Line 1: level-order values of the BST (`N` for a missing child; the empty tree is `N`).
+      - Line 2: the integer `key` to delete.
+    outputFormat: |
+      Print the level-order values of the resulting tree on one line, using `N` for a missing child of an existing node and dropping the trailing `N`s. Print `N` if the tree ends up empty.
+    constraints:
+      - "0 <= number of nodes <= 2000"
+      - "1 <= node value, key <= 10^5, and all node values are distinct"
+      - "The input tree is a valid BST"
+    examples:
+      - input: |
+          5 3 6 2 4 N 7
+          3
+        output: |
+          5 4 6 2 N N 7
+        explanation: "Node 3 has both children, so it takes the smallest value of its right subtree, 4, and that 4 is then removed from the right subtree, leaving 4 with the single child 2."
+      - input: |
+          5 3 6 2 4 N 7
+          5
+        output: |
+          6 3 7 2 4
+        explanation: "The root has two children. The smallest value on its right is 6, so the root becomes 6 and the old 6 — which had only a right child 7 — is replaced by 7."
+    hints:
+      - "Search for the key first; the interesting work only starts once the node is found."
+      - "A node with at most one child is replaced by that child (or by nothing)."
+      - "For two children, the inorder successor is 'one step right, then left as far as possible', and deleting it afterwards is an easier case of the same problem."
+    explanation: |
+      **Rebuild from the values — O(n) time, O(n) space.** Collect the inorder
+      sequence, drop the key and build a new BST. It is correct only if you also
+      reproduce the exact shape the rules demand, which you cannot, so the answer
+      would not match. Mentioned because it is the tempting shortcut.
+
+      **Recursive delete — O(h) time, O(h) space.** A function that returns the new
+      root of the subtree it was given:
+
+      1. empty subtree — return `None`;
+      2. `key < node.val` — `node.left = delete(node.left, key)`, return `node`;
+      3. `key > node.val` — `node.right = delete(node.right, key)`, return `node`;
+      4. found it:
+         - no left child — return the right child;
+         - no right child — return the left child;
+         - both children — find the successor (leftmost node of the right subtree),
+           copy its value into the node, then
+           `node.right = delete(node.right, successor_value)` and return `node`.
+
+      Reassigning the child pointer on the way back up is what actually detaches the
+      node, and it removes the need for a parent pointer. The walk follows one path
+      down, plus a second short path to the successor, so time is `O(h)`.
+
+      **Why the successor is safe.** It is the smallest value greater than the
+      node's value, so putting it in the node's place keeps everything on the left
+      smaller and everything on the right larger. And because it is the leftmost
+      node of a subtree it has no left child, so the recursive deletion of it lands
+      in the easy one-child case and terminates immediately.
+
+      **Iterative version — O(h) time, O(1) space.** Track the parent while
+      searching, then splice the node out by reassigning the parent's correct child.
+      Faster in practice, but easy to get wrong when the node to delete is the root.
+    starterCode:
+      python: |
+        import sys
+        from collections import deque
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def delete_node(root: Optional[TreeNode], key: int) -> Optional[TreeNode]:
+            # Delete the node holding key and return the new root of the tree.
+            pass
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def serialize_level_order(root: Optional[TreeNode]) -> str:
+            """Level-order values with "N" for a missing child, trailing "N"s dropped."""
+            if root is None:
+                return "N"
+            tokens = [str(root.val)]
+            queue = deque([root])
+            while queue:
+                node = queue.popleft()
+                for child in (node.left, node.right):
+                    if child is None:
+                        tokens.append("N")
+                    else:
+                        tokens.append(str(child.val))
+                        queue.append(child)
+            while tokens and tokens[-1] == "N":
+                tokens.pop()
+            return " ".join(tokens)
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split() if lines else [])
+            key = int(lines[1])
+            print(serialize_level_order(delete_node(root, key)))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from collections import deque
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def delete_node(root: Optional[TreeNode], key: int) -> Optional[TreeNode]:
+            if root is None:
+                return None
+            if key < root.val:
+                root.left = delete_node(root.left, key)
+            elif key > root.val:
+                root.right = delete_node(root.right, key)
+            else:
+                if root.left is None:
+                    return root.right
+                if root.right is None:
+                    return root.left
+                successor = root.right
+                while successor.left is not None:
+                    successor = successor.left
+                root.val = successor.val
+                root.right = delete_node(root.right, successor.val)
+            return root
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def serialize_level_order(root: Optional[TreeNode]) -> str:
+            """Level-order values with "N" for a missing child, trailing "N"s dropped."""
+            if root is None:
+                return "N"
+            tokens = [str(root.val)]
+            queue = deque([root])
+            while queue:
+                node = queue.popleft()
+                for child in (node.left, node.right):
+                    if child is None:
+                        tokens.append("N")
+                    else:
+                        tokens.append(str(child.val))
+                        queue.append(child)
+            while tokens and tokens[-1] == "N":
+                tokens.pop()
+            return " ".join(tokens)
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split() if lines else [])
+            key = int(lines[1])
+            print(serialize_level_order(delete_node(root, key)))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          5 3 6 2 4 N 7
+          3
+        expectedOutput: |
+          5 4 6 2 N N 7
+        hidden: false
+      - input: |
+          5 3 6 2 4 N 7
+          5
+        expectedOutput: |
+          6 3 7 2 4
+        hidden: false
+      - input: |
+          N
+          4
+        expectedOutput: |
+          N
+        hidden: true
+      - input: |
+          9
+          9
+        expectedOutput: |
+          N
+        hidden: true
+      - input: |
+          5 3 6 2 4 N 7
+          99
+        expectedOutput: |
+          5 3 6 2 4 N 7
+        hidden: true
+      - input: |
+          5 3 6 2 4 N 7
+          2
+        expectedOutput: |
+          5 3 6 N 4 N 7
+        hidden: true
+      - input: |
+          5 3 6 2 4 N 7
+          6
+        expectedOutput: |
+          5 3 7 2 4
+        hidden: true
+      - input: |
+          50 30 70 20 40 60 80 10 25 35 45 55 65 75 90
+          30
+        expectedOutput: |
+          50 35 70 20 40 60 80 10 25 N 45 55 65 75 90
+        hidden: true
+      - input: |
+          5 4 N 3 N 2 N 1
+          4
+        expectedOutput: |
+          5 3 N 2 N 1
+        hidden: true
+
+  - sheetId: prob-14-2-9-inorder-successorpredeces
+    slug: inorder-successor-predecessor-in-bst
+    title: "Inorder Successor and Predecessor in a BST"
+    difficulty: Medium
+    topic: "Binary Search Trees"
+    subtopic: "Practice Problems"
+    tags: [bst, tree, binary-search]
+    sourceUrl: "https://leetcode.com/problems/inorder-successor-in-bst/"
+    statement: |
+      The inorder traversal of a binary search tree lists its values in increasing
+      order. For a value `key`:
+
+      - the **inorder predecessor** is the largest node value **strictly smaller**
+        than `key`;
+      - the **inorder successor** is the smallest node value **strictly larger**
+        than `key`.
+
+      `key` itself may or may not be present in the tree — the definitions above do
+      not care. Report both, using `-1` when one of them does not exist.
+    inputFormat: |
+      - Line 1: level-order values of the BST (`N` for a missing child); the tree has at least one node.
+      - Line 2: the integer `key`.
+    outputFormat: |
+      Print two integers separated by a space: the predecessor and the successor of `key`, each replaced by `-1` when it does not exist.
+    constraints:
+      - "1 <= number of nodes <= 2000"
+      - "1 <= node value, key <= 10^5, and all node values are distinct"
+      - "The tree is a valid BST"
+    examples:
+      - input: |
+          8 4 12 2 6 10 14
+          6
+        output: |
+          4 8
+        explanation: "Sorted, the tree is 2 4 6 8 10 12 14. The neighbours of 6 are 4 and 8."
+      - input: |
+          8 4 12 2 6 10 14
+          2
+        output: |
+          -1 4
+        explanation: "2 is the smallest value, so it has no predecessor; the next value up is 4."
+    hints:
+      - "Do not build the inorder list — each answer is one walk down the tree."
+      - "For the successor: at a node larger than key, record it and go left (a smaller candidate may still exist); otherwise go right."
+      - "The predecessor is the mirror image: record nodes smaller than key and go right."
+    explanation: |
+      **Inorder list — O(n) time, O(n) space.** Flatten the BST into a sorted list
+      and scan for the neighbours of `key`. Easy and obviously correct, but it
+      visits every node for something that needs one path.
+
+      **Two descents — O(h) time, O(1) space.** For the **successor**, start with
+      `answer = -1` at the root and repeat:
+
+      - if `node.val > key`, this node is a candidate, so record it and move
+        **left**, because a still smaller value above `key` could be there;
+      - otherwise (`node.val <= key`) nothing in this node's left subtree can beat
+        `key` either, so move **right**.
+
+      The **predecessor** is the same loop with the comparisons flipped: record when
+      `node.val < key` and move right, otherwise move left. Each loop takes one step
+      per level, so both together are `O(h)` with no extra memory.
+
+      **The "successor of a node" variant.** When you already hold the *node* rather
+      than a value, there is a shortcut: if it has a right child, the successor is
+      the leftmost node of that right subtree; otherwise it is the lowest ancestor
+      whose left subtree contains the node — the last node from which you turned
+      left on the way down. The version implemented here works even when `key` is
+      absent, which is why it is stated in terms of a value.
+
+      **Why `-1` is safe** as the "does not exist" answer: the constraints keep all
+      node values at least 1, so `-1` can never be a real answer.
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def predecessor_and_successor(root: Optional[TreeNode], key: int) -> List[int]:
+            # Return [predecessor, successor] of key, using -1 when one does not exist.
+            pass
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split())
+            key = int(lines[1])
+            print(" ".join(map(str, predecessor_and_successor(root, key))))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def predecessor_and_successor(root: Optional[TreeNode], key: int) -> List[int]:
+            predecessor = -1
+            node = root
+            while node is not None:
+                if node.val < key:
+                    predecessor = node.val
+                    node = node.right
+                else:
+                    node = node.left
+
+            successor = -1
+            node = root
+            while node is not None:
+                if node.val > key:
+                    successor = node.val
+                    node = node.left
+                else:
+                    node = node.right
+            return [predecessor, successor]
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split())
+            key = int(lines[1])
+            print(" ".join(map(str, predecessor_and_successor(root, key))))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          8 4 12 2 6 10 14
+          6
+        expectedOutput: |
+          4 8
+        hidden: false
+      - input: |
+          8 4 12 2 6 10 14
+          2
+        expectedOutput: |
+          -1 4
+        hidden: false
+      - input: |
+          7
+          7
+        expectedOutput: |
+          -1 -1
+        hidden: true
+      - input: |
+          8 4 12 2 6 10 14
+          14
+        expectedOutput: |
+          12 -1
+        hidden: true
+      - input: |
+          8 4 12 2 6 10 14
+          7
+        expectedOutput: |
+          6 8
+        hidden: true
+      - input: |
+          8 4 12 2 6 10 14
+          1
+        expectedOutput: |
+          -1 2
+        hidden: true
+      - input: |
+          1 N 2 N 3 N 4 N 5
+          3
+        expectedOutput: |
+          2 4
+        hidden: true
+      - input: |
+          100 50 150 25 75 125 175
+          124
+        expectedOutput: |
+          100 125
+        hidden: true
+
+  - sheetId: prob-14-2-10-merge-2-bsts
+    slug: merge-2-bst-s
+    title: "Merge Two BSTs into a Sorted List"
+    difficulty: Hard
+    topic: "Binary Search Trees"
+    subtopic: "Practice Problems"
+    tags: [bst, tree, two-pointers, iterator]
+    sourceUrl: ""
+    statement: |
+      You are given two binary search trees. Produce **all** of their values, from
+      both trees together, in non-decreasing order.
+
+      Values may repeat — a value can appear in both trees, in which case it must
+      appear twice in the answer. The total number of printed values is exactly the
+      number of nodes in the first tree plus the number of nodes in the second.
+
+      The interesting part is doing it in `O(n + m)` without sorting anything: each
+      tree already hands you its values in sorted order, one at a time, if you walk
+      it inorder.
+    inputFormat: |
+      - Line 1: level-order values of the first BST (`N` for a missing child; the empty tree is `N`).
+      - Line 2: level-order values of the second BST, in the same format.
+    outputFormat: |
+      Print all values of both trees on one line, space-separated, in non-decreasing order. Print an empty line if both trees are empty.
+    constraints:
+      - "0 <= number of nodes in each tree <= 2000"
+      - "-10^5 <= node value <= 10^5"
+      - "Each tree is a valid BST; values are distinct inside a tree but may repeat between the two"
+    examples:
+      - input: |
+          5 2 8
+          9 4 11
+        output: |
+          2 4 5 8 9 11
+        explanation: "The first tree reads 2 5 8 inorder and the second reads 4 9 11, and merging the two sorted sequences gives 2 4 5 8 9 11."
+      - input: |
+          3
+          N
+        output: |
+          3
+        explanation: "The second tree is empty, so the answer is just the inorder traversal of the first."
+    hints:
+      - "The inorder traversal of a BST is already sorted — you never need a sort."
+      - "Two sorted sequences are combined by the merge step of merge sort: compare the two fronts and take the smaller one."
+      - "To avoid materialising both lists, drive each tree with its own iterator: a stack holding the path to the next smallest node."
+    explanation: |
+      **Collect and sort — O((n + m) log(n + m)) time.** Gather all values and call
+      `sort`. It works, and it wastes the fact that both inputs were already
+      ordered.
+
+      **Two inorder lists + merge — O(n + m) time, O(n + m) space.** Flatten each
+      tree with an inorder traversal, which gives two sorted lists, then merge them
+      with two indices exactly as in merge sort: compare the two current values,
+      append the smaller, advance that index, and append whatever remains when one
+      list runs out. Linear and easy to defend.
+
+      **Two BST iterators — O(n + m) time, O(h1 + h2) space.** The same merge
+      without ever building the lists. An iterator over a BST keeps a stack holding
+      the path to the next smallest node: push the whole left spine, and on `next()`
+      pop a node, push the left spine of its right child, and return its value. Each
+      node is pushed and popped once, so `next()` costs `O(1)` amortised and the
+      stack never exceeds the height. Run one iterator per tree and take the smaller
+      front each time. This is the version worth knowing — it also answers "merge
+      k sorted streams" and "k-th smallest across two BSTs" without extra memory.
+
+      **Why ties must be kept.** A value present in both trees appears twice in the
+      output. Deduplicating would change the length of the answer, so the merge
+      takes from one side on a tie and leaves the other for the next step.
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def merge_bsts(first: Optional[TreeNode], second: Optional[TreeNode]) -> List[int]:
+            # Return every value of both trees in non-decreasing order.
+            pass
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            first = build_tree(lines[0].split() if len(lines) > 0 else [])
+            second = build_tree(lines[1].split() if len(lines) > 1 else [])
+            print(" ".join(map(str, merge_bsts(first, second))))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        class BSTIterator:
+            """Yields the values of a BST in increasing order, one at a time."""
+
+            def __init__(self, root: Optional[TreeNode]):
+                self.stack: List[TreeNode] = []
+                self._descend(root)
+
+            def _descend(self, node: Optional[TreeNode]) -> None:
+                while node is not None:
+                    self.stack.append(node)
+                    node = node.left
+
+            def has_next(self) -> bool:
+                return bool(self.stack)
+
+            def peek(self) -> int:
+                return self.stack[-1].val
+
+            def next(self) -> int:
+                node = self.stack.pop()
+                self._descend(node.right)
+                return node.val
+
+
+        def merge_bsts(first: Optional[TreeNode], second: Optional[TreeNode]) -> List[int]:
+            left = BSTIterator(first)
+            right = BSTIterator(second)
+            merged: List[int] = []
+            while left.has_next() and right.has_next():
+                if left.peek() <= right.peek():
+                    merged.append(left.next())
+                else:
+                    merged.append(right.next())
+            while left.has_next():
+                merged.append(left.next())
+            while right.has_next():
+                merged.append(right.next())
+            return merged
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            first = build_tree(lines[0].split() if len(lines) > 0 else [])
+            second = build_tree(lines[1].split() if len(lines) > 1 else [])
+            print(" ".join(map(str, merge_bsts(first, second))))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          5 2 8
+          9 4 11
+        expectedOutput: |
+          2 4 5 8 9 11
+        hidden: false
+      - input: |
+          3
+          N
+        expectedOutput: |
+          3
+        hidden: false
+      - input: |
+          N
+          N
+        expectedOutput: ""
+        hidden: true
+      - input: |
+          N
+          7 3 9
+        expectedOutput: |
+          3 7 9
+        hidden: true
+      - input: |
+          5 3 8 1 4 7 9
+          5 3 8 1 4 7 9
+        expectedOutput: |
+          1 1 3 3 4 4 5 5 7 7 8 8 9 9
+        hidden: true
+      - input: |
+          1 N 2 N 3 N 4 N 5
+          10 9 N 8 N 7 N 6
+        expectedOutput: |
+          1 2 3 4 5 6 7 8 9 10
+        hidden: true
+      - input: |
+          0 -50 50 -75 -25 25 75
+          -100 N 100
+        expectedOutput: |
+          -100 -75 -50 -25 0 25 50 75 100
+        hidden: true
+      - input: |
+          100 50 150
+          125 110 140 105 115 130 145
+        expectedOutput: |
+          50 100 105 110 115 125 130 140 145 150
+        hidden: true
+
+  - sheetId: prob-14-2-11-two-sum-in-bst-check-if-t
+    slug: two-sum-in-bst-check-if-there-exists-a-pair-with-sum-k
+    title: "Two Sum in a BST"
+    difficulty: Hard
+    topic: "Binary Search Trees"
+    subtopic: "Practice Problems"
+    tags: [bst, tree, two-pointers, iterator]
+    sourceUrl: "https://leetcode.com/problems/two-sum-iv-input-is-a-bst/"
+    statement: |
+      Given a binary search tree with distinct values and an integer `k`, decide
+      whether **two different nodes** hold values that add up to `k`.
+
+      The same node may not be used twice: in a tree containing `6`, the target
+      `12` is only reachable if some *other* node also holds `6`, which distinct
+      values rule out.
+    inputFormat: |
+      - Line 1: level-order values of the BST (`N` for a missing child; the empty tree is `N`).
+      - Line 2: the integer `k`.
+    outputFormat: |
+      Print `true` if two different nodes sum to `k`, otherwise `false`.
+    constraints:
+      - "0 <= number of nodes <= 2000"
+      - "-10^5 <= node value <= 10^5, and all node values are distinct"
+      - "-10^6 <= k <= 10^6"
+      - "The tree is a valid BST"
+    examples:
+      - input: |
+          8 4 12 2 6 10 14
+          18
+        output: |
+          true
+        explanation: "The values in order are 2 4 6 8 10 12 14, and 6 + 12 = 18."
+      - input: |
+          8 4 12 2 6 10 14
+          28
+        output: |
+          false
+        explanation: "The two largest values are 12 and 14, and their sum 26 is already below 28, so no pair works."
+    hints:
+      - "The inorder traversal is sorted — what does 'two sum' become on a sorted sequence?"
+      - "Two pointers: if the sum is too small advance the small end, if it is too large step back from the large end."
+      - "To avoid storing the whole traversal, run one iterator forwards (inorder) and one backwards (reverse inorder), each keeping only a stack of ancestors."
+    explanation: |
+      **All pairs — O(n²) time, O(h) space.** For every node, search the rest of the
+      tree for `k - value`. Correct, and quadratic.
+
+      **Hash set during a traversal — O(n) time, O(n) space.** Traverse once; for
+      each value check whether `k - value` has already been seen, otherwise add it.
+      This works on any binary tree, not just a BST, and is the answer to give if
+      the ordering is not available.
+
+      **Sorted list + two pointers — O(n) time, O(n) space.** Flatten inorder into a
+      sorted array, put one index at each end and move inward: if the sum is smaller
+      than `k` advance the left index, if it is larger move the right index down, and
+      stop when they meet. Each step discards one value for a provable reason.
+
+      **Two BST iterators — O(n) time, O(h) space.** The same two-pointer walk with
+      no array. Build one iterator that yields values in increasing order (push the
+      left spine, pop, then push the right child's left spine) and one that yields
+      them in decreasing order (the mirror image, using right spines). Take the
+      first value from each; while the small one is less than the large one,
+      compare their sum with `k` and advance the appropriate iterator. Because the
+      two iterators only ever move towards each other, each node is popped at most
+      once, so the whole search is linear while the memory is one stack per
+      direction — `O(h)`, which is `O(log n)` on a balanced tree.
+
+      **The "different nodes" rule** is what stops the loop at `small < large`
+      instead of `small <= large`. With equal values allowed you would also have to
+      check that two *nodes* carry the value, not just one.
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def two_sum_in_bst(root: Optional[TreeNode], k: int) -> bool:
+            # Return True when two different nodes hold values summing to k.
+            pass
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split() if lines else [])
+            k = int(lines[1])
+            print("true" if two_sum_in_bst(root, k) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        class BSTIterator:
+            """Yields BST values in increasing order, or decreasing when reverse=True."""
+
+            def __init__(self, root: Optional[TreeNode], reverse: bool = False):
+                self.reverse = reverse
+                self.stack: List[TreeNode] = []
+                self._descend(root)
+
+            def _descend(self, node: Optional[TreeNode]) -> None:
+                while node is not None:
+                    self.stack.append(node)
+                    node = node.right if self.reverse else node.left
+
+            def has_next(self) -> bool:
+                return bool(self.stack)
+
+            def next(self) -> int:
+                node = self.stack.pop()
+                self._descend(node.left if self.reverse else node.right)
+                return node.val
+
+
+        def two_sum_in_bst(root: Optional[TreeNode], k: int) -> bool:
+            if root is None:
+                return False
+            ascending = BSTIterator(root)
+            descending = BSTIterator(root, reverse=True)
+            small = ascending.next()
+            large = descending.next()
+            while small < large:
+                total = small + large
+                if total == k:
+                    return True
+                if total < k:
+                    small = ascending.next()
+                else:
+                    large = descending.next()
+            return False
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split() if lines else [])
+            k = int(lines[1])
+            print("true" if two_sum_in_bst(root, k) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          8 4 12 2 6 10 14
+          18
+        expectedOutput: |
+          true
+        hidden: false
+      - input: |
+          8 4 12 2 6 10 14
+          28
+        expectedOutput: |
+          false
+        hidden: false
+      - input: |
+          N
+          0
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          6
+          12
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          8 4 12 2 6 10 14
+          16
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          0 -50 50 -75 -25 25 75
+          -100
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          1 N 2 N 3 N 4 N 5
+          9
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          1 N 2 N 3 N 4 N 5
+          10
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          100 50 150 25 75 125 175
+          200
+        expectedOutput: |
+          true
+        hidden: true
+
+  - sheetId: prob-14-2-12-correct-bst-with-two-node
+    slug: correct-bst-with-two-nodes-swapped
+    title: "Recover a BST with Two Swapped Nodes"
+    difficulty: Hard
+    topic: "Binary Search Trees"
+    subtopic: "Practice Problems"
+    tags: [bst, tree, inorder]
+    sourceUrl: "https://leetcode.com/problems/recover-binary-search-tree/"
+    statement: |
+      Someone took a valid binary search tree with distinct values and **exchanged
+      the values of exactly two of its nodes**. The shape of the tree was not
+      touched, only those two values.
+
+      Put the two values back where they belong, so the tree is a valid BST again,
+      and do it **without changing any pointer** — only the two values move. There
+      is exactly one way to do this, so the answer is unique.
+
+      The driver prints the repaired tree in level-order form.
+    inputFormat: |
+      A single line with the level-order values of the damaged tree, using `N` for a missing child. The tree has at least two nodes.
+    outputFormat: |
+      Print the level-order values of the repaired tree on one line, using `N` for a missing child of an existing node and dropping the trailing `N`s.
+    constraints:
+      - "2 <= number of nodes <= 2000"
+      - "1 <= node value <= 10^5, and all node values are distinct"
+      - "The tree becomes a valid BST after exchanging the values of exactly two nodes"
+    examples:
+      - input: |
+          3 1 4 N N 2
+        output: |
+          2 1 4 N N 3
+        explanation: "Inorder the tree reads 1 3 2 4, which should be 1 2 3 4. Exchanging the values 3 and 2 repairs it and leaves the shape untouched."
+      - input: |
+          10 15 5 3 7 N 18
+        output: |
+          10 5 15 3 7 N 18
+        explanation: "Inorder the tree reads 3 15 7 10 5 18, which should be 3 5 7 10 15 18. The values 15 and 5 have traded places; putting them back makes the sequence increasing again."
+    hints:
+      - "Walk the tree inorder and watch for a place where the previous value is larger than the current one."
+      - "Two swapped nodes produce either two such places (they are far apart) or exactly one (they are neighbours in the inorder order)."
+      - "Record the larger value of the first violation and the smaller value of the last violation, then exchange them."
+    explanation: |
+      **Sort the inorder values — O(n log n) time, O(n) space.** Collect the inorder
+      sequence, sort a copy, compare position by position: exactly two positions
+      differ, and writing the sorted values back into the nodes in inorder fixes the
+      tree. Simple, correct, and more work than necessary.
+
+      **One inorder pass — O(n) time, O(h) space.** The inorder sequence of a valid
+      BST is strictly increasing, so the damage shows up as *descents*. Walk inorder
+      keeping a `previous` node and look for `previous.val > current.val`:
+
+      - the **first** such violation gives two candidates — `previous` (the value
+        that is too large) and `current` (the value that is too small);
+      - if a **second** violation occurs later, the misplaced values are far apart:
+        the answer is `first_violation.previous` and `second_violation.current`;
+      - if there is only one violation, the two swapped nodes are adjacent in the
+        inorder order and the answer is the two nodes of that single violation.
+
+      Exchange those two values and stop. One traversal, no array, and only the
+      traversal's own stack as memory.
+
+      **Why exactly one or two violations.** Exchanging two entries of an increasing
+      sequence creates a descent at each end of the disturbed region; when the two
+      entries are neighbours the two descents coincide into a single one. That case
+      is the one most solutions get wrong — test it deliberately.
+
+      **O(1) space.** Replacing the stack with a Morris inorder traversal keeps the
+      same logic and removes the last of the extra memory, at the cost of
+      temporarily threading right pointers.
+    starterCode:
+      python: |
+        import sys
+        from collections import deque
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def recover_bst(root: Optional[TreeNode]) -> None:
+            # Exchange the two misplaced values in place; do not move any pointer.
+            pass
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def serialize_level_order(root: Optional[TreeNode]) -> str:
+            """Level-order values with "N" for a missing child, trailing "N"s dropped."""
+            if root is None:
+                return "N"
+            tokens = [str(root.val)]
+            queue = deque([root])
+            while queue:
+                node = queue.popleft()
+                for child in (node.left, node.right):
+                    if child is None:
+                        tokens.append("N")
+                    else:
+                        tokens.append(str(child.val))
+                        queue.append(child)
+            while tokens and tokens[-1] == "N":
+                tokens.pop()
+            return " ".join(tokens)
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split())
+            recover_bst(root)
+            print(serialize_level_order(root))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from collections import deque
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def recover_bst(root: Optional[TreeNode]) -> None:
+            first: Optional[TreeNode] = None
+            middle: Optional[TreeNode] = None
+            last: Optional[TreeNode] = None
+            previous: Optional[TreeNode] = None
+
+            stack: List[TreeNode] = []
+            node = root
+            while node is not None or stack:
+                while node is not None:
+                    stack.append(node)
+                    node = node.left
+                node = stack.pop()
+                if previous is not None and previous.val > node.val:
+                    if first is None:
+                        first = previous
+                        middle = node
+                    else:
+                        last = node
+                previous = node
+                node = node.right
+
+            if first is not None and last is not None:
+                first.val, last.val = last.val, first.val
+            elif first is not None and middle is not None:
+                first.val, middle.val = middle.val, first.val
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def serialize_level_order(root: Optional[TreeNode]) -> str:
+            """Level-order values with "N" for a missing child, trailing "N"s dropped."""
+            if root is None:
+                return "N"
+            tokens = [str(root.val)]
+            queue = deque([root])
+            while queue:
+                node = queue.popleft()
+                for child in (node.left, node.right):
+                    if child is None:
+                        tokens.append("N")
+                    else:
+                        tokens.append(str(child.val))
+                        queue.append(child)
+            while tokens and tokens[-1] == "N":
+                tokens.pop()
+            return " ".join(tokens)
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split())
+            recover_bst(root)
+            print(serialize_level_order(root))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          3 1 4 N N 2
+        expectedOutput: |
+          2 1 4 N N 3
+        hidden: false
+      - input: |
+          10 15 5 3 7 N 18
+        expectedOutput: |
+          10 5 15 3 7 N 18
+        hidden: false
+      - input: |
+          1 2
+        expectedOutput: |
+          2 1
+        hidden: true
+      - input: |
+          1 3 N N 2
+        expectedOutput: |
+          3 1 N N 2
+        hidden: true
+      - input: |
+          10 12 15 3 7 5 18
+        expectedOutput: |
+          10 5 15 3 7 12 18
+        hidden: true
+      - input: |
+          7 5 15 3 10 12 18
+        expectedOutput: |
+          10 5 15 3 7 12 18
+        hidden: true
+      - input: |
+          4 1 N 2 N 3
+        expectedOutput: |
+          4 3 N 2 N 1
+        hidden: true
+      - input: |
+          1 N 4 N 3 N 2
+        expectedOutput: |
+          1 N 2 N 3 N 4
+        hidden: true
+
+  - sheetId: prob-14-2-13-largest-bst-in-binary-tre
+    slug: largest-bst-in-binary-tree
+    title: "Largest BST Inside a Binary Tree"
+    difficulty: Hard
+    topic: "Binary Search Trees"
+    subtopic: "Practice Problems"
+    tags: [bst, tree, postorder, recursion]
+    sourceUrl: ""
+    statement: |
+      You are given an arbitrary binary tree — it is **not** promised to be a
+      search tree. Some of its subtrees may nevertheless be valid binary search
+      trees on their own.
+
+      A **subtree** here means a node together with *everything* below it, and it
+      counts as a BST when every value in its left part is **strictly smaller**
+      than the node and every value in its right part is **strictly larger** (so a
+      subtree containing two equal values is never a BST).
+
+      Print the number of nodes in the largest such subtree. Every single leaf is a
+      BST of size 1, so the answer of a non-empty tree is at least 1; the empty
+      tree answers `0`.
+    inputFormat: |
+      A single line with the level-order values of the tree, using `N` for a missing child (the empty tree is `N`).
+    outputFormat: |
+      Print a single integer: the number of nodes in the largest subtree that is a BST.
+    constraints:
+      - "0 <= number of nodes <= 2000"
+      - "-10^5 <= node value <= 10^5"
+      - "Values may repeat"
+    examples:
+      - input: |
+          10 5 15 1 8 N 7
+        output: |
+          3
+        explanation: "The whole tree fails because 7 sits in the right subtree of 10 but is smaller than 10. The subtree rooted at 5 (with children 1 and 8) is a valid BST with 3 nodes, and nothing larger qualifies."
+      - input: |
+          8 4 12 2 6 10 14
+        output: |
+          7
+        explanation: "The entire tree is already a binary search tree, so the answer is all 7 nodes."
+    hints:
+      - "Check every subtree independently and you get an O(n²) solution — what information would let a node decide in O(1)?"
+      - "From each child, a node needs three things: is that subtree a BST, what is its smallest value and what is its largest value, plus its size."
+      - "A node is a BST exactly when both children are BSTs and left_max < node.val < right_min — note it is the left subtree's maximum and the right subtree's minimum."
+    explanation: |
+      **Check each subtree separately — O(n²) time.** For every node, validate its
+      whole subtree and count it if it passes. Each validation is `O(size)`, and for
+      a skewed tree the total is quadratic.
+
+      **One postorder pass — O(n) time, O(h) space.** Solve the problem bottom-up:
+      every node asks its two children for a small summary and produces its own.
+      The summary is four numbers — `(is_bst, minimum, maximum, size)` — or, more
+      compactly, `(minimum, maximum, size)` where a subtree that is not a BST
+      reports a deliberately impossible range.
+
+      For a node with summaries `L` and `R`:
+
+      - it is a BST when both children are BSTs **and** `L.maximum < node.val` and
+        `node.val < R.minimum`;
+      - if so, its size is `L.size + R.size + 1`, its minimum is
+        `min(L.minimum, node.val)` and its maximum is `max(R.maximum, node.val)`;
+      - if not, the node reports "not a BST" and passes upward the largest BST size
+        found anywhere below it, so the answer survives.
+
+      An empty child returns `size = 0` with a minimum of `+infinity` and a maximum
+      of `-infinity`, which makes both comparisons succeed automatically — the neat
+      trick that removes all the null special cases. Each node is visited once and
+      does `O(1)` work, so the pass is linear.
+
+      **Strictness matters.** Using `<=` instead of `<` would accept duplicates and
+      change the answer on trees where a value repeats; the definition above is
+      strict, so `5` with a child `5` is two separate BSTs of size 1.
+
+      **Watch the recursion depth** on a 2000-node chain, and remember that the
+      answer is a *size*, not a height — a common misreading of this problem.
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Optional
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def largest_bst_size(root: Optional[TreeNode]) -> int:
+            # Return the number of nodes in the largest subtree that is a BST.
+            pass
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split() if lines else [])
+            print(largest_bst_size(root))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List, Optional, Tuple
+
+
+        class TreeNode:
+            def __init__(self, val: int = 0, left: "Optional[TreeNode]" = None, right: "Optional[TreeNode]" = None):
+                self.val = val
+                self.left = left
+                self.right = right
+
+
+        def largest_bst_size(root: Optional[TreeNode]) -> int:
+            INF = float("inf")
+            best = 0
+
+            def summarise(node: Optional[TreeNode]) -> Tuple[float, float, int, bool]:
+                """Returns (minimum, maximum, size, is_bst) for the subtree."""
+                nonlocal best
+                if node is None:
+                    return (INF, -INF, 0, True)
+                left_min, left_max, left_size, left_ok = summarise(node.left)
+                right_min, right_max, right_size, right_ok = summarise(node.right)
+                if left_ok and right_ok and left_max < node.val < right_min:
+                    size = left_size + right_size + 1
+                    best = max(best, size)
+                    return (min(left_min, node.val), max(right_max, node.val), size, True)
+                return (-INF, INF, max(left_size, right_size), False)
+
+            summarise(root)
+            return best
+
+
+        # --- Input/output handling ---
+        def build_tree(tokens: List[str]) -> Optional[TreeNode]:
+            """Builds a tree from level-order tokens, where "N" marks a missing child."""
+            if not tokens or tokens[0] == "N":
+                return None
+            root = TreeNode(int(tokens[0]))
+            queue = [root]
+            head = 0
+            i = 1
+            while head < len(queue) and i < len(tokens):
+                node = queue[head]
+                head += 1
+                if tokens[i] != "N":
+                    node.left = TreeNode(int(tokens[i]))
+                    queue.append(node.left)
+                i += 1
+                if i < len(tokens) and tokens[i] != "N":
+                    node.right = TreeNode(int(tokens[i]))
+                    queue.append(node.right)
+                i += 1
+            return root
+
+
+        def main():
+            sys.setrecursionlimit(10**6)
+            lines = sys.stdin.read().splitlines()
+            root = build_tree(lines[0].split() if lines else [])
+            print(largest_bst_size(root))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          10 5 15 1 8 N 7
+        expectedOutput: |
+          3
+        hidden: false
+      - input: |
+          8 4 12 2 6 10 14
+        expectedOutput: |
+          7
+        hidden: false
+      - input: |
+          N
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          42
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          5 5 5
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          1 2 N 3 N 4 N 5
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          50 30 60 5 20 45 70 1 N 15 25 N N 65 80
+        expectedOutput: |
+          5
+        hidden: true
+      - input: |
+          6 6 2 N N 1 3
+        expectedOutput: |
+          3
+        hidden: true

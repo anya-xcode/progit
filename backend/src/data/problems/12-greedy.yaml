@@ -1,0 +1,5223 @@
+section: greedy
+problems:
+  - slug: assign-cookies
+    title: "Assign Cookies"
+    difficulty: Easy
+    topic: "Greedy"
+    subtopic: "Easy Problems"
+    tags: [array, greedy, sorting, two-pointers]
+    sourceUrl: "https://leetcode.com/problems/assign-cookies/"
+    statement: |
+      Each child `i` has a greed factor `g[i]`: the smallest cookie size that will make them happy.
+      Each cookie `j` has a size `s[j]`.
+
+      Every child can receive **at most one** cookie and every cookie can be given to at most one
+      child. Child `i` is content if it receives a cookie with `s[j] >= g[i]`. Maximise the number
+      of content children.
+    inputFormat: |
+      - Line 1: two integers `n` (children) and `m` (cookies).
+      - Line 2: `n` space-separated integers, the greed factors.
+      - Line 3: `m` space-separated integers, the cookie sizes.
+    outputFormat: |
+      Print a single integer: the maximum number of content children.
+    constraints:
+      - "1 <= n, m <= 3 * 10^4"
+      - "1 <= g[i], s[j] <= 2^31 - 1"
+    examples:
+      - input: |
+          4 3
+          3 1 5 2
+          2 1 4
+        output: |
+          3
+        explanation: "Give cookie 1 to the child with greed 1, cookie 2 to greed 2 and cookie 4 to greed 3. The child with greed 5 cannot be satisfied."
+      - input: |
+          2 3
+          10 9
+          1 2 3
+        output: |
+          0
+        explanation: "Every cookie is smaller than every greed factor."
+    hints:
+      - "Should a big cookie ever go to a child who would be happy with a small one?"
+      - "Sort both arrays. Try to satisfy the least greedy child with the smallest cookie that is large enough."
+    explanation: |
+      **Brute force: maximum bipartite matching -- O(n * m * min(n, m)) time.** Connect child `i`
+      to cookie `j` when `s[j] >= g[i]` and find a maximum matching. Correct but unnecessary.
+
+      **Optimal: sort + two pointers -- O(n log n + m log m) time, O(1) extra space.** Sort greed
+      factors and cookie sizes. Walk through cookies from smallest to largest with a pointer `i` on
+      the children: if the current cookie satisfies child `i`, assign it and advance `i`; otherwise
+      the cookie is too small for every remaining child, so skip it. The answer is `i`.
+
+      Exchange argument: in any optimal assignment you can swap cookies so that the least greedy
+      satisfied children receive the smallest adequate cookies without reducing the count.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def find_content_children(greed: List[int], sizes: List[int]) -> int:
+            # Return the maximum number of children that can get a large-enough cookie.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n, m = int(data[0]), int(data[1])
+            greed = [int(x) for x in data[2:2 + n]]
+            sizes = [int(x) for x in data[2 + n:2 + n + m]]
+            print(find_content_children(greed, sizes))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def find_content_children(greed: List[int], sizes: List[int]) -> int:
+            greed = sorted(greed)
+            sizes = sorted(sizes)
+            child = 0
+            for cookie in sizes:
+                if child < len(greed) and cookie >= greed[child]:
+                    child += 1
+            return child
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n, m = int(data[0]), int(data[1])
+            greed = [int(x) for x in data[2:2 + n]]
+            sizes = [int(x) for x in data[2 + n:2 + n + m]]
+            print(find_content_children(greed, sizes))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          4 3
+          3 1 5 2
+          2 1 4
+        expectedOutput: |
+          3
+        hidden: false
+      - input: |
+          2 3
+          10 9
+          1 2 3
+        expectedOutput: |
+          0
+        hidden: false
+      - input: |
+          3 2
+          1 2 3
+          1 1
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          1 1
+          5
+          5
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          3 5
+          1 1 1
+          100 100 100 100 100
+        expectedOutput: |
+          3
+        hidden: true
+      - input: |
+          2 1
+          2147483647 1
+          2147483647
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          120 100
+          51 49 20 56 19 38 26 10 48 56 33 51 35 10 22 28 19 56 47 4 1 26 39 23 25 53 53 36 44 37 8 52 43 26 3 24 22 1 30 16 39 6 3 38 8 30 33 26 11 30 34 40 33 2 2 39 26 28 35 8 12 48 20 2 44 28 53 38 24 10 43 19 6 22 25 1 14 10 26 20 37 40 33 16 23 4 45 23 47 2 43 15 24 59 53 48 38 53 33 31 44 2 60 49 30 39 39 44 53 2 10 35 8 4 57 42 10 18 38 5
+          21 57 28 37 48 19 58 23 25 13 37 6 26 26 58 52 55 5 55 31 52 58 56 56 49 4 11 36 28 22 6 60 55 8 39 31 9 14 14 54 28 10 51 3 5 34 42 34 37 40 54 18 45 60 3 2 41 15 22 34 29 9 2 22 52 18 48 60 3 55 24 43 53 8 37 44 28 12 23 56 55 21 60 50 33 43 11 17 38 18 52 57 42 57 47 53 8 46 25 57
+        expectedOutput: |
+          100
+        hidden: true
+      - input: |
+          150 160
+          871 400 623 817 925 831 153 187 545 322 434 470 192 174 898 385 566 817 398 953 778 467 145 439 621 139 248 600 80 504 669 293 854 356 476 883 769 601 190 516 552 805 734 817 146 820 493 663 954 853 665 783 357 410 679 648 548 157 733 139 447 891 308 217 69 638 869 906 184 245 473 836 735 441 840 390 99 399 311 316 698 971 405 504 733 615 470 403 681 513 262 893 41 345 537 295 72 520 145 287 788 787 778 777 838 983 526 847 648 620 846 75 168 71 236 649 769 378 978 586 60 475 940 974 342 639 344 491 147 520 595 349 93 865 51 840 97 938 611 651 669 953 670 563 328 648 203 607 279 556
+          499 311 28 575 345 519 111 661 410 187 314 524 291 164 370 8 231 595 25 474 398 159 132 126 547 336 496 642 469 82 127 503 314 64 376 436 695 368 650 575 260 154 698 579 404 526 668 187 155 84 218 118 413 124 153 388 213 66 80 691 329 86 183 259 26 88 680 567 455 400 453 254 230 401 565 215 453 13 371 622 680 67 545 435 64 312 550 112 524 276 337 75 176 507 312 679 216 171 334 622 275 666 399 606 247 575 558 18 360 681 604 19 354 445 690 400 286 310 62 7 624 343 616 432 442 660 354 375 514 214 208 289 600 383 354 404 224 609 593 625 44 155 499 516 393 24 234 369 383 446 41 452 123 24 648 600 557 410 158 490
+        expectedOutput: |
+          106
+        hidden: true
+  - slug: lemonade-change
+    title: "Lemonade Change"
+    difficulty: Easy
+    topic: "Greedy"
+    subtopic: "Easy Problems"
+    tags: [array, greedy, simulation]
+    sourceUrl: "https://leetcode.com/problems/lemonade-change/"
+    statement: |
+      You run a lemonade stand where each drink costs **5** coins. Customers arrive in a fixed
+      order, buy exactly one drink each and pay with a single bill of value `5`, `10` or `20`.
+
+      You start with no money at all, and you can only give change using bills received from earlier
+      customers. Decide whether you can give every customer the correct change.
+    inputFormat: |
+      - Line 1: an integer `n`, the number of customers.
+      - Line 2: `n` space-separated integers, the bills in arrival order.
+    outputFormat: |
+      Print `true` if every customer can receive correct change, otherwise `false`.
+    constraints:
+      - "1 <= n <= 10^5"
+      - "bills[i] is 5, 10 or 20"
+    examples:
+      - input: |
+          5
+          5 5 5 10 20
+        output: |
+          true
+        explanation: "After three 5s, the 10 gets one 5 back; the 20 gets a 10 and a 5 back. Everyone is served."
+      - input: |
+          5
+          5 5 10 10 20
+        output: |
+          false
+        explanation: "The two 10s consume both 5s, so the customer with 20 needs 15 in change but only 10s remain."
+    hints:
+      - "Bills of 20 are never useful as change, so only track how many 5s and 10s you hold."
+      - "For a 20 you can return 10 + 5 or 5 + 5 + 5. Which choice keeps you more flexible for later customers?"
+      - "Fives are the more versatile bill, so prefer giving a 10 when you have one."
+    explanation: |
+      **Brute force: explore every change choice -- exponential time (O(n^3) states with
+      memoisation).** For a 20 try both ways of paying 15 and search recursively.
+
+      **Optimal greedy simulation -- O(n) time, O(1) space.** Keep counters `fives` and `tens`.
+      - Bill 5: `fives += 1`.
+      - Bill 10: need a 5; if none, fail; otherwise `fives -= 1`, `tens += 1`.
+      - Bill 20: if `tens > 0` and `fives > 0`, use one of each; else if `fives >= 3`, use three
+        fives; otherwise fail.
+
+      Giving a 10 whenever possible is safe because a 5 can do everything a 10 can (in pairs) and
+      also pay for a 10 bill, while a 10 cannot help with a 10 bill.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def lemonade_change(bills: List[int]) -> bool:
+            # Return True if every customer can receive exact change.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            bills = [int(x) for x in data[1:1 + n]]
+            print("true" if lemonade_change(bills) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def lemonade_change(bills: List[int]) -> bool:
+            fives = tens = 0
+            for bill in bills:
+                if bill == 5:
+                    fives += 1
+                elif bill == 10:
+                    if fives == 0:
+                        return False
+                    fives -= 1
+                    tens += 1
+                else:
+                    if tens > 0 and fives > 0:
+                        tens -= 1
+                        fives -= 1
+                    elif fives >= 3:
+                        fives -= 3
+                    else:
+                        return False
+            return True
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            bills = [int(x) for x in data[1:1 + n]]
+            print("true" if lemonade_change(bills) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          5
+          5 5 5 10 20
+        expectedOutput: |
+          true
+        hidden: false
+      - input: |
+          5
+          5 5 10 10 20
+        expectedOutput: |
+          false
+        hidden: false
+      - input: |
+          1
+          10
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          1
+          5
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          3
+          5 5 20
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          7
+          5 5 5 20 5 10 20
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          10
+          5 10 5 20 5 5 5 10 20 10
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          220
+          5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 20 5 20 20 5 20 20 10 20 10 10 10 20 20 20 20 20 5 10 20 10 10 5 20 5 10 10 20 20 5 10 5 5 10 10 10 20 10 10 20 10 5 5 5 10 20 5 10 5 20 20 10 20 10 20 10 20 20 20 20 20 20 5 5 20 10 10 10 5 10 20 5 20 5 20 10 5 20 20 10 20 10 20 10 20 5 5 10 10 20 10 5 10 20 10 20 10 10 20 10 10 20 10 5 10 10 5 5 10 5 20 20 10 10 20 5 10 10 5 20 5 20 10 5 10 20 20 10 20 5 10 10 10 10 20 10 5 5 5 20 10 20 5 20 10 5 5 10 20 20 20 10 20 5 10 10 10 10 5 10 20 5 10 10 20 20 20 20 10 10 10 20 20 10 10 10 20 10 20 20 5 10 5 10 10 20 20 10 20 5 20 20 10 20 10 20 5 20 20
+        expectedOutput: |
+          false
+        hidden: true
+  - slug: jump-game
+    title: "Jump Game"
+    difficulty: Medium
+    topic: "Greedy"
+    subtopic: "Medium Problems"
+    tags: [array, greedy]
+    sourceUrl: "https://leetcode.com/problems/jump-game/"
+    statement: |
+      You stand on index `0` of an array `nums` of non-negative integers. From index `i` you may
+      jump forward to any index from `i + 1` up to `i + nums[i]` (a value of `0` means you cannot
+      move from there).
+
+      Decide whether the last index can be reached.
+    inputFormat: |
+      - Line 1: an integer `n`.
+      - Line 2: `n` space-separated non-negative integers.
+    outputFormat: |
+      Print `true` if the last index is reachable, otherwise `false`.
+    constraints:
+      - "1 <= n <= 10^5"
+      - "0 <= nums[i] <= 10^5"
+    examples:
+      - input: |
+          5
+          3 0 0 1 2
+        output: |
+          true
+        explanation: "Jump from index 0 straight to index 3, then to index 4."
+      - input: |
+          6
+          1 2 0 1 0 3
+        output: |
+          false
+        explanation: "Indices 0..4 are reachable, but index 4 holds 0 and nothing reachable jumps past it."
+    hints:
+      - "A DP over 'is index i reachable' is O(n^2). Do you need the full set of reachable indices?"
+      - "The reachable indices always form a prefix 0..farthest."
+      - "Scan left to right, extending farthest = max(farthest, i + nums[i]); fail if you reach an i beyond farthest."
+    explanation: |
+      **Brute force: recursion / DP -- O(n^2) time, O(n) space.** Mark index 0 reachable and, for
+      each reachable index, mark every index it can jump to.
+
+      **Optimal greedy -- O(n) time, O(1) space.** Because you can land on any index up to your
+      maximum jump, the set of reachable indices is a prefix. Keep `farthest`, the largest index
+      reachable so far. For each `i` in order: if `i > farthest` the scan is stuck, return false;
+      otherwise update `farthest = max(farthest, i + nums[i])`. If the loop finishes (or `farthest
+      >= n - 1`), return true.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def can_jump(nums: List[int]) -> bool:
+            # Return True if the last index can be reached from index 0.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            nums = [int(x) for x in data[1:1 + n]]
+            print("true" if can_jump(nums) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def can_jump(nums: List[int]) -> bool:
+            farthest = 0
+            for i, step in enumerate(nums):
+                if i > farthest:
+                    return False
+                farthest = max(farthest, i + step)
+                if farthest >= len(nums) - 1:
+                    return True
+            return True
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            nums = [int(x) for x in data[1:1 + n]]
+            print("true" if can_jump(nums) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          5
+          3 0 0 1 2
+        expectedOutput: |
+          true
+        hidden: false
+      - input: |
+          6
+          1 2 0 1 0 3
+        expectedOutput: |
+          false
+        hidden: false
+      - input: |
+          1
+          0
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          2
+          0 1
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          5
+          2 3 1 1 4
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          5
+          3 2 1 0 4
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          1000
+          1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          1500
+          2 1 3 1 0 0 3 3 3 3 3 2 1 2 1 1 2 3 0 1 1 2 0 0 2 2 1 3 2 0 3 1 1 0 2 3 2 1 2 2 1 2 0 0 0 3 1 0 2 2 3 1 1 0 0 1 2 1 1 2 2 3 3 2 3 2 0 3 0 1 0 2 3 0 1 1 3 3 0 2 2 2 3 3 0 3 0 0 1 3 1 0 3 1 1 1 3 3 2 0 3 3 2 3 2 0 1 1 0 3 3 1 1 3 1 3 2 3 1 0 1 3 0 3 0 0 1 3 1 1 1 2 0 3 3 1 0 0 1 2 1 2 1 3 1 1 1 3 0 1 1 0 2 1 2 1 3 0 1 2 2 1 2 3 0 3 2 3 0 2 0 0 1 0 3 2 1 0 3 3 2 0 2 1 1 0 0 3 2 0 0 0 2 0 3 0 1 0 2 3 2 1 2 0 1 0 3 2 3 1 3 1 2 0 2 1 3 0 3 0 1 2 1 0 0 1 3 2 2 3 1 1 1 1 1 1 1 0 0 0 0 3 1 2 3 1 2 2 1 0 1 1 2 2 1 2 2 1 3 3 1 0 2 0 1 3 2 1 1 3 1 2 0 3 2 1 3 2 3 1 0 3 0 2 2 2 0 1 1 2 2 2 1 0 1 1 2 1 1 1 0 0 0 3 3 3 1 2 0 0 2 2 2 0 1 1 0 0 2 1 3 1 0 3 1 1 1 0 3 1 0 1 2 1 0 3 2 2 1 1 3 2 0 1 0 2 2 0 2 3 1 1 2 0 2 0 3 3 3 2 2 0 1 0 0 2 3 0 2 2 3 3 1 2 2 2 2 1 3 1 1 0 1 0 0 3 3 3 1 2 2 2 2 2 1 3 0 1 1 0 3 2 1 0 1 0 1 3 3 3 2 1 2 3 3 1 3 0 2 0 3 3 1 2 1 3 2 1 2 1 0 2 3 2 1 3 0 2 0 0 0 1 2 0 3 1 2 1 0 1 2 2 2 2 3 1 3 0 0 3 1 2 2 2 3 3 1 0 3 2 3 3 1 2 3 0 1 1 1 3 2 3 0 2 1 2 1 2 1 3 2 0 2 2 3 0 2 0 1 2 2 1 1 3 1 2 0 1 0 1 2 0 1 0 3 3 2 1 2 3 2 2 2 0 3 0 0 1 3 1 3 1 0 1 3 1 3 3 0 2 3 1 3 1 3 1 3 3 3 3 2 0 0 3 0 2 0 0 0 3 2 0 1 3 1 3 1 3 2 3 3 0 0 2 2 1 3 0 2 0 2 0 0 2 1 0 0 0 2 1 2 2 1 3 3 0 1 2 1 0 2 3 2 0 2 1 3 0 3 2 1 0 1 0 3 1 3 2 2 2 3 0 0 2 2 3 0 0 0 3 1 2 3 0 3 1 1 2 3 3 1 1 1 3 2 0 2 1 2 2 0 2 2 2 3 1 2 1 1 0 0 0 0 2 0 2 1 3 2 2 0 0 3 3 1 1 3 3 1 2 3 0 0 3 2 2 2 0 0 1 2 0 0 2 3 3 0 2 3 2 2 3 1 3 1 2 3 2 0 0 2 2 0 3 1 2 3 3 3 1 0 0 1 3 3 2 1 3 2 2 3 1 1 1 3 2 2 3 1 2 1 2 0 0 3 0 3 0 1 0 1 0 0 3 0 3 2 2 3 2 1 1 2 3 3 1 0 1 2 3 1 0 1 1 0 2 0 0 2 3 1 0 2 1 0 3 2 3 0 2 1 1 2 3 0 2 3 3 0 3 0 2 3 1 3 2 3 3 0 2 2 1 1 2 3 3 0 1 3 1 2 2 1 3 3 0 0 2 1 3 2 0 3 3 0 1 0 3 2 2 0 3 3 3 2 0 0 2 3 0 0 1 0 2 3 3 1 1 1 0 0 0 0 1 1 1 2 1 0 0 0 0 1 3 2 1 3 3 3 0 0 2 2 1 1 0 1 1 0 2 2 2 3 3 2 3 3 0 3 0 3 0 2 2 3 0 2 3 2 1 2 2 3 3 0 3 1 0 2 3 2 1 2 2 0 0 3 1 3 0 0 3 2 0 1 2 0 0 2 2 0 1 0 2 3 3 1 2 1 1 3 1 1 1 2 3 3 0 1 1 1 3 0 3 0 0 2 0 0 2 3 2 0 3 3 0 3 0 0 2 0 2 2 3 3 2 0 2 1 2 1 1 3 1 0 1 0 2 0 0 3 3 2 0 3 0 0 2 3 3 0 3 0 1 1 0 2 0 0 0 2 2 0 1 0 2 3 1 2 1 1 3 2 2 2 1 3 0 2 1 3 2 0 3 1 3 0 2 0 0 1 2 3 2 2 2 1 0 1 0 3 1 2 0 3 1 1 2 0 3 0 2 1 3 1 3 3 2 1 2 2 0 3 2 1 3 2 2 0 2 3 1 2 1 2 1 0 0 0 3 3 1 3 0 2 1 3 2 2 2 3 2 3 3 1 1 1 1 3 1 0 2 2 3 1 0 1 3 1 0 0 2 3 1 3 1 2 3 3 1 3 3 1 1 3 1 3 3 2 2 2 2 2 0 0 3 1 2 1 1 2 0 3 3 1 0 3 2 1 1 0 3 2 1 0 1 1 1 0 1 3 1 1 2 3 1 0 2 1 1 1 3 1 1 0 3 2 3 0 2 2 2 3 2 2 1 3 1 2 1 3 3 3 1 3 1 2 2 2 2 0 3 3 3 2 2 0 1 3 3 0 3 3 3 1 2 2 2 3 2 2 0 2 2 3 1 1 1 3 0 0 0 1 0 2 3 2 1 1 3 3 3 0 3 0 1 1 3 2 1 3 2 1 0 3 2 2 2 3 1 0 0 1 0 1 2 3 0 1 0 2 1 3 0 3 3 3 0 0 2 3 0 0 0 1 0 2 2 3 2 0 3 1 1 1 1 1 1 0 0 2 2 1 2 0 3 1 1 2 1 3 3 2 2 0 1 1 0 1 3 0 3 1 3 3 0 1 2 1 2 2 0 2 2 1 2 2 2 2 0 0 1 0 2 3 1 0 2 3 1 3 0 1 2 2 1 2 3 2 0 2 0 2 2 2 3 3 1 0 2 3 3 3 1 2 1 1 1 3 0 1 3 0 2 2 0 0 0 0 1 2 2 3 1 2 2 3 1 0 1 2 3 0 3 1 0 3 0 1 2 1 0 1 1 3 0 0 3 0 3 0 1 1 0 3 3 3 3 0 1 0 2 0 1 1 1 0 3 0 0 0 3 0 3 1 2 0 3 3 0 3 1 1 0 0 3 3 2 0 2 3 3 2 2 1 3 1 2 0 2 3 3 1 1 0 1 2 1 1 0
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          9
+          4 0 0 0 3 0 0 1 0
+        expectedOutput: |
+          true
+        hidden: true
+  - slug: jump-game-ii
+    title: "Jump Game II"
+    difficulty: Medium
+    topic: "Greedy"
+    subtopic: "Medium Problems"
+    tags: [array, greedy, bfs]
+    sourceUrl: "https://leetcode.com/problems/jump-game-ii/"
+    statement: |
+      You start at index `0` of an array `nums` of non-negative integers. From index `i` one jump
+      takes you to any index between `i + 1` and `i + nums[i]`.
+
+      It is guaranteed that the last index is reachable. Find the **minimum number of jumps**
+      needed to get there.
+    inputFormat: |
+      - Line 1: an integer `n`.
+      - Line 2: `n` space-separated non-negative integers.
+    outputFormat: |
+      Print a single integer: the minimum number of jumps (0 if `n = 1`).
+    constraints:
+      - "1 <= n <= 10^4"
+      - "0 <= nums[i] <= 1000"
+      - "The last index is reachable from index 0"
+    examples:
+      - input: |
+          6
+          2 1 3 1 1 2
+        output: |
+          2
+        explanation: "Jump 0 -> 2 (value 3), then 2 -> 5. One jump cannot reach the end because nums[0] = 2."
+      - input: |
+          4
+          1 1 1 1
+        output: |
+          3
+        explanation: "Every jump advances exactly one index, so 3 jumps are required."
+    hints:
+      - "A DP where dp[j] = min jumps to reach j is O(n^2)."
+      - "Think of BFS levels: all indices reachable with exactly k jumps form a contiguous range."
+      - "Track the end of the current range and the farthest index reachable from inside it; when you pass the end, you must jump once more."
+    explanation: |
+      **Brute force: recursion -- exponential.** Try every jump length from every index.
+
+      **Better: DP -- O(n * maxJump) time, O(n) space.** `dp[0] = 0`; for each `i`, relax
+      `dp[j] = min(dp[j], dp[i] + 1)` for every `j` it can reach.
+
+      **Optimal greedy (implicit BFS) -- O(n) time, O(1) space.** Indices reachable with exactly
+      `jumps` jumps form a window ending at `current_end`. While scanning `i` from `0` to `n - 2`,
+      update `farthest = max(farthest, i + nums[i])`. When `i == current_end`, the window is
+      exhausted: increment `jumps` and set `current_end = farthest`.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def jump(nums: List[int]) -> int:
+            # Return the minimum number of jumps to reach the last index.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            nums = [int(x) for x in data[1:1 + n]]
+            print(jump(nums))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def jump(nums: List[int]) -> int:
+            jumps = 0
+            current_end = 0
+            farthest = 0
+            for i in range(len(nums) - 1):
+                farthest = max(farthest, i + nums[i])
+                if i == current_end:
+                    jumps += 1
+                    current_end = farthest
+            return jumps
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            nums = [int(x) for x in data[1:1 + n]]
+            print(jump(nums))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          6
+          2 1 3 1 1 2
+        expectedOutput: |
+          2
+        hidden: false
+      - input: |
+          4
+          1 1 1 1
+        expectedOutput: |
+          3
+        hidden: false
+      - input: |
+          1
+          0
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          5
+          2 3 1 1 4
+        expectedOutput: |
+          2
+        hidden: true
+      - input: |
+          5
+          10 1 1 1 1
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          9
+          1 2 0 1 4 0 0 0 1
+        expectedOutput: |
+          4
+        hidden: true
+      - input: |
+          1500
+          1 1 5 3 4 1 5 2 4 4 1 3 3 4 6 6 5 3 6 2 4 3 6 5 2 6 2 4 4 5 3 1 2 1 5 6 2 2 3 1 6 5 6 4 3 6 6 6 2 3 2 6 3 4 3 5 5 1 6 3 4 2 2 6 5 1 1 5 1 2 2 2 1 5 4 1 2 3 6 5 6 2 6 1 3 6 1 2 2 1 5 5 5 1 4 6 3 5 5 1 4 4 4 4 1 5 4 1 1 4 5 1 1 3 1 4 4 5 2 5 2 3 2 1 1 1 6 5 1 6 2 2 3 4 1 6 5 1 2 6 3 4 2 3 3 5 4 1 6 4 2 5 5 4 4 4 4 5 2 6 1 1 6 5 6 4 6 1 3 1 3 3 5 2 6 5 2 1 2 6 2 6 6 5 4 6 3 2 2 1 1 2 5 3 2 1 6 3 2 4 3 4 4 5 1 2 3 3 1 1 3 5 1 6 3 2 5 1 5 1 6 1 2 2 6 1 6 3 5 2 4 4 2 5 6 6 2 5 5 4 4 2 1 3 3 3 4 1 3 3 1 1 1 3 5 5 3 6 3 6 1 2 3 4 2 5 1 3 6 3 6 3 3 4 1 6 5 2 5 4 2 5 4 2 4 3 4 2 2 6 4 4 2 2 1 5 3 2 6 1 2 1 5 1 1 5 3 2 1 2 2 2 6 3 6 6 3 4 2 1 2 5 3 6 1 6 3 1 6 4 6 5 1 5 2 2 2 4 2 4 3 6 6 3 5 6 6 6 5 6 5 4 5 5 3 1 2 6 1 1 4 1 5 6 1 4 3 1 4 1 1 4 5 4 4 5 3 5 5 4 6 5 2 2 3 2 2 3 6 5 5 3 1 6 6 6 1 6 1 6 1 3 4 3 4 3 6 1 6 6 2 4 5 5 1 3 1 6 3 6 1 5 3 3 3 5 4 2 3 5 4 4 1 4 2 1 3 4 3 6 5 4 1 4 2 4 4 6 5 2 1 2 1 1 4 3 2 3 5 2 2 6 6 2 3 6 3 2 5 3 4 3 2 5 2 3 1 1 6 2 3 6 6 2 4 5 4 2 5 2 4 3 6 5 5 5 1 2 3 3 1 2 2 1 6 2 3 1 5 5 5 2 1 6 5 1 5 6 6 3 6 1 2 5 5 1 5 2 5 1 1 3 5 3 5 3 4 2 1 4 5 5 1 1 1 5 5 2 3 2 4 2 3 1 4 4 3 5 2 4 6 1 5 3 4 6 5 5 4 6 3 6 2 5 4 4 2 4 6 6 4 2 2 4 1 3 2 1 1 4 3 1 2 5 1 6 4 6 1 5 6 4 6 3 4 1 5 2 5 2 5 6 1 6 2 3 6 3 2 2 4 6 3 4 5 4 1 6 3 3 5 6 5 4 2 4 3 2 3 6 2 2 4 6 4 2 2 2 4 2 1 1 2 6 1 1 3 1 5 6 2 5 4 6 3 4 1 6 2 3 2 3 3 4 6 1 4 4 1 2 2 3 6 3 6 5 5 4 2 3 3 4 5 3 3 6 2 4 6 6 1 6 1 2 6 2 6 1 5 3 2 6 3 5 6 5 6 6 1 4 5 5 6 1 6 3 4 1 5 3 3 1 3 5 5 1 3 6 3 3 2 4 3 6 6 2 6 4 3 3 6 3 4 5 5 6 3 6 4 4 4 5 1 1 6 5 1 4 5 2 4 6 2 6 6 5 4 3 3 2 4 5 4 3 5 1 1 3 2 4 6 6 1 2 6 3 4 1 2 1 4 2 4 6 1 5 5 3 6 6 1 4 2 4 6 5 2 2 1 3 3 6 1 6 3 1 3 1 1 2 3 6 4 6 6 5 2 5 6 4 2 1 2 6 2 6 4 6 5 2 1 2 5 4 4 2 2 2 3 2 2 5 1 2 4 5 6 5 2 6 4 1 5 1 1 1 1 4 3 3 3 3 3 4 1 3 2 3 3 6 3 2 4 3 2 1 6 3 6 1 1 6 6 5 2 6 6 6 2 3 5 1 4 2 1 1 5 2 4 3 6 6 5 1 1 2 6 4 1 2 5 3 6 6 5 3 2 3 1 5 6 5 2 1 3 6 3 1 1 6 3 3 4 1 3 2 6 2 5 5 5 1 4 1 6 4 4 6 4 1 2 3 1 1 2 6 3 3 6 2 2 3 5 5 6 6 4 1 1 2 5 3 1 1 6 2 5 1 3 5 2 6 3 2 3 2 3 6 5 6 5 2 2 2 4 2 5 4 1 3 4 6 6 1 1 6 1 2 4 2 6 2 5 6 1 5 5 6 1 5 2 6 2 4 2 5 4 3 5 2 2 5 4 3 2 1 2 5 5 2 4 5 3 6 4 5 3 4 6 2 3 2 2 5 6 2 2 1 6 3 5 2 2 4 3 6 1 4 6 2 5 5 2 1 3 1 4 4 5 4 6 6 3 6 6 1 1 4 2 2 1 2 5 6 2 3 1 4 4 5 2 2 6 1 6 3 6 1 1 4 4 1 3 2 6 5 5 6 2 1 1 6 6 3 2 4 1 6 2 5 4 6 6 5 5 4 6 3 5 6 3 6 4 6 3 3 4 4 6 3 6 5 5 1 2 1 4 2 6 4 1 5 5 2 3 4 4 6 4 3 4 4 6 5 3 3 2 5 5 5 5 3 2 1 3 4 1 4 2 4 2 5 1 4 5 5 5 5 6 1 6 5 4 4 2 6 1 3 6 2 4 3 5 2 5 5 3 5 6 2 5 3 3 4 4 4 6 1 1 4 3 6 3 3 4 4 1 5 4 4 4 3 2 1 4 4 2 5 4 1 3 2 6 4 2 6 3 6 5 4 2 6 5 1 1 2 4 1 1 5 4 4 3 4 4 4 5 1 6 1 2 3 1 6 5 6 2 6 1 2 2 6 1 1 2 2 4 5 1 1 6 2 2 3 2 1 3 5 1 4 3 5 2 4 2 1 6 4 3 2 5 3 5 6 3 6 1 3 4 1 6 6 1 5 5 1 4 2 4 5 1 1 3 3 2 3 3 6 3 5 5 2 1 1 1 2 2 1 5 1 6 4 6 6 6 3 1 3 4 1 4 4 5 1 2 2 3 4 2 6 1 6 3 3 3 4 6 2 4 5 2 6 4 3 2 6 6 5 5 3 5 5 6 4 6 5 1 3 6 4 4 3 6 1 3 5 5 5 4 2 1 3 4 5 5 3 5 5 4 4 4 1 1 6 5 5 2 5 2 1 3 1 3 1 5 1 6 2 5 3 4 1 2 2 3 4 6 1 1 2 5 3 5 3 4 5 6 5 1 5 4 5 1 6 6 5 5 6 4 1
+        expectedOutput: |
+          357
+        hidden: true
+      - input: |
+          1500
+          5 13 14 39 8 35 24 33 3 19 32 20 17 4 21 6 36 29 9 22 26 33 32 7 6 14 9 27 31 11 23 13 1 24 23 38 9 37 39 2 31 12 4 31 27 30 8 4 2 28 19 36 19 18 2 3 12 12 32 4 23 27 40 6 14 25 3 11 7 31 11 30 27 26 29 40 9 34 4 15 35 33 5 15 16 30 5 6 6 36 36 8 38 21 26 9 32 2 31 20 5 26 1 6 9 33 3 10 26 34 15 31 11 2 37 18 10 35 34 10 13 10 13 10 3 23 9 11 7 9 19 5 32 14 16 1 25 26 12 31 31 5 20 23 28 17 6 13 1 4 7 30 1 18 20 7 24 29 3 39 21 23 21 30 14 31 21 8 36 30 9 30 17 40 13 23 6 27 39 23 16 36 12 23 34 11 1 28 28 22 25 35 31 25 40 33 19 36 3 31 36 11 30 35 3 23 12 20 14 13 40 22 10 33 11 27 8 18 33 29 38 17 37 10 24 30 4 26 6 6 8 35 16 26 11 23 38 18 22 4 33 31 21 10 34 15 6 34 18 35 27 9 23 36 35 40 6 15 18 37 29 21 3 10 1 15 6 14 26 39 8 22 35 27 28 25 26 38 15 8 36 1 31 23 1 34 36 2 33 5 1 7 37 25 11 8 37 36 36 32 26 11 4 12 16 31 32 1 18 19 25 10 11 9 6 11 40 7 14 32 37 34 33 30 20 15 19 2 13 1 31 32 26 27 24 24 24 7 23 6 32 5 19 22 14 31 35 20 37 20 38 13 40 6 24 5 15 12 5 7 14 6 14 24 1 23 3 26 18 22 5 22 21 19 1 35 31 7 39 26 20 38 19 2 36 23 28 8 12 9 22 28 37 32 18 11 11 30 20 27 31 16 23 9 3 20 40 26 10 29 6 1 19 2 28 40 25 15 37 25 38 19 21 2 31 34 5 27 33 4 29 30 18 19 29 4 38 13 13 35 13 16 18 40 18 36 16 34 26 28 32 40 28 40 36 26 37 37 30 24 16 9 28 22 29 36 32 39 9 15 26 3 29 15 19 39 37 25 22 24 15 2 32 17 26 28 3 19 17 14 18 18 10 22 7 26 23 20 34 11 18 10 25 39 3 25 4 18 25 34 24 8 22 27 20 25 13 1 4 33 34 32 20 22 39 6 2 9 39 5 25 14 36 35 33 12 2 35 21 12 14 9 5 40 6 35 10 16 5 1 28 5 27 40 22 37 40 31 10 28 15 1 21 27 39 27 19 26 14 37 21 9 36 1 30 17 32 13 34 15 4 21 31 35 2 38 18 31 37 10 2 9 40 33 29 27 40 21 15 24 18 31 31 1 31 25 1 21 24 27 3 22 28 39 32 13 4 29 29 8 29 4 34 29 27 28 33 17 27 39 14 8 11 27 5 11 38 40 35 38 30 12 12 16 14 20 16 31 17 12 27 19 9 37 37 26 1 4 13 16 27 23 40 18 37 30 23 15 34 34 29 34 1 38 14 24 28 25 9 29 19 1 29 8 9 8 23 1 39 24 25 24 39 26 11 18 29 35 11 5 38 25 13 28 17 13 33 32 15 11 5 8 12 33 26 20 23 33 40 7 35 12 33 40 34 23 16 22 23 21 25 4 30 15 12 39 33 40 10 16 40 21 11 1 3 40 30 29 26 21 23 28 5 33 36 15 31 22 37 21 33 35 12 25 9 38 23 29 23 4 23 18 37 5 16 25 11 31 22 27 22 24 2 37 9 13 34 36 10 8 2 23 25 18 3 1 15 30 7 5 37 10 3 5 28 6 15 27 16 20 2 24 28 24 39 9 21 36 1 23 3 8 35 22 13 2 12 24 18 25 28 32 13 27 2 7 22 14 2 3 2 17 20 29 21 25 31 11 20 34 28 35 30 5 15 5 15 34 24 6 8 3 25 18 32 33 40 6 31 38 32 3 31 5 10 3 19 26 38 32 33 6 20 11 33 7 14 35 10 7 38 21 10 19 18 16 31 12 30 14 1 17 2 21 20 25 14 11 26 34 38 36 29 23 1 38 22 2 20 31 16 21 10 39 17 39 13 17 2 10 15 19 10 26 28 28 26 21 36 9 3 26 28 4 16 37 38 40 22 34 33 10 20 8 32 10 21 20 40 30 18 31 23 28 26 5 2 40 1 12 20 30 14 35 26 16 12 9 29 40 16 24 14 31 11 5 14 13 39 30 19 7 3 31 11 11 25 32 27 38 23 33 16 22 1 20 24 9 30 33 6 25 22 35 27 35 10 17 34 28 35 7 27 23 26 39 7 20 22 35 24 1 17 18 30 23 29 10 28 24 2 6 18 14 37 37 1 18 16 32 15 14 37 19 27 1 31 11 10 2 25 4 25 29 1 18 27 30 28 6 20 28 10 11 34 36 9 16 31 3 30 4 19 40 18 32 7 4 19 9 14 6 10 29 18 38 23 34 9 19 29 26 35 40 10 5 1 5 32 23 6 19 23 19 2 29 1 34 1 19 25 13 15 37 9 23 22 4 10 10 25 35 35 38 40 16 32 4 11 1 34 11 31 33 36 3 23 26 39 18 6 19 14 28 26 6 15 7 21 29 17 14 9 15 23 34 13 4 39 21 15 7 16 28 37 4 28 23 24 6 24 14 17 3 31 33 1 19 2 34 32 22 24 9 25 28 2 15 28 37 24 11 12 37 28 39 32 40 29 16 36 7 40 29 17 34 36 19 24 32 38 13 36 31 26 15 4 5 39 40 7 37 22 32 38 4 11 11 29 40 9 7 35 8 10 36 37 10 39 9 11 28 34 12 15 27 37 11 3 24 24 23 37 36 25 23 28 32 17 2 19 27 26 19 34 37 22 20 14 4 18 8 3 11 10 15 16 2 5 6 14 4 23 34 11 35 29 21 6 28 26 1 19 5 22 31 37 27 23 35 18 40 24 19 35 40 19 40 36 14 16 33 3 18 13 37 21 17 36 32 28 36 13 20 25 19 31 9 40 14 26 13 35 15 11 27 7 10 20 33 29 22 32 27 34 40 9 13 27 21 37 11 7 6 38 22 22 8 4 1 12 18 5 3 33 40 34 17 11 35 17 18 26 39 37 13 34 22 16 1 22 30 33 21 32 6 33 23 9 29 38 8 26 11 4 15 32 19 18 30 37 14 35 28 6 23 25 39 38 23 30 28 22 10 23 10 11 7 36 38 4 5 36 28 39 8 30 25 12 8 20 35 13 24 23 22 17 37 6 9 20 25 34 10 25 12 21 34 19 29 20 40 5 17 4 27 30 38 1 40 7 40 9 28 37 39 8 6 39 14 33 3 5 21 36 18 26 40 36 38 23 31 12 38 26 24 40 30 23 38
+        expectedOutput: |
+          47
+        hidden: true
+  - slug: n-meetings-in-one-room
+    title: "N Meetings in One Room"
+    difficulty: Easy
+    topic: "Greedy"
+    subtopic: "Easy Problems"
+    tags: [array, greedy, sorting, intervals]
+    sourceUrl: ""
+    statement: |
+      A single meeting room is available and `n` meetings have been requested. Meeting `i` begins
+      at `start[i]` and finishes at `end[i]`.
+
+      Only one meeting can use the room at a time. Moreover, a meeting may only begin **strictly
+      after** the previous meeting in the room has finished: if one meeting ends at time `5`, the
+      next one must start at time `6` or later.
+
+      What is the maximum number of meetings that can be held in the room?
+    inputFormat: |
+      - Line 1: an integer `n`.
+      - Line 2: `n` space-separated integers, the start times.
+      - Line 3: `n` space-separated integers, the end times.
+    outputFormat: |
+      Print a single integer: the maximum number of meetings.
+    constraints:
+      - "1 <= n <= 10^5"
+      - "0 <= start[i] < end[i] <= 10^9"
+    examples:
+      - input: |
+          5
+          1 2 4 6 5
+          3 4 5 8 7
+        output: |
+          3
+        explanation: "Choose (1,3), (4,5) and (6,8). Taking (5,7) after (4,5) is not allowed because it starts exactly when (4,5) ends."
+      - input: |
+          4
+          1 3 5 7
+          3 5 7 9
+        output: |
+          2
+        explanation: "Consecutive meetings touch at their endpoints, so only every other one fits: (1,3) and (5,7)."
+    hints:
+      - "Which meeting should occupy the room first to leave the most room for the others?"
+      - "Pick the meeting that finishes earliest, then repeatedly pick the earliest-finishing meeting that starts after the last chosen end."
+    explanation: |
+      **Brute force: try all subsets -- O(2^n * n) time.** Check every subset for conflicts.
+
+      **Better: DP over sorted meetings -- O(n^2) time, O(n) space.** Sort by start; `best[i]` is the
+      largest chain ending with meeting `i`, built from any earlier meeting that ends before it starts.
+
+      **Optimal greedy -- O(n log n) time, O(n) space.** Sort meetings by end time. Keep
+      `last_end = -infinity`; for each meeting in that order, if `start > last_end`, hold it and set
+      `last_end = end`. Choosing the earliest finishing compatible meeting never hurts: any optimal
+      schedule can swap its first meeting for this one without creating a conflict.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def max_meetings(start: List[int], end: List[int]) -> int:
+            # Return the maximum number of non-conflicting meetings (next start > previous end).
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            start = [int(x) for x in data[1:1 + n]]
+            end = [int(x) for x in data[1 + n:1 + 2 * n]]
+            print(max_meetings(start, end))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def max_meetings(start: List[int], end: List[int]) -> int:
+            order = sorted(range(len(start)), key=lambda i: end[i])
+            count = 0
+            last_end = -1
+            for i in order:
+                if start[i] > last_end:
+                    count += 1
+                    last_end = end[i]
+            return count
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            start = [int(x) for x in data[1:1 + n]]
+            end = [int(x) for x in data[1 + n:1 + 2 * n]]
+            print(max_meetings(start, end))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          5
+          1 2 4 6 5
+          3 4 5 8 7
+        expectedOutput: |
+          3
+        hidden: false
+      - input: |
+          4
+          1 3 5 7
+          3 5 7 9
+        expectedOutput: |
+          2
+        hidden: false
+      - input: |
+          6
+          1 3 0 5 8 5
+          2 4 6 7 9 9
+        expectedOutput: |
+          4
+        hidden: true
+      - input: |
+          1
+          0
+          1000000000
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          4
+          2 2 2 2
+          9 9 9 9
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          4
+          1 2 3 4
+          100 10 5 6
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          400
+          931 1583 358 1128 265 272 1633 1528 1653 1807 506 1266 1760 1993 364 1156 103 606 880 445 958 303 11 1185 476 920 614 932 150 632 1408 1606 1880 1203 1383 122 657 390 570 1149 1755 410 328 153 135 516 1967 1784 1838 1837 1509 881 155 642 1737 1742 284 1777 1722 299 1120 522 1900 478 460 871 1044 875 1739 1250 200 903 1727 3 1429 881 976 295 1215 648 1495 1815 1878 14 1935 536 509 1516 673 1661 1636 1584 1702 449 547 731 45 1370 1143 1139 1552 1091 789 433 498 1168 21 925 148 148 1242 116 694 1517 421 1778 1995 427 296 483 169 1613 871 618 1656 1935 62 331 717 261 1667 178 669 1697 1601 580 1785 1636 637 1467 832 1623 732 1257 1855 393 1173 797 784 333 1069 911 163 963 1688 710 1375 1133 281 1250 1989 1986 304 1947 848 241 614 1681 382 1553 190 1943 155 148 1984 1915 1598 436 1127 1174 190 700 1210 1150 1647 634 370 1399 195 80 1643 906 144 362 669 1544 1901 1519 898 1119 553 1380 1815 1005 145 1828 675 607 763 612 136 1465 1604 1572 517 1229 235 338 719 755 1007 16 1126 101 1110 538 1444 52 1350 695 1057 1359 1254 859 832 1071 1900 1794 1742 192 1162 657 1610 441 489 528 361 1176 1327 1163 1065 1183 1816 52 1852 1091 574 1999 423 1050 504 1348 703 1959 135 1029 1660 1682 485 380 1005 722 534 456 564 1860 1943 527 355 1692 1340 821 1184 139 668 246 1670 243 990 945 1689 921 224 73 1194 1798 179 241 1603 1078 41 1376 278 1140 835 1869 1101 1279 943 331 1681 708 126 1538 720 86 1645 1279 868 429 73 1641 1188 1360 899 1044 1380 1735 1326 696 1659 197 692 1757 1316 537 1330 1265 719 1912 867 1234 723 908 1862 1538 1402 1529 597 859 24 1867 1902 929 130 917 735 775 824 1750 1953 741 1147 1213 623 1837 351 1694 694 1211 1679 915 996 1997 1274 1908 1800 1169 1921 1449 7 788 830 224 412 1893 555 79 1191 325 1362 946 1290 794 1646 1449 300 210 1375 1110
+          966 1605 365 1129 282 297 1666 1534 1661 1837 529 1299 1767 2028 394 1161 128 615 892 465 995 317 38 1223 507 941 617 944 183 633 1434 1614 1902 1226 1406 146 660 409 583 1175 1756 429 336 176 159 545 1982 1807 1844 1848 1534 890 184 652 1750 1767 305 1797 1743 328 1146 542 1914 515 480 896 1079 907 1778 1289 239 904 1759 43 1434 889 988 299 1229 666 1530 1817 1917 18 1946 568 539 1520 681 1686 1638 1601 1703 487 576 754 83 1397 1179 1151 1553 1113 792 464 518 1193 30 938 162 160 1265 133 723 1518 459 1785 2016 467 299 507 178 1629 892 641 1696 1969 63 371 754 262 1682 217 689 1728 1607 588 1807 1673 653 1471 834 1649 768 1280 1869 408 1208 825 785 357 1084 934 202 968 1704 730 1405 1171 318 1267 1995 2011 325 1953 863 269 630 1703 409 1583 200 1968 159 152 1997 1928 1600 466 1160 1211 206 713 1232 1177 1661 672 372 1428 220 93 1675 915 153 370 691 1551 1923 1539 910 1135 557 1417 1844 1011 149 1847 682 626 766 634 151 1469 1642 1606 544 1265 249 344 751 793 1044 39 1145 104 1129 549 1449 90 1352 713 1090 1372 1257 899 843 1077 1911 1802 1773 215 1187 686 1643 481 513 552 397 1193 1340 1199 1095 1213 1840 79 1892 1125 600 2014 452 1069 514 1377 737 1999 160 1038 1662 1716 489 403 1008 741 542 481 595 1861 1968 556 384 1721 1377 830 1198 167 682 272 1697 248 1028 979 1698 961 253 85 1232 1829 191 266 1630 1116 67 1406 291 1156 845 1893 1126 1282 970 341 1688 715 150 1565 756 118 1661 1294 902 435 96 1662 1218 1363 928 1075 1400 1748 1362 719 1686 203 699 1797 1346 550 1335 1280 746 1943 905 1272 757 920 1874 1557 1415 1541 607 875 41 1891 1926 959 162 933 761 782 829 1789 1956 763 1172 1217 662 1838 389 1709 723 1222 1681 947 1020 2013 1285 1929 1825 1179 1961 1455 23 801 859 225 418 1913 586 113 1192 358 1388 975 1301 831 1655 1462 330 219 1395 1150
+        expectedOutput: |
+          105
+        hidden: true
+      - input: |
+          500
+          24278 18140 18085 23107 92575 388 91469 7419 85778 53784 69653 31145 30341 49258 2612 18794 40950 99509 57384 84502 28969 37417 15704 40283 1209 87437 26199 6125 88118 85644 85654 33104 61816 16324 69312 72907 69099 12852 7192 31768 32867 93421 60930 24792 85084 32204 27364 86952 47116 93404 71368 2647 99878 360 42829 87771 14340 32099 83471 59187 35458 55830 22810 22708 37911 52883 9191 94480 60822 80061 99808 47104 22055 97404 11746 45251 30854 13274 58580 58449 20034 54988 30212 76150 8312 10148 48650 36099 38586 74215 65081 72820 31199 81398 85779 7353 10013 72742 10056 25 38964 24066 93006 56870 56384 47577 34518 46053 54868 99754 60610 63477 78489 98186 78912 28448 36263 11099 57101 17057 23975 60841 63364 82203 1278 4799 97833 8962 3594 98969 53009 71380 17900 2981 72612 29494 98201 71631 63903 68415 29284 47192 30948 98893 5871 42032 65537 51325 43791 12998 32353 78551 37399 94486 77635 87459 91257 29308 93871 74508 94590 53384 30013 7458 82666 98344 22547 62783 16755 20497 20334 56348 87029 13498 78990 82701 98146 65831 27002 18826 79328 2327 33822 33899 20555 79442 229 37913 28194 80520 3914 57767 42209 77773 30899 61022 97424 56154 60831 16095 89687 16398 25491 7809 41590 3408 62522 77182 77029 31959 69136 6364 5327 66085 49602 25777 89977 35890 74260 1680 37907 67630 81072 95963 38758 55553 58867 66949 48525 15863 99594 27146 14450 63928 18 87953 12482 81826 17578 9214 69064 96967 77236 35370 27541 79877 22599 29024 83022 51049 69628 24031 52703 11362 51623 72017 96767 49009 66861 25446 70498 339 77222 30963 8527 26699 3710 20775 85569 84250 98002 19892 42806 96539 35551 48510 46408 97794 62186 92057 81547 18631 53847 57376 4130 71233 4313 23699 84488 37175 10145 10425 19386 72622 11981 48866 34669 97363 26129 10033 97736 86688 7833 24063 33271 96571 76509 71530 14636 8913 88982 89705 5912 74643 32653 64794 32838 17219 38946 50972 32006 54179 74020 59192 60467 61811 66582 69559 22681 79267 66632 87694 20730 94955 35938 55300 1770 67863 24450 7685 69676 23752 32258 76787 79983 61798 14165 64768 75654 76340 78464 43931 12456 88880 15370 56343 14021 51749 86580 84023 60594 34530 22359 77714 56082 27954 91544 74064 66165 88987 931 72169 87746 49430 30223 76952 38220 34154 62834 64216 33574 99699 85997 12402 55830 51063 16431 79263 74306 56641 58590 81552 32486 45367 5245 44674 16807 29135 34937 34167 78732 31108 45707 22036 56710 56549 68888 48157 71000 35156 66521 59482 22431 67122 94997 57696 19377 7700 81074 69227 22474 33306 9133 27966 79716 49333 57764 41542 85295 52647 98925 61984 23866 9890 6942 53623 43334 63394 42260 31974 1208 71546 45209 77743 17704 86355 1384 17643 6528 35707 31873 22781 38321 88913 52237 90770 59730 79154 62419 62615 52283 29917 62590 46014 93100 74137 75920 81343 72189 70063 9157 91334 20902 4619 15800 69833 36348 6925 39336 48596 55548 90058 52685 44252 10152 17884 69880 12741 97749 14314 7680 84579 19247 54527 86860 29389 47799 94796 465 16971
+          26145 22659 22584 26291 95641 2009 95166 7836 90257 54639 70924 31795 34635 51323 3562 21666 41883 103126 60589 86927 33134 37493 17683 42790 1215 91510 27440 6802 92024 86162 87436 35646 64079 19071 73810 75504 69724 16215 12143 34472 36957 93506 63460 28279 86446 34504 32145 88061 49370 95880 73158 4820 103593 4909 46717 89871 16431 34962 88298 62894 37465 56159 23472 23775 38076 53722 13927 95371 61963 82317 102571 48798 22556 97487 16180 47602 31871 13345 61869 62711 23843 58337 30299 77171 11782 12179 49732 39254 40295 79064 69344 72886 32996 81812 86726 11488 11328 75230 13410 361 41897 28276 96221 60688 57060 48111 35934 48546 56704 102584 64617 65893 80973 102881 79311 28893 39099 12163 57332 20088 24364 63694 68029 85571 2747 6939 98774 11020 6792 101643 54867 75339 21462 5291 72871 32576 100712 73194 67691 70247 33631 51891 35146 102637 6516 44704 65700 51649 46797 13028 36955 80456 41178 96475 81681 89208 94044 30784 98870 77066 96067 57122 31712 8585 84304 100346 27508 64529 21045 22040 22002 59463 89590 17457 82249 84693 102199 66850 28291 22042 80718 4671 35054 38325 21159 82837 4421 41118 30162 80571 7890 59791 45937 79746 34846 65778 99125 59399 62654 18271 90881 16761 26737 11795 43901 7355 64192 78961 79619 33381 72337 6942 7568 70499 52521 28000 91395 40697 76697 1713 41181 70523 83959 98368 41249 59004 62808 68858 53056 18104 100973 29169 19009 66439 2131 92868 17325 82482 18615 11003 71228 97449 78935 36137 30613 80116 25306 29393 84380 51825 71371 28381 56383 11655 55641 73087 97624 49398 71459 29555 70997 877 77639 33791 13484 28277 7724 21621 85994 84673 102815 22819 47032 101067 39790 51431 51392 99720 63851 94524 86255 19575 57740 61961 5671 71923 9306 25324 87902 39453 13739 15120 21320 73095 13120 53098 38919 101041 28936 10201 98378 90334 10791 26120 37828 101254 77919 73362 16856 12730 90697 91648 6133 79117 34441 68427 34524 19507 43665 53414 35045 58064 78561 60617 62126 66767 67840 72921 27226 83394 71042 88752 21533 96417 36981 57001 4901 68869 28534 10639 72636 28366 34119 77239 84712 64180 17841 69179 76013 77733 80457 48381 17046 89596 16542 60033 18943 52009 91172 85978 62351 37092 23578 80854 60301 32601 92902 78258 67331 90146 2660 72590 90831 51972 32673 81878 40057 38774 66848 66920 34060 100787 86682 14200 58868 54349 18880 81489 77563 57863 60309 81556 33109 48041 9291 49235 18923 33767 36321 37608 80459 34724 49832 26824 56997 60335 72038 50431 71017 40038 70357 63083 25525 69523 97521 62287 22195 12059 85706 71223 26952 37359 11256 32050 83866 50124 60896 46025 90002 55419 101664 63092 24184 12034 9958 54421 47594 65048 42774 35589 2585 76116 46855 80103 18208 87434 4570 18695 8641 40637 32281 27328 38815 89381 55188 94350 63628 80048 67320 65704 52974 32832 67465 49039 94501 75920 79299 85913 77067 73702 14020 96231 23272 9311 17257 71014 40211 9129 42503 49440 55863 90690 57655 44286 12198 21688 74465 13055 101577 16142 9050 88739 23323 54947 89776 34178 50733 99184 4402 19777
+        expectedOutput: |
+          82
+        hidden: true
+  - slug: minimum-platforms
+    title: "Minimum Platforms"
+    difficulty: Medium
+    topic: "Greedy"
+    subtopic: "Medium Problems"
+    tags: [array, greedy, sorting, two-pointers]
+    sourceUrl: ""
+    statement: |
+      A station receives `n` trains in a day. Train `i` arrives at time `arr[i]` and departs at
+      time `dep[i]` (times are written as `HHMM` integers, e.g. `930` means 09:30). A train
+      occupies a platform for the whole closed interval `[arr[i], dep[i]]`.
+
+      Two trains cannot share a platform at the same moment. In particular, if one train arrives at
+      exactly the same time another departs, they need **different** platforms.
+
+      Find the minimum number of platforms needed so that no train waits.
+    inputFormat: |
+      - Line 1: an integer `n`.
+      - Line 2: `n` space-separated integers, the arrival times.
+      - Line 3: `n` space-separated integers, the departure times.
+    outputFormat: |
+      Print a single integer: the minimum number of platforms.
+    constraints:
+      - "1 <= n <= 5 * 10^4"
+      - "0 <= arr[i] <= dep[i] <= 2359"
+      - "times are valid HHMM values"
+    examples:
+      - input: |
+          4
+          1000 1015 1030 1200
+          1030 1045 1100 1230
+        output: |
+          3
+        explanation: "At 10:30 the first train is still present (it leaves at 10:30), the second is present and the third arrives, so 3 platforms are needed."
+      - input: |
+          3
+          800 900 1000
+          850 950 1050
+        output: |
+          1
+        explanation: "No two trains are at the station at the same time, so one platform suffices."
+    hints:
+      - "The answer is the largest number of trains present at the same moment."
+      - "It is enough to check the moments when some train arrives."
+      - "Sort arrivals and departures separately and sweep through both with two pointers. On a tie, process the arrival first."
+    explanation: |
+      **Brute force -- O(n^2) time, O(1) space.** For every arrival time `x`, count trains with
+      `arr[j] <= x <= dep[j]`; the maximum count is the answer (the peak always occurs at some
+      arrival).
+
+      **Optimal sweep -- O(n log n) time, O(1) extra space** (after sorting copies). Sort `arr` and
+      `dep` independently. Use pointers `i` (arrivals) and `j` (departures) and a counter
+      `platforms`. While `i < n`: if `arr[i] <= dep[j]`, a train arrives before (or exactly when)
+      the earliest pending departure, so `platforms += 1`, `i += 1`, and update the maximum;
+      otherwise a train leaves: `platforms -= 1`, `j += 1`. Using `<=` implements the rule that
+      equal times need separate platforms.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def find_platform(arr: List[int], dep: List[int]) -> int:
+            # Return the minimum number of platforms so that no train waits.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            arr = [int(x) for x in data[1:1 + n]]
+            dep = [int(x) for x in data[1 + n:1 + 2 * n]]
+            print(find_platform(arr, dep))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def find_platform(arr: List[int], dep: List[int]) -> int:
+            arrivals = sorted(arr)
+            departures = sorted(dep)
+            n = len(arrivals)
+            i = j = 0
+            platforms = best = 0
+            while i < n:
+                if arrivals[i] <= departures[j]:
+                    platforms += 1
+                    best = max(best, platforms)
+                    i += 1
+                else:
+                    platforms -= 1
+                    j += 1
+            return best
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            arr = [int(x) for x in data[1:1 + n]]
+            dep = [int(x) for x in data[1 + n:1 + 2 * n]]
+            print(find_platform(arr, dep))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          4
+          1000 1015 1030 1200
+          1030 1045 1100 1230
+        expectedOutput: |
+          3
+        hidden: false
+      - input: |
+          3
+          800 900 1000
+          850 950 1050
+        expectedOutput: |
+          1
+        hidden: false
+      - input: |
+          6
+          900 940 950 1100 1500 1800
+          910 1200 1120 1130 1900 2000
+        expectedOutput: |
+          3
+        hidden: true
+      - input: |
+          1
+          0
+          2359
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          4
+          1200 1200 1200 1200
+          1200 1200 1200 1200
+        expectedOutput: |
+          4
+        hidden: true
+      - input: |
+          3
+          100 200 300
+          200 300 400
+        expectedOutput: |
+          2
+        hidden: true
+      - input: |
+          300
+          1438 609 529 2131 2127 35 949 1546 410 526 705 320 1400 1159 648 1713 1150 19 1151 610 1410 539 1722 40 1606 517 1223 2141 2207 708 1251 954 1606 1851 2036 855 1344 1927 1655 308 706 1221 1447 2042 1454 359 534 254 2035 903 518 1712 1529 435 237 1359 2032 1018 1658 639 1124 47 738 924 1024 939 1355 1025 820 31 1000 809 1543 513 601 712 323 1747 1123 322 421 354 641 439 609 241 716 1936 1913 1103 1646 354 2137 1218 325 533 454 1834 1642 1414 1159 1901 555 938 2139 259 2044 1942 303 1836 2244 1424 746 904 515 1909 1053 538 216 924 1616 1526 1504 1704 943 656 945 1243 1838 1408 1320 2157 1954 1022 1126 555 803 1635 248 205 2 1558 152 1545 1134 2248 433 2117 505 1139 2041 1412 1133 1252 1204 326 1157 2209 1723 612 910 735 1739 2244 1441 1914 752 934 209 1147 142 1129 1418 605 224 245 125 1333 1413 158 2143 604 1548 1229 1616 107 1153 719 2 2032 140 1728 1642 1214 1142 158 1551 1847 2124 1653 502 127 2028 608 243 419 600 1446 2208 7 115 807 1104 138 103 813 855 324 1749 1215 812 1015 154 1102 641 2225 1139 143 1240 822 802 1628 1721 2222 1151 1529 1730 427 1538 1846 2008 1938 1933 2227 644 540 613 953 1041 1526 1457 325 141 355 1906 409 31 1051 1121 2135 1800 1948 125 1642 828 225 245 141 624 1105 1530 1221 1431 416 1340 2248 1928 1323 142 1652 1042 1903 2122 1150 811 2024 325 558 105 555 520 552 538 731 925 1556 1229 932 1620 1936
+          1633 755 556 2253 2131 59 950 1704 430 546 854 425 1549 1255 656 1852 1159 128 1303 703 1445 637 1821 150 1745 700 1359 2254 2336 905 1433 1132 1607 1948 2102 943 1538 2006 1733 348 733 1222 1501 2233 1533 435 607 434 2148 932 606 1743 1640 510 338 1448 2225 1027 1701 737 1319 119 827 955 1144 1041 1359 1222 932 227 1036 831 1617 551 641 839 343 1849 1237 344 513 510 828 530 613 356 747 2042 1913 1147 1835 535 2218 1320 422 709 455 1834 1832 1527 1234 2038 749 1028 2207 424 2158 2035 320 1912 2313 1433 848 924 610 2005 1105 702 303 958 1640 1625 1608 1809 1116 747 1038 1430 2037 1509 1414 2302 2035 1143 1326 755 823 1734 422 348 122 1616 309 1715 1155 2303 613 2253 613 1200 2131 1534 1218 1314 1210 427 1303 2320 1810 740 950 925 1925 2359 1505 2014 923 1012 322 1234 239 1134 1445 658 352 418 317 1441 1606 210 2305 631 1645 1419 1738 134 1240 819 128 2220 150 1819 1806 1310 1326 210 1610 1851 2229 1729 700 241 2147 746 248 437 714 1602 2253 116 142 924 1130 236 239 817 902 346 1753 1300 851 1033 332 1225 821 2359 1242 155 1330 947 821 1705 1755 2341 1257 1654 1757 509 1621 2042 2021 1953 2050 2230 828 547 806 1123 1222 1601 1615 512 233 424 2043 525 106 1148 1142 2218 1901 2119 135 1644 859 243 258 234 723 1226 1709 1405 1557 542 1410 2359 2116 1337 152 1756 1124 2048 2212 1322 834 2220 437 744 223 702 611 700 655 733 1003 1730 1358 1050 1642 2134
+        expectedOutput: |
+          23
+        hidden: true
+      - input: |
+          600
+          1830 2250 120 1357 515 624 2158 2006 1443 1604 239 951 1139 425 501 1843 2250 758 1752 623 336 2011 2203 1608 1258 2029 1503 300 1916 2104 1022 207 2004 648 1104 512 812 2105 2125 1545 2157 227 421 711 1302 1209 141 1733 1204 2151 1529 436 1611 153 1511 534 1255 1853 1626 2208 255 427 228 2038 359 54 1952 328 127 423 357 59 1508 2233 654 1834 1416 611 2052 1926 1355 524 1440 115 543 515 2150 858 2254 1557 423 1303 1654 1023 731 112 1941 642 2249 2 1242 322 1830 2221 1229 2159 710 1925 647 1509 1542 1049 1542 1921 1824 2214 116 2107 222 1709 1655 1714 1739 311 1330 1705 747 2122 1813 450 324 1522 1440 1211 630 2000 709 421 427 513 146 624 2159 2143 603 2158 1732 115 1409 128 1921 925 205 2021 1528 2134 2028 2005 1525 328 1506 1042 455 1015 835 1138 2134 640 2022 35 227 1946 2039 1509 851 713 321 500 439 956 532 112 1429 400 1708 1126 1238 445 5 1225 332 856 2029 355 226 909 1543 1220 1537 1838 447 638 842 1635 54 1429 1234 624 823 2049 1310 1056 1638 1450 1646 2025 1905 447 1023 29 1601 1730 423 831 1051 2245 1517 1522 2116 1938 15 401 1319 532 924 659 1212 1152 642 2040 1822 110 1647 634 1607 930 219 802 2236 545 650 807 1049 806 1735 1822 203 552 1916 1414 604 2220 2258 1135 543 508 857 1611 2052 2021 454 141 1859 1502 1821 637 411 1345 943 1528 1056 638 251 1524 2100 1650 1458 403 2104 1701 412 1448 1232 943 1509 548 1813 2104 529 1749 1632 346 2054 1948 1851 2257 1927 157 730 722 2224 1612 1112 848 1153 2232 1327 527 2055 2034 1932 1854 2201 243 812 1645 2126 927 3 535 1516 331 1744 332 1812 2143 343 345 1320 1210 1345 1414 2206 13 1000 312 1748 1340 1237 312 145 251 2140 501 1131 938 1135 2235 54 847 204 2113 939 910 1438 1419 1743 1531 1827 2039 1640 1724 1135 510 2056 519 1935 1511 424 548 849 1843 1217 620 1229 18 1158 1508 2017 1849 1736 1759 442 234 1250 845 6 1016 945 223 355 2048 611 848 530 2106 740 2226 2052 641 611 1710 104 938 1329 2223 759 423 1715 555 1835 127 900 1625 2244 1152 427 1844 1004 1843 350 30 1537 1154 2103 1223 1959 1840 828 1344 147 310 2051 1229 1530 1213 1747 1854 412 340 1450 826 714 919 1654 754 1614 243 1209 646 1445 423 616 2245 334 1652 1701 2041 441 1757 311 821 1808 1359 2036 2006 1957 734 627 943 548 1632 804 1047 1441 1413 1720 1111 356 1139 509 1514 2046 551 712 1818 1137 1608 2115 115 1729 123 1851 2036 104 221 2205 908 117 323 317 628 238 158 2112 1450 2053 2132 517 1622 15 1435 1811 840 657 603 1358 301 345 1600 1232 639 2150 1636 1652 2236 2001 506 2059 1654 1013 1931 700 1629 432 49 2230 1139 50 822 1808 2100 1038 145 829 1542 1332 438 1105 523 2124 407 844 941 217 846 513 459 1915 703 323 124 453 538 2044 1214 1240 1631 511 751 219 832 410 447 2038 10 745 506 2145 805 1442 132 1322 1424 1501 1547 1127 2123 107 2041
+          1913 2359 153 1502 702 749 2215 2145 1633 1800 439 1127 1334 430 540 2012 2359 902 1825 704 536 2201 2322 1709 1445 2108 1639 353 1936 2140 1119 353 2151 802 1229 512 942 2224 2150 1558 2347 306 421 846 1421 1216 210 1759 1350 2248 1602 543 1726 351 1616 652 1419 2008 1626 2311 356 520 320 2056 549 124 2017 401 254 547 529 153 1606 2310 837 1927 1603 655 2213 2037 1418 530 1517 313 636 619 2318 931 2338 1611 604 1400 1726 1043 857 259 2111 746 2330 117 1438 519 1907 2359 1413 2326 805 1958 701 1708 1645 1149 1643 2120 2010 2231 228 2210 254 1746 1800 1824 1815 353 1331 1834 900 2256 1941 526 455 1719 1638 1245 704 2117 808 450 535 600 334 729 2235 2200 638 2202 1839 236 1452 150 2051 1108 314 2047 1617 2306 2113 2046 1618 503 1616 1216 513 1056 916 1201 2233 726 2212 151 407 2000 2103 1615 1028 747 456 544 537 1145 603 141 1552 543 1801 1137 1429 509 102 1356 512 1046 2155 532 331 1040 1613 1324 1607 1926 455 639 1034 1724 135 1555 1258 704 1010 2156 1433 1056 1809 1616 1814 2201 2016 528 1200 132 1706 1801 441 920 1112 2359 1527 1619 2258 2006 106 411 1444 729 1105 749 1247 1200 718 2226 2014 115 1815 829 1612 1034 246 859 2245 557 722 841 1156 926 1834 1823 205 633 2112 1447 731 2222 2341 1253 728 610 938 1638 2225 2146 455 145 2039 1514 2002 829 528 1416 1018 1554 1201 731 440 1634 2109 1823 1526 437 2302 1751 417 1625 1421 1143 1512 740 1947 2238 729 1805 1821 521 2150 1955 2032 2337 2107 353 731 922 2359 1634 1128 1027 1233 2359 1521 709 2124 2233 2103 1936 2348 347 928 1707 2148 955 149 602 1654 343 1821 342 1828 2223 355 350 1359 1323 1446 1511 2341 123 1017 510 1828 1342 1357 448 320 441 2319 604 1153 1127 1228 2359 102 931 341 2242 956 1033 1442 1555 1856 1702 2015 2143 1743 1805 1320 612 2217 615 2012 1542 444 624 948 1904 1310 632 1303 52 1334 1513 2130 1858 1831 1936 513 410 1435 853 50 1103 1111 310 436 2121 736 1007 548 2210 827 2359 2144 823 720 1716 122 1137 1359 2315 820 527 1859 626 1912 131 1045 1722 2359 1349 551 1913 1020 1943 541 119 1701 1349 2216 1238 2037 2037 1014 1346 151 506 2208 1325 1705 1329 1851 2025 433 406 1523 910 805 1034 1806 854 1812 442 1218 756 1619 514 622 2359 422 1754 1841 2222 619 1815 345 904 1824 1541 2220 2042 2009 934 825 1014 746 1647 903 1145 1444 1453 1743 1144 545 1233 644 1514 2105 646 758 1901 1238 1735 2206 139 1836 322 1909 2153 256 320 2215 1101 258 426 413 710 249 253 2123 1528 2241 2147 714 1822 125 1548 1813 853 803 753 1551 344 431 1748 1336 641 2343 1657 1715 2359 2153 639 2109 1806 1141 2053 746 1731 444 228 2338 1315 203 939 1950 2252 1116 258 837 1607 1434 542 1242 553 2140 419 944 1130 257 1003 619 514 2056 820 335 320 613 633 2121 1307 1251 1751 707 830 318 939 514 602 2042 59 813 515 2301 931 1545 305 1518 1510 1630 1559 1202 2240 121 2215
+        expectedOutput: |
+          44
+        hidden: true
+  - slug: job-sequencing
+    title: "Job Sequencing"
+    difficulty: Medium
+    topic: "Greedy"
+    subtopic: "Medium Problems"
+    tags: [array, greedy, sorting, disjoint-set]
+    sourceUrl: ""
+    statement: |
+      You have `n` jobs. Job `i` has a deadline `deadline[i]` and earns `profit[i]` if it is
+      completed on time. Every job takes exactly **one unit of time**, time starts at `0`, and only
+      one job can be done per unit. A job with deadline `d` is on time if it occupies one of the
+      time slots `1, 2, ..., d`.
+
+      Choose a set of jobs to complete on time so that the total profit is **maximum**. Report how
+      many jobs are done and the total profit.
+
+      Because all profits are positive, every maximum-profit schedule completes the same number of
+      jobs, so the count is well defined.
+    inputFormat: |
+      - Line 1: an integer `n`.
+      - Next `n` lines: two integers `deadline` and `profit` for each job.
+    outputFormat: |
+      Print two integers separated by a space: the number of jobs done and the maximum total profit.
+    constraints:
+      - "1 <= n <= 10^5"
+      - "1 <= deadline[i] <= n"
+      - "1 <= profit[i] <= 500"
+    examples:
+      - input: |
+          5
+          3 35
+          1 30
+          2 25
+          1 40
+          3 10
+        output: |
+          3 100
+        explanation: "Do the profit-40 job in slot 1, the profit-25 job in slot 2 and the profit-35 job in slot 3: 3 jobs, 100 profit. The profit-30 job also needs slot 1, which is taken."
+      - input: |
+          3
+          1 5
+          1 8
+          1 3
+        output: |
+          1 8
+        explanation: "All deadlines are 1, so only one job fits; pick the one worth 8."
+    hints:
+      - "Consider jobs from the most profitable to the least profitable."
+      - "Schedule each job as late as possible (in the latest free slot not after its deadline) so earlier slots stay free for tighter deadlines."
+      - "Finding the latest free slot can be sped up with a disjoint-set structure where each slot points to the next free slot on its left."
+    explanation: |
+      **Brute force -- O(2^n * n log n).** Try every subset; a subset is feasible iff, after sorting
+      it by deadline, the `k`-th job has deadline `>= k`.
+
+      **Greedy with slot scanning -- O(n log n + n * D) time, O(D) space** (D = max deadline). Sort
+      jobs by profit descending. For each job, scan slots from `deadline` down to `1` and place it in
+      the first free slot found; skip the job if none is free. Count placed jobs and sum profits.
+
+      **Optimal: greedy + disjoint set -- O(n log n) time, O(n) space.** Keep `parent[s]` = the
+      latest free slot `<= s` (slot `0` means none). For a job with deadline `d`, find
+      `s = find(min(d, n))`; if `s > 0`, take the job and union `s` into `s - 1`. Path compression
+      makes each lookup nearly O(1).
+
+      Correctness follows from the matroid structure of feasible job sets: taking the most profitable
+      job that keeps the set feasible is always safe.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def job_sequencing(deadlines: List[int], profits: List[int]) -> List[int]:
+            # Return [number_of_jobs_done, maximum_total_profit].
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            deadlines = [int(data[1 + 2 * i]) for i in range(n)]
+            profits = [int(data[2 + 2 * i]) for i in range(n)]
+            count, total = job_sequencing(deadlines, profits)
+            print(count, total)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def job_sequencing(deadlines: List[int], profits: List[int]) -> List[int]:
+            n = len(deadlines)
+            parent = list(range(n + 1))
+
+            def find(slot: int) -> int:
+                root = slot
+                while parent[root] != root:
+                    root = parent[root]
+                while parent[slot] != root:
+                    parent[slot], slot = root, parent[slot]
+                return root
+
+            order = sorted(range(n), key=lambda i: -profits[i])
+            count = total = 0
+            for i in order:
+                slot = find(min(deadlines[i], n))
+                if slot > 0:
+                    count += 1
+                    total += profits[i]
+                    parent[slot] = slot - 1
+            return [count, total]
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            deadlines = [int(data[1 + 2 * i]) for i in range(n)]
+            profits = [int(data[2 + 2 * i]) for i in range(n)]
+            count, total = job_sequencing(deadlines, profits)
+            print(count, total)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          5
+          3 35
+          1 30
+          2 25
+          1 40
+          3 10
+        expectedOutput: |
+          3 100
+        hidden: false
+      - input: |
+          3
+          1 5
+          1 8
+          1 3
+        expectedOutput: |
+          1 8
+        hidden: false
+      - input: |
+          4
+          4 20
+          1 10
+          1 40
+          1 30
+        expectedOutput: |
+          2 60
+        hidden: true
+      - input: |
+          1
+          1 7
+        expectedOutput: |
+          1 7
+        hidden: true
+      - input: |
+          5
+          5 1
+          5 2
+          5 3
+          5 4
+          5 5
+        expectedOutput: |
+          5 15
+        hidden: true
+      - input: |
+          5
+          2 50
+          2 60
+          2 70
+          3 1
+          3 2
+        expectedOutput: |
+          3 132
+        hidden: true
+      - input: |
+          300
+          1 197
+          217 212
+          228 324
+          116 120
+          184 197
+          151 207
+          187 317
+          65 85
+          169 402
+          39 472
+          251 144
+          152 429
+          33 489
+          190 476
+          286 412
+          179 309
+          246 402
+          42 79
+          201 138
+          191 448
+          218 80
+          78 232
+          249 228
+          120 258
+          175 324
+          299 229
+          232 111
+          230 343
+          44 351
+          104 239
+          143 414
+          276 100
+          131 298
+          206 62
+          116 421
+          196 12
+          264 198
+          58 97
+          10 162
+          145 119
+          102 329
+          138 13
+          178 82
+          246 290
+          161 301
+          182 134
+          10 253
+          106 108
+          282 62
+          215 282
+          203 256
+          148 382
+          252 347
+          205 383
+          150 161
+          31 222
+          1 401
+          95 26
+          195 226
+          157 168
+          150 108
+          110 71
+          162 394
+          285 489
+          191 480
+          231 500
+          99 351
+          274 337
+          10 52
+          117 281
+          231 111
+          37 354
+          61 226
+          234 9
+          26 299
+          150 441
+          254 397
+          272 472
+          228 317
+          186 401
+          131 149
+          129 127
+          117 264
+          122 445
+          99 307
+          195 252
+          276 205
+          91 450
+          85 314
+          43 271
+          112 456
+          188 181
+          203 302
+          187 355
+          182 325
+          89 284
+          161 387
+          121 98
+          235 436
+          268 93
+          12 320
+          224 128
+          140 456
+          52 495
+          167 410
+          165 336
+          76 447
+          158 247
+          242 29
+          12 285
+          28 182
+          298 46
+          51 413
+          78 418
+          107 21
+          118 124
+          221 473
+          148 191
+          112 218
+          264 254
+          149 483
+          277 63
+          1 101
+          265 75
+          2 118
+          125 43
+          161 149
+          184 268
+          175 213
+          21 183
+          159 23
+          102 309
+          203 499
+          60 461
+          150 356
+          1 485
+          29 190
+          240 446
+          181 373
+          255 496
+          51 198
+          49 13
+          205 123
+          194 181
+          168 358
+          87 144
+          80 484
+          178 260
+          174 180
+          73 360
+          38 296
+          286 283
+          70 178
+          156 351
+          271 449
+          139 238
+          278 344
+          151 214
+          82 377
+          104 74
+          94 338
+          277 4
+          240 336
+          43 201
+          208 434
+          226 462
+          177 262
+          143 432
+          136 182
+          297 474
+          63 267
+          83 262
+          202 498
+          248 327
+          84 457
+          27 209
+          129 260
+          103 54
+          103 237
+          184 280
+          275 170
+          207 459
+          31 305
+          125 265
+          219 177
+          110 35
+          213 99
+          179 392
+          196 125
+          197 307
+          84 324
+          247 202
+          120 378
+          213 327
+          40 300
+          106 336
+          278 267
+          195 455
+          238 384
+          140 96
+          33 228
+          32 443
+          252 149
+          112 147
+          101 193
+          48 297
+          147 282
+          51 441
+          21 7
+          47 479
+          165 326
+          289 380
+          223 112
+          177 441
+          274 368
+          133 79
+          123 143
+          276 63
+          224 292
+          139 4
+          43 274
+          23 148
+          110 230
+          231 308
+          160 147
+          92 35
+          84 433
+          107 497
+          176 211
+          158 291
+          72 35
+          79 150
+          61 349
+          110 358
+          140 354
+          284 424
+          199 198
+          87 70
+          181 32
+          171 41
+          111 461
+          96 292
+          18 249
+          42 113
+          267 17
+          285 147
+          21 285
+          12 64
+          39 127
+          206 96
+          165 284
+          226 4
+          51 340
+          282 315
+          60 21
+          247 409
+          87 103
+          171 118
+          144 72
+          31 60
+          264 10
+          81 463
+          164 429
+          15 433
+          59 187
+          162 149
+          230 432
+          124 69
+          245 288
+          74 126
+          233 493
+          29 101
+          209 460
+          70 422
+          151 28
+          65 7
+          82 25
+          165 325
+          101 83
+          132 4
+          284 380
+          114 296
+          143 472
+          140 378
+          139 253
+          130 404
+          175 491
+          214 402
+          140 357
+          147 309
+          211 242
+          171 127
+          84 210
+          191 408
+          263 66
+          282 30
+          134 483
+          166 260
+          26 218
+          146 226
+        expectedOutput: |
+          282 76277
+        hidden: true
+      - input: |
+          400
+          7 396
+          14 412
+          40 143
+          11 283
+          22 313
+          33 46
+          38 359
+          12 111
+          21 331
+          28 32
+          12 21
+          8 167
+          4 110
+          34 430
+          24 431
+          35 487
+          27 246
+          18 34
+          38 335
+          38 274
+          12 38
+          10 487
+          20 8
+          33 35
+          19 358
+          15 477
+          10 401
+          8 239
+          34 497
+          27 162
+          7 309
+          11 294
+          10 217
+          13 78
+          17 203
+          15 65
+          3 402
+          11 198
+          16 368
+          11 156
+          28 383
+          17 22
+          18 266
+          24 160
+          6 403
+          11 310
+          1 347
+          4 253
+          23 452
+          7 141
+          4 59
+          35 412
+          37 286
+          35 64
+          28 180
+          13 271
+          25 330
+          40 177
+          32 277
+          31 109
+          37 75
+          10 388
+          32 412
+          6 7
+          1 422
+          34 185
+          20 410
+          38 213
+          6 295
+          20 316
+          24 169
+          10 16
+          29 398
+          1 229
+          7 351
+          34 363
+          40 240
+          17 35
+          10 222
+          20 457
+          18 429
+          4 208
+          38 24
+          23 43
+          39 137
+          8 193
+          13 233
+          31 399
+          24 63
+          24 32
+          19 242
+          4 425
+          39 389
+          11 425
+          1 258
+          6 94
+          5 343
+          15 224
+          10 71
+          3 85
+          8 453
+          32 70
+          4 128
+          20 483
+          32 131
+          36 151
+          30 30
+          8 387
+          3 22
+          11 321
+          13 236
+          12 129
+          8 455
+          4 8
+          5 490
+          4 459
+          19 370
+          8 434
+          8 2
+          29 23
+          28 292
+          39 119
+          6 436
+          27 58
+          20 148
+          10 114
+          35 210
+          37 142
+          20 105
+          10 128
+          27 256
+          19 367
+          8 455
+          11 176
+          16 474
+          35 177
+          12 241
+          28 15
+          35 208
+          30 332
+          4 23
+          33 489
+          33 133
+          34 81
+          9 238
+          22 490
+          19 357
+          13 30
+          14 34
+          9 102
+          34 211
+          16 331
+          15 358
+          2 443
+          15 468
+          2 196
+          25 267
+          14 461
+          23 424
+          24 44
+          28 340
+          28 370
+          28 478
+          34 312
+          36 378
+          14 187
+          27 483
+          20 151
+          5 237
+          22 474
+          35 328
+          18 497
+          38 72
+          39 51
+          38 36
+          30 380
+          38 346
+          18 7
+          16 350
+          19 131
+          10 271
+          28 290
+          22 271
+          16 251
+          5 201
+          20 328
+          36 122
+          5 124
+          1 423
+          36 61
+          8 214
+          37 456
+          27 473
+          37 461
+          11 367
+          32 104
+          20 270
+          19 460
+          31 160
+          25 318
+          10 8
+          12 322
+          5 341
+          17 466
+          24 36
+          37 388
+          17 161
+          13 46
+          19 98
+          7 66
+          15 229
+          5 307
+          25 296
+          10 107
+          22 10
+          2 494
+          17 45
+          19 305
+          34 72
+          16 489
+          32 247
+          19 116
+          26 143
+          18 414
+          22 399
+          13 48
+          20 390
+          36 176
+          6 141
+          4 414
+          26 229
+          12 180
+          39 15
+          35 56
+          4 459
+          39 151
+          10 114
+          17 294
+          39 25
+          9 181
+          19 363
+          39 245
+          36 355
+          39 181
+          8 199
+          28 358
+          34 444
+          15 469
+          37 379
+          29 414
+          20 337
+          6 491
+          40 131
+          35 446
+          29 25
+          37 453
+          10 46
+          6 260
+          18 158
+          30 407
+          24 79
+          40 495
+          40 134
+          39 43
+          26 65
+          17 441
+          17 52
+          3 392
+          6 56
+          19 310
+          22 2
+          3 270
+          3 99
+          34 100
+          11 18
+          36 278
+          9 260
+          24 449
+          33 69
+          7 119
+          39 273
+          14 140
+          36 242
+          25 344
+          28 205
+          19 217
+          38 116
+          6 166
+          3 56
+          16 401
+          18 307
+          33 347
+          17 383
+          1 452
+          25 72
+          22 47
+          9 241
+          35 230
+          33 104
+          25 371
+          6 91
+          13 436
+          2 210
+          26 270
+          15 372
+          1 82
+          32 294
+          11 145
+          34 295
+          12 220
+          22 132
+          21 180
+          36 307
+          20 289
+          18 113
+          10 339
+          32 71
+          8 57
+          18 283
+          40 457
+          31 388
+          18 94
+          21 129
+          39 451
+          8 249
+          7 279
+          24 227
+          5 338
+          19 319
+          6 55
+          30 487
+          22 223
+          23 164
+          23 446
+          39 332
+          4 10
+          24 432
+          25 422
+          35 348
+          1 91
+          32 105
+          31 390
+          22 66
+          5 292
+          5 472
+          8 331
+          38 362
+          10 136
+          25 241
+          38 297
+          38 101
+          22 338
+          39 444
+          5 398
+          23 256
+          35 128
+          39 328
+          23 343
+          39 57
+          1 165
+          38 200
+          32 455
+          5 55
+          19 6
+          6 435
+          15 144
+          28 97
+          30 497
+          24 93
+          27 392
+          18 81
+          15 413
+          7 72
+          28 277
+          37 342
+          22 249
+          26 191
+          11 199
+          2 130
+          38 98
+          26 348
+          38 256
+          31 312
+          23 158
+          33 257
+          32 296
+          18 216
+          1 29
+          5 444
+          18 364
+          13 334
+          2 387
+          1 2
+          4 425
+          30 479
+          24 396
+          3 331
+          6 490
+          29 358
+          34 470
+        expectedOutput: |
+          40 18978
+        hidden: true
+  - slug: candy
+    title: "Candy"
+    difficulty: Hard
+    topic: "Greedy"
+    subtopic: "Hard Problems"
+    tags: [array, greedy]
+    sourceUrl: "https://leetcode.com/problems/candy/"
+    statement: |
+      `n` children stand in a line and child `i` has a rating `ratings[i]`. You hand out candies
+      so that:
+
+      - every child gets **at least one** candy, and
+      - a child with a **strictly higher** rating than an adjacent child gets **more** candies than
+        that neighbour.
+
+      Children with equal ratings have no constraint between them. Find the minimum total number of
+      candies.
+    inputFormat: |
+      - Line 1: an integer `n`.
+      - Line 2: `n` space-separated integers, the ratings.
+    outputFormat: |
+      Print a single integer: the minimum number of candies.
+    constraints:
+      - "1 <= n <= 2 * 10^4"
+      - "0 <= ratings[i] <= 2 * 10^4"
+    examples:
+      - input: |
+          5
+          1 3 4 5 2
+        output: |
+          11
+        explanation: "Candies 1 2 3 4 1: the ratings rise to 5 and then drop, so the total is 11."
+      - input: |
+          4
+          2 2 2 2
+        output: |
+          4
+        explanation: "Equal neighbours impose no constraint, so everyone gets one candy."
+    hints:
+      - "Handle the two directions separately: first only the left-neighbour rule, then only the right-neighbour rule."
+      - "Left pass: if ratings[i] > ratings[i-1], give left[i] = left[i-1] + 1. Right pass likewise from the end."
+      - "Each child needs max(left[i], right[i]) candies. Can you do it in O(1) space by counting rising and falling slopes?"
+    explanation: |
+      **Brute force: repeated relaxation -- O(n^2) time, O(n) space.** Start everyone at 1 and keep
+      scanning; whenever a child violates the rule against a neighbour, raise it to neighbour + 1.
+      Stop when a full pass changes nothing.
+
+      **Better: two passes -- O(n) time, O(n) space.** `left[i]` is 1 plus `left[i-1]` when the
+      rating rises from the left, else 1. `right[i]` is computed symmetrically from the right. The
+      answer is the sum of `max(left[i], right[i])`.
+
+      **Optimal: slope counting -- O(n) time, O(1) space.** Walk the array tracking the length
+      of the current increasing run (`up`) and decreasing run (`down`) and the height of the peak.
+      Equal neighbours reset everything and add 1. On a rise, add `up + 1`. On a fall, add `down`
+      (every child in the falling run gets one more), plus one extra if `down` has reached the peak
+      height, since the peak must then grow too.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def candy(ratings: List[int]) -> int:
+            # Return the minimum number of candies satisfying the neighbour rules.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            ratings = [int(x) for x in data[1:1 + n]]
+            print(candy(ratings))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def candy(ratings: List[int]) -> int:
+            n = len(ratings)
+            total = 1
+            up = down = peak = 0
+            for i in range(1, n):
+                if ratings[i] > ratings[i - 1]:
+                    up += 1
+                    peak = up
+                    down = 0
+                    total += up + 1
+                elif ratings[i] == ratings[i - 1]:
+                    up = down = peak = 0
+                    total += 1
+                else:
+                    up = 0
+                    down += 1
+                    total += down + (0 if peak >= down else 1)
+            return total
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            ratings = [int(x) for x in data[1:1 + n]]
+            print(candy(ratings))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          5
+          1 3 4 5 2
+        expectedOutput: |
+          11
+        hidden: false
+      - input: |
+          4
+          2 2 2 2
+        expectedOutput: |
+          4
+        hidden: false
+      - input: |
+          3
+          1 0 2
+        expectedOutput: |
+          5
+        hidden: true
+      - input: |
+          1
+          7
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          5
+          5 4 3 2 1
+        expectedOutput: |
+          15
+        hidden: true
+      - input: |
+          3
+          1 2 2
+        expectedOutput: |
+          4
+        hidden: true
+      - input: |
+          5
+          1 3 2 2 1
+        expectedOutput: |
+          7
+        hidden: true
+      - input: |
+          12
+          1 2 3 1 0 0 5 4 3 2 1 2
+        expectedOutput: |
+          27
+        hidden: true
+      - input: |
+          300
+          4 4 4 1 1 2 5 0 2 0 3 3 0 4 0 4 4 1 0 1 2 0 5 3 4 5 2 4 1 4 3 5 3 2 0 2 3 5 3 3 5 1 3 4 5 5 5 3 5 1 4 0 1 3 5 1 3 2 4 0 4 1 4 0 1 2 1 4 3 3 1 0 4 3 5 2 3 2 3 3 1 3 2 0 5 0 4 1 2 4 3 0 3 1 4 3 2 3 0 0 0 3 3 1 1 1 4 2 2 3 0 1 2 5 2 0 4 2 4 3 4 4 0 2 2 3 0 2 4 5 3 0 3 0 1 0 1 1 0 3 4 3 4 1 3 2 4 4 0 3 4 0 4 0 1 5 3 4 3 1 3 4 1 4 1 3 0 3 3 5 0 1 5 4 2 3 4 0 3 5 5 3 3 1 1 1 0 0 4 2 5 2 0 2 3 3 0 5 1 4 1 5 0 4 2 4 4 0 5 0 2 0 5 2 0 1 4 5 0 3 1 1 2 1 5 1 5 0 3 4 2 1 2 1 2 0 3 5 4 5 3 5 0 2 3 5 3 3 3 3 5 0 0 2 3 5 0 1 3 3 5 0 3 4 4 3 0 1 3 1 1 5 1 1 3 3 1 1 3 3 4 4 4 1 5 3 1 5 1 4 3 0 0 5 4 0 1 2 5 5
+        expectedOutput: |
+          532
+        hidden: true
+      - input: |
+          250
+          6909 17506 13479 8071 19992 16940 15650 7239 91 1177 17643 18674 2625 19538 2424 14936 14012 5389 9814 15587 9996 13058 8690 11055 17216 6665 8038 4593 1705 13765 13955 3772 10542 9013 14495 18479 5103 14632 12822 8054 236 12092 14945 13667 12265 7754 12129 8877 2129 4775 2664 5276 17557 516 10324 17186 7194 1118 655 6141 8369 10703 9472 4727 11898 9889 4141 8176 17568 8862 16172 7466 16735 2878 7506 12693 17563 8949 16337 5469 3366 16549 15773 16395 1770 6970 7837 5727 9341 1403 17002 19060 2916 12038 7738 578 15002 17544 13298 4795 13982 8221 10663 11938 118 1635 7997 12465 11736 8929 6070 11187 12728 1211 16900 2716 16995 4054 10134 3374 17386 10569 11365 1792 17778 4728 10177 8098 4945 11775 2842 4750 18723 5327 15357 13241 13297 19776 10226 15853 5896 18190 6815 7045 1842 16979 8515 3813 13961 2447 16484 18050 7043 19955 1573 15569 9134 8736 7458 1096 11811 19664 8732 1941 52 17455 6147 16921 16106 158 10794 19114 2559 12516 6539 13148 14590 1263 10116 9274 16976 1171 10092 6078 11792 2856 17518 9538 9961 13327 10193 5119 13509 8845 5842 10320 19676 4739 17634 1255 2934 358 6304 11192 16084 1826 5358 14067 5589 18529 7385 9759 8592 3895 8659 4590 13031 496 13771 7575 17550 19655 9923 17665 1692 11227 13089 11985 10814 4100 10089 10300 7459 5313 16013 6003 3910 3496 18532 10085 7603 2912 761 16104 6193 13914 2527 5583 10330 5579
+        expectedOutput: |
+          498
+        hidden: true
+  - slug: valid-parenthesis-string
+    title: "Valid Parenthesis String"
+    difficulty: Medium
+    topic: "Greedy"
+    subtopic: "Medium Problems"
+    tags: [string, greedy, dynamic-programming]
+    sourceUrl: "https://leetcode.com/problems/valid-parenthesis-string/"
+    statement: |
+      You are given a string made of the characters `(`, `)` and `*`. Each `*` is a wildcard that
+      you may replace by `(`, by `)`, or by nothing (delete it). Each `*` is replaced independently.
+
+      Decide whether some choice of replacements turns the string into a **balanced** parenthesis
+      sequence: every `(` has a matching `)` after it, and no prefix has more `)` than `(`.
+    inputFormat: |
+      - Line 1: the string `s`.
+    outputFormat: |
+      Print `true` if the string can be made balanced, otherwise `false`.
+    constraints:
+      - "1 <= |s| <= 10^4"
+      - "s contains only '(', ')' and '*'"
+    examples:
+      - input: |
+          *(()*
+        output: |
+          true
+        explanation: "Delete the first * and turn the last one into ')': \"(())\" is balanced."
+      - input: |
+          (*)(
+        output: |
+          false
+        explanation: "The final '(' has nothing after it that could close it."
+    hints:
+      - "Without wildcards you would track a single counter of open brackets. With wildcards the counter can take a range of values."
+      - "Track lo and hi: the minimum and maximum possible number of unmatched '(' after each prefix."
+      - "If hi ever drops below 0 the string is invalid; clamp lo at 0; at the end the answer is lo == 0."
+    explanation: |
+      **Brute force -- O(3^k * n) time** (k = number of stars). Try every replacement for every
+      `*` and check balance.
+
+      **Better: DP over open counts -- O(n^2) time, O(n) space.** Maintain the set of possible
+      unmatched-open counts after each prefix: `(` shifts every count up, `)` shifts down (dropping
+      negatives), `*` produces all three options. The string is valid iff `0` is possible at the end.
+
+      **Optimal greedy range -- O(n) time, O(1) space.** The set of possible counts is always a
+      contiguous range `[lo, hi]`. For `(`: `lo += 1, hi += 1`. For `)`: `lo -= 1, hi -= 1`. For
+      `*`: `lo -= 1, hi += 1`. If `hi < 0`, even treating every star as `(` fails, so return false.
+      Clamp `lo = max(lo, 0)` because a negative count is never a legal state. Answer `lo == 0`.
+    starterCode:
+      python: |
+        import sys
+
+
+        def check_valid_string(s: str) -> bool:
+            # Return True if the stars can be chosen so the string is balanced.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print("true" if check_valid_string(s) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def check_valid_string(s: str) -> bool:
+            lo = hi = 0
+            for ch in s:
+                if ch == "(":
+                    lo += 1
+                    hi += 1
+                elif ch == ")":
+                    lo -= 1
+                    hi -= 1
+                else:
+                    lo -= 1
+                    hi += 1
+                if hi < 0:
+                    return False
+                lo = max(lo, 0)
+            return lo == 0
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print("true" if check_valid_string(s) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          *(()*
+        expectedOutput: |
+          true
+        hidden: false
+      - input: |
+          (*)(
+        expectedOutput: |
+          false
+        hidden: false
+      - input: |
+          *
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          )
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          (((***
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          ((*
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          )*(
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          (*))
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          )((*)((()))**(((*(()*((((****(**()(((*((*()((((()***())***()*(*((((()(((()*)()*(*(*((*(*)(*((()()(()(**((*((()(((*)()*((
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          ((((((((((((((((((((((((((((((((((((((((******************************))))))))))
+        expectedOutput: |
+          true
+        hidden: true
+  - slug: non-overlapping-intervals
+    title: "Non-overlapping Intervals"
+    difficulty: Medium
+    topic: "Greedy"
+    subtopic: "Hard Problems"
+    tags: [array, greedy, sorting, intervals]
+    sourceUrl: "https://leetcode.com/problems/non-overlapping-intervals/"
+    statement: |
+      You are given `n` intervals `[start, end]` with `start < end`.
+
+      Two intervals **overlap** if they share more than a single endpoint; intervals that only
+      touch, such as `[1, 3]` and `[3, 6]`, do **not** overlap.
+
+      Remove the minimum number of intervals so that no two of the remaining intervals overlap, and
+      report that number.
+    inputFormat: |
+      - Line 1: an integer `n`.
+      - Next `n` lines: two integers `start end` for each interval.
+    outputFormat: |
+      Print a single integer: the minimum number of intervals to remove.
+    constraints:
+      - "1 <= n <= 10^5"
+      - "-5 * 10^4 <= start < end <= 5 * 10^4"
+    examples:
+      - input: |
+          5
+          1 5
+          2 3
+          4 6
+          6 8
+          3 4
+        output: |
+          1
+        explanation: "Removing only [1, 5] leaves [2,3], [3,4], [4,6], [6,8], which merely touch each other."
+      - input: |
+          3
+          0 4
+          0 4
+          0 4
+        output: |
+          2
+        explanation: "Identical intervals overlap, so only one copy can stay: remove 2."
+    hints:
+      - "Removing the fewest intervals is the same as keeping the most pairwise non-overlapping intervals."
+      - "Which interval would you keep first to leave the most space for the rest?"
+      - "Sort by end; keep an interval whenever its start is at least the end of the last kept interval."
+    explanation: |
+      **Brute force -- O(2^n * n).** Try every subset to keep and check it.
+
+      **Better: DP -- O(n^2) time, O(n) space.** Sort by start; `best[i]` = largest compatible set
+      ending with interval `i`, built from any earlier `j` with `end[j] <= start[i]`. Answer
+      `n - max(best)`.
+
+      **Optimal greedy -- O(n log n) time, O(1) extra space.** Sort intervals by end. Keep
+      `last_end = -infinity` and a counter `kept`. For each interval, if `start >= last_end`, keep it
+      and set `last_end = end`; otherwise it must be removed. The answer is `n - kept`. Keeping the
+      interval that ends earliest leaves the maximum room for later ones (classic activity selection).
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def erase_overlap_intervals(intervals: List[List[int]]) -> int:
+            # Return the minimum number of intervals to remove so the rest do not overlap.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            intervals = [[int(data[1 + 2 * i]), int(data[2 + 2 * i])] for i in range(n)]
+            print(erase_overlap_intervals(intervals))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def erase_overlap_intervals(intervals: List[List[int]]) -> int:
+            kept = 0
+            last_end = float("-inf")
+            for start, end in sorted(intervals, key=lambda iv: iv[1]):
+                if start >= last_end:
+                    kept += 1
+                    last_end = end
+            return len(intervals) - kept
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            intervals = [[int(data[1 + 2 * i]), int(data[2 + 2 * i])] for i in range(n)]
+            print(erase_overlap_intervals(intervals))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          5
+          1 5
+          2 3
+          4 6
+          6 8
+          3 4
+        expectedOutput: |
+          1
+        hidden: false
+      - input: |
+          3
+          0 4
+          0 4
+          0 4
+        expectedOutput: |
+          2
+        hidden: false
+      - input: |
+          4
+          1 2
+          2 3
+          3 4
+          1 3
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          1
+          -3 7
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          3
+          1 2
+          5 9
+          2 5
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          5
+          1 100
+          2 3
+          4 5
+          6 7
+          8 9
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          3
+          -50000 50000
+          -50000 -49999
+          49999 50000
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          500
+          1820 1877
+          893 944
+          -903 -863
+          -617 -613
+          1616 1652
+          302 308
+          1718 1759
+          1523 1524
+          -1674 -1641
+          214 229
+          -874 -868
+          -662 -648
+          -902 -854
+          -1468 -1449
+          -1789 -1787
+          -1517 -1515
+          -764 -757
+          -38 22
+          -352 -307
+          -1598 -1557
+          -1311 -1284
+          1798 1829
+          664 683
+          268 296
+          1502 1507
+          -300 -292
+          -268 -257
+          790 825
+          888 896
+          -890 -832
+          1421 1453
+          -256 -205
+          242 250
+          -1954 -1919
+          1388 1434
+          -1541 -1483
+          705 706
+          -1351 -1346
+          696 745
+          -1524 -1473
+          -1669 -1645
+          -28 24
+          -1565 -1506
+          1334 1364
+          234 290
+          243 269
+          -537 -520
+          1614 1620
+          -463 -445
+          -564 -557
+          1065 1070
+          1627 1640
+          333 343
+          998 1024
+          1950 2002
+          -401 -352
+          -74 -36
+          -1335 -1293
+          -1252 -1213
+          876 914
+          -1989 -1957
+          -931 -905
+          1568 1610
+          72 105
+          1275 1293
+          -276 -253
+          -1740 -1715
+          -1996 -1976
+          440 498
+          -641 -596
+          931 970
+          -1233 -1191
+          -1637 -1606
+          -1363 -1358
+          -943 -902
+          -897 -849
+          -258 -212
+          802 820
+          695 711
+          136 174
+          -1992 -1982
+          -1518 -1507
+          1832 1882
+          -1126 -1104
+          643 673
+          -167 -123
+          -1335 -1287
+          337 344
+          -1945 -1928
+          1750 1763
+          -153 -102
+          1017 1026
+          1174 1185
+          881 894
+          1208 1255
+          -509 -486
+          -1973 -1934
+          -1226 -1203
+          -1823 -1795
+          1982 2007
+          -826 -813
+          -1439 -1431
+          -1429 -1369
+          -87 -32
+          -1657 -1602
+          -362 -314
+          -1291 -1257
+          -257 -202
+          76 122
+          146 178
+          -1142 -1110
+          -1550 -1546
+          -1354 -1335
+          -1166 -1122
+          -1945 -1890
+          -1668 -1627
+          -660 -632
+          1646 1651
+          -326 -299
+          -1502 -1444
+          550 567
+          450 493
+          246 253
+          989 1023
+          290 337
+          1873 1925
+          1090 1104
+          -1704 -1651
+          1332 1346
+          1782 1803
+          -760 -714
+          -410 -404
+          -328 -277
+          -1541 -1528
+          -454 -408
+          -1197 -1148
+          -1190 -1154
+          -470 -466
+          -1716 -1697
+          -1816 -1784
+          -707 -672
+          -1073 -1057
+          -1797 -1755
+          1932 1984
+          822 863
+          1512 1534
+          1083 1137
+          -641 -621
+          1871 1921
+          -1406 -1366
+          -1302 -1298
+          204 206
+          309 354
+          606 611
+          1659 1662
+          1440 1478
+          326 350
+          -225 -165
+          595 652
+          -1826 -1822
+          -1254 -1253
+          -1339 -1325
+          472 485
+          -331 -300
+          -664 -617
+          -376 -343
+          137 149
+          416 461
+          964 1021
+          1859 1916
+          1043 1098
+          911 924
+          -854 -851
+          -264 -227
+          -520 -497
+          1619 1649
+          1877 1937
+          1909 1945
+          722 728
+          -1803 -1765
+          1962 1992
+          1569 1610
+          1891 1904
+          1128 1172
+          961 971
+          -1243 -1242
+          -1630 -1614
+          -810 -803
+          1718 1772
+          -834 -827
+          -1779 -1722
+          1936 1996
+          -110 -89
+          -1031 -1006
+          -896 -842
+          12 47
+          1409 1426
+          -193 -173
+          518 538
+          -1079 -1069
+          114 129
+          -29 3
+          1466 1484
+          -1811 -1794
+          -276 -237
+          -1083 -1060
+          -1041 -1002
+          -60 -4
+          1518 1569
+          -533 -485
+          -1387 -1360
+          1703 1729
+          338 379
+          1339 1374
+          -838 -792
+          -634 -586
+          -423 -366
+          -1352 -1292
+          -502 -456
+          1116 1158
+          -1823 -1781
+          -880 -879
+          6 56
+          182 214
+          811 870
+          971 1003
+          1989 2007
+          1068 1087
+          -1643 -1588
+          1017 1020
+          1083 1141
+          -254 -216
+          1202 1212
+          -1199 -1142
+          508 562
+          -595 -587
+          1488 1527
+          -110 -72
+          -1094 -1053
+          885 930
+          -876 -859
+          -720 -702
+          -1535 -1505
+          -912 -908
+          1160 1190
+          -774 -731
+          1168 1202
+          -1184 -1150
+          578 606
+          -235 -213
+          -206 -202
+          -1612 -1601
+          -90 -48
+          1173 1216
+          423 445
+          16 67
+          52 81
+          -166 -160
+          226 248
+          1291 1299
+          822 862
+          -1656 -1605
+          1987 2031
+          389 432
+          129 164
+          -1844 -1837
+          -6 51
+          1391 1410
+          1504 1543
+          1041 1052
+          -317 -303
+          -1769 -1713
+          1648 1659
+          789 801
+          -113 -72
+          -85 -68
+          1966 1993
+          -1422 -1407
+          1661 1719
+          76 136
+          327 341
+          697 749
+          1116 1147
+          -124 -79
+          -1920 -1905
+          -1310 -1256
+          -1913 -1883
+          -1882 -1830
+          1449 1465
+          58 66
+          1429 1471
+          -1806 -1798
+          1430 1478
+          -219 -199
+          -1214 -1159
+          -1436 -1433
+          -959 -931
+          1926 1969
+          -1404 -1368
+          1063 1084
+          1045 1092
+          1959 1994
+          -110 -79
+          -993 -950
+          180 192
+          -995 -953
+          -1938 -1895
+          -1604 -1583
+          762 822
+          791 806
+          249 251
+          -75 -18
+          647 691
+          455 480
+          1634 1652
+          1361 1411
+          -654 -608
+          692 701
+          -199 -149
+          -960 -952
+          -1931 -1917
+          -1365 -1328
+          -1128 -1072
+          131 156
+          -1728 -1673
+          597 607
+          1578 1621
+          -871 -825
+          1284 1337
+          1035 1036
+          -1914 -1895
+          600 650
+          -1032 -1027
+          1017 1068
+          -91 -74
+          -239 -217
+          -1521 -1510
+          709 740
+          55 108
+          824 882
+          1947 1971
+          -1123 -1096
+          -1045 -1000
+          1458 1468
+          -1892 -1873
+          -913 -905
+          -901 -877
+          -1770 -1768
+          -1756 -1707
+          447 484
+          672 719
+          -765 -738
+          26 71
+          -1891 -1836
+          -1122 -1112
+          296 339
+          1928 1966
+          135 178
+          -1455 -1412
+          21 27
+          -1867 -1864
+          1485 1496
+          -1346 -1304
+          -494 -493
+          1984 2003
+          -244 -218
+          -334 -283
+          1542 1597
+          -1348 -1295
+          1904 1912
+          1513 1569
+          -2 52
+          -1723 -1711
+          -245 -238
+          -704 -692
+          -381 -350
+          751 811
+          1476 1525
+          193 246
+          -1560 -1505
+          377 394
+          -1953 -1918
+          1447 1481
+          126 140
+          202 250
+          -829 -801
+          570 577
+          1573 1606
+          -1159 -1119
+          1779 1814
+          -7 13
+          882 887
+          -1320 -1288
+          -1155 -1149
+          655 695
+          -128 -107
+          -1971 -1929
+          -1678 -1655
+          -373 -357
+          -1601 -1554
+          -1216 -1189
+          1852 1895
+          311 369
+          549 607
+          1922 1935
+          -1372 -1355
+          1201 1211
+          908 952
+          -1016 -1010
+          396 403
+          755 765
+          -1410 -1362
+          435 495
+          -1698 -1696
+          -547 -526
+          451 502
+          -800 -764
+          -336 -309
+          -691 -689
+          718 751
+          -1391 -1387
+          -1569 -1567
+          -1381 -1334
+          -123 -100
+          1134 1155
+          451 464
+          -764 -707
+          -20 4
+          -538 -499
+          -450 -390
+          -1757 -1752
+          532 583
+          -894 -836
+          -944 -922
+          1108 1142
+          1307 1364
+          -1149 -1127
+          -1535 -1517
+          -1607 -1572
+          -271 -225
+          -1282 -1246
+          640 674
+          -614 -600
+          -5 50
+          1202 1226
+          -1169 -1134
+          732 738
+          -664 -653
+          1178 1203
+          -1523 -1497
+          282 318
+          358 383
+          1939 1978
+          -240 -231
+          431 435
+          -183 -147
+          -1788 -1750
+          1590 1631
+          -186 -160
+          -1052 -1019
+          -613 -582
+          781 810
+          1450 1459
+          -1035 -1000
+          1290 1323
+          -1758 -1726
+          -1959 -1924
+          -1626 -1621
+          -1370 -1315
+          -886 -853
+          98 131
+          1564 1577
+          1132 1156
+          734 735
+          1208 1267
+          514 562
+          -1334 -1331
+          1148 1204
+          -835 -805
+          809 855
+          -303 -276
+          -184 -183
+          633 670
+          -506 -483
+          -1430 -1379
+          -536 -502
+          -1403 -1371
+          -785 -782
+          1601 1636
+          -1551 -1549
+          -482 -442
+          -1424 -1392
+          388 437
+          -698 -644
+          1109 1167
+          -79 -71
+          -1184 -1161
+          -15 29
+          911 951
+          -1473 -1440
+        expectedOutput: |
+          357
+        hidden: true
+      - input: |
+          400
+          249 257
+          93 100
+          145 152
+          44 47
+          1 9
+          122 125
+          43 44
+          193 195
+          178 186
+          67 70
+          146 151
+          163 167
+          191 198
+          41 49
+          42 49
+          174 177
+          297 302
+          231 239
+          250 253
+          284 292
+          43 49
+          227 237
+          131 140
+          251 255
+          184 190
+          212 217
+          270 277
+          59 60
+          98 103
+          246 256
+          127 136
+          41 44
+          8 10
+          208 211
+          166 176
+          56 61
+          181 183
+          34 39
+          150 158
+          271 272
+          66 76
+          20 25
+          237 238
+          269 275
+          35 40
+          118 128
+          276 277
+          75 81
+          261 269
+          160 165
+          124 128
+          51 59
+          55 59
+          285 286
+          222 225
+          278 280
+          113 114
+          67 73
+          257 259
+          290 297
+          205 213
+          49 58
+          104 114
+          263 265
+          259 266
+          186 194
+          299 307
+          217 227
+          97 103
+          213 214
+          270 276
+          136 146
+          295 303
+          113 117
+          158 164
+          158 167
+          161 162
+          69 72
+          148 153
+          279 282
+          143 144
+          187 197
+          12 15
+          217 223
+          274 283
+          119 121
+          58 61
+          103 105
+          75 84
+          260 266
+          256 262
+          99 104
+          181 184
+          22 30
+          263 268
+          300 304
+          34 35
+          219 224
+          245 254
+          146 153
+          74 79
+          253 263
+          250 251
+          262 270
+          84 88
+          50 52
+          111 120
+          188 192
+          89 90
+          255 264
+          37 47
+          27 36
+          198 200
+          70 75
+          13 14
+          126 131
+          230 236
+          94 95
+          293 297
+          118 121
+          39 44
+          266 267
+          55 64
+          299 302
+          272 278
+          91 93
+          144 149
+          294 303
+          9 18
+          15 17
+          59 64
+          254 260
+          259 268
+          276 283
+          178 182
+          251 261
+          270 274
+          240 248
+          291 296
+          72 79
+          146 147
+          46 53
+          109 116
+          216 226
+          201 205
+          215 225
+          188 194
+          50 57
+          271 279
+          47 55
+          259 267
+          146 155
+          147 152
+          14 16
+          236 242
+          243 247
+          193 196
+          282 287
+          49 53
+          295 301
+          123 126
+          210 217
+          119 127
+          154 163
+          58 68
+          240 246
+          234 241
+          66 75
+          234 237
+          39 42
+          141 148
+          32 39
+          131 133
+          255 263
+          39 45
+          111 120
+          156 159
+          123 132
+          147 149
+          91 96
+          26 28
+          20 23
+          56 62
+          294 295
+          172 176
+          79 84
+          298 302
+          108 115
+          230 231
+          36 41
+          268 278
+          94 96
+          36 37
+          223 228
+          239 240
+          52 53
+          97 98
+          21 27
+          11 14
+          98 102
+          132 138
+          29 37
+          7 10
+          265 267
+          205 209
+          112 121
+          0 6
+          250 251
+          29 36
+          176 186
+          200 204
+          23 31
+          105 112
+          231 233
+          253 260
+          102 111
+          23 30
+          239 240
+          49 57
+          123 126
+          215 218
+          230 234
+          139 143
+          201 204
+          39 48
+          127 131
+          84 93
+          55 62
+          257 259
+          234 235
+          208 216
+          150 154
+          120 127
+          73 76
+          29 33
+          278 284
+          102 108
+          170 175
+          79 86
+          284 286
+          126 129
+          146 152
+          227 233
+          240 242
+          210 211
+          105 109
+          28 37
+          185 187
+          34 40
+          148 155
+          93 99
+          250 253
+          23 26
+          3 6
+          143 147
+          185 188
+          213 216
+          184 186
+          100 106
+          159 168
+          231 232
+          253 263
+          78 87
+          276 282
+          160 169
+          129 130
+          164 174
+          171 174
+          37 40
+          161 171
+          96 98
+          136 137
+          60 68
+          224 233
+          110 118
+          218 225
+          206 215
+          16 24
+          78 86
+          268 277
+          205 209
+          43 52
+          91 98
+          129 133
+          164 169
+          83 84
+          236 237
+          72 73
+          283 293
+          215 223
+          227 231
+          186 194
+          64 70
+          50 55
+          123 127
+          51 55
+          245 248
+          0 2
+          253 261
+          241 250
+          176 180
+          196 202
+          281 285
+          144 153
+          217 227
+          195 203
+          70 73
+          233 240
+          203 212
+          35 40
+          97 99
+          64 66
+          45 47
+          184 191
+          180 189
+          123 125
+          36 40
+          189 194
+          238 243
+          16 20
+          220 225
+          27 36
+          270 275
+          116 123
+          211 218
+          46 48
+          298 304
+          252 254
+          130 133
+          235 239
+          221 231
+          190 198
+          174 177
+          102 105
+          219 226
+          5 14
+          70 78
+          4 14
+          24 34
+          129 139
+          63 71
+          197 199
+          261 271
+          117 121
+          287 288
+          224 231
+          287 289
+          221 231
+          292 295
+          81 88
+          171 177
+          175 176
+          169 177
+          56 58
+          196 206
+          276 285
+          124 127
+          200 206
+          158 168
+          169 170
+          236 244
+          34 40
+          122 132
+          8 11
+          237 245
+          285 295
+          129 139
+          140 144
+          288 291
+          4 9
+          171 174
+          167 171
+          36 38
+          29 37
+          253 261
+          7 16
+          287 295
+          52 57
+          21 29
+          196 197
+          221 222
+          116 117
+          98 108
+          134 137
+          221 226
+          278 285
+          99 104
+          193 194
+          253 256
+          71 72
+          280 284
+          264 268
+          78 84
+          282 286
+          277 281
+          211 212
+          293 302
+          61 65
+          4 10
+          163 166
+        expectedOutput: |
+          311
+        hidden: true
+  - slug: insert-interval
+    title: "Insert Interval"
+    difficulty: Medium
+    topic: "Greedy"
+    subtopic: "Hard Problems"
+    tags: [array, intervals]
+    sourceUrl: "https://leetcode.com/problems/insert-interval/"
+    statement: |
+      You are given a list of closed intervals `[start, end]` sorted by `start`, where no two
+      intervals share any point. You are also given one new interval.
+
+      Insert the new interval into the list and merge wherever necessary, so that the result is
+      again sorted by `start` and pairwise disjoint. Two intervals must be merged if they share at
+      least one point; for example `[1, 3]` and `[3, 5]` become `[1, 5]`, while `[1, 2]` and
+      `[3, 4]` stay separate.
+    inputFormat: |
+      - Line 1: an integer `n`, the number of existing intervals (may be `0`).
+      - Next `n` lines: two integers `start end` for each existing interval.
+      - Last line: two integers `start end`, the new interval.
+    outputFormat: |
+      Print the resulting intervals in increasing order of `start`, one per line, as `start end`.
+    constraints:
+      - "0 <= n <= 10^4"
+      - "-10^5 <= start <= end <= 10^5"
+      - "existing intervals are sorted and pairwise disjoint"
+    examples:
+      - input: |
+          4
+          1 2
+          4 5
+          7 9
+          12 15
+          5 8
+        output: |
+          1 2
+          4 9
+          12 15
+        explanation: "[5, 8] touches [4, 5] and overlaps [7, 9], so the three merge into [4, 9]."
+      - input: |
+          2
+          3 4
+          8 10
+          0 1
+        output: |
+          0 1
+          3 4
+          8 10
+        explanation: "The new interval lies before everything and overlaps nothing; it is simply placed first."
+    hints:
+      - "Split the existing intervals into three groups: entirely before the new one, overlapping it, and entirely after it."
+      - "An interval is entirely before the new one if its end < newStart; entirely after if its start > newEnd."
+      - "Every interval in the middle group merges into one interval spanning the min start and max end."
+    explanation: |
+      **Brute force: append and merge -- O(n log n) time, O(n) space.** Add the new interval, sort
+      all intervals by start, then run the standard merge pass.
+
+      **Optimal: single linear pass -- O(n) time, O(n) space for the output.** Walk through the
+      sorted list:
+      1. Copy every interval with `end < new_start` to the output.
+      2. While the current interval has `start <= new_end`, it overlaps (or touches) the new one:
+         set `new_start = min(new_start, start)` and `new_end = max(new_end, end)`.
+      3. Output the merged new interval, then copy the remaining intervals unchanged.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def insert_interval(intervals: List[List[int]], new_interval: List[int]) -> List[List[int]]:
+            # Return the sorted, merged list after inserting new_interval.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            intervals = [[int(data[1 + 2 * i]), int(data[2 + 2 * i])] for i in range(n)]
+            new_interval = [int(data[1 + 2 * n]), int(data[2 + 2 * n])]
+            for start, end in insert_interval(intervals, new_interval):
+                print(start, end)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def insert_interval(intervals: List[List[int]], new_interval: List[int]) -> List[List[int]]:
+            result: List[List[int]] = []
+            start, end = new_interval
+            i, n = 0, len(intervals)
+            while i < n and intervals[i][1] < start:
+                result.append(intervals[i])
+                i += 1
+            while i < n and intervals[i][0] <= end:
+                start = min(start, intervals[i][0])
+                end = max(end, intervals[i][1])
+                i += 1
+            result.append([start, end])
+            result.extend(intervals[i:])
+            return result
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            intervals = [[int(data[1 + 2 * i]), int(data[2 + 2 * i])] for i in range(n)]
+            new_interval = [int(data[1 + 2 * n]), int(data[2 + 2 * n])]
+            for start, end in insert_interval(intervals, new_interval):
+                print(start, end)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          4
+          1 2
+          4 5
+          7 9
+          12 15
+          5 8
+        expectedOutput: |
+          1 2
+          4 9
+          12 15
+        hidden: false
+      - input: |
+          2
+          3 4
+          8 10
+          0 1
+        expectedOutput: |
+          0 1
+          3 4
+          8 10
+        hidden: false
+      - input: |
+          2
+          1 3
+          6 9
+          2 5
+        expectedOutput: |
+          1 5
+          6 9
+        hidden: true
+      - input: |
+          0
+          4 7
+        expectedOutput: |
+          4 7
+        hidden: true
+      - input: |
+          2
+          1 3
+          5 7
+          3 5
+        expectedOutput: |
+          1 7
+        hidden: true
+      - input: |
+          3
+          2 3
+          5 6
+          8 9
+          0 100
+        expectedOutput: |
+          0 100
+        hidden: true
+      - input: |
+          2
+          -5 -3
+          0 0
+          10 10
+        expectedOutput: |
+          -5 -3
+          0 0
+          10 10
+        hidden: true
+      - input: |
+          3
+          1 1
+          3 3
+          5 5
+          2 2
+        expectedOutput: |
+          1 1
+          2 2
+          3 3
+          5 5
+        hidden: true
+      - input: |
+          300
+          -86 -80
+          -77 -73
+          -65 -63
+          -55 -52
+          -45 -40
+          -35 -33
+          -29 -24
+          -18 -16
+          -12 -8
+          -6 -1
+          6 11
+          12 18
+          19 20
+          21 21
+          29 32
+          37 40
+          41 45
+          46 49
+          56 59
+          61 61
+          62 63
+          64 67
+          69 69
+          72 73
+          74 76
+          84 84
+          92 96
+          104 104
+          108 113
+          115 117
+          124 124
+          127 133
+          137 138
+          140 144
+          145 151
+          152 152
+          158 163
+          170 171
+          175 179
+          185 187
+          193 194
+          199 202
+          203 209
+          217 222
+          225 226
+          234 236
+          244 245
+          246 249
+          250 252
+          256 262
+          270 270
+          276 282
+          290 296
+          297 303
+          305 308
+          315 320
+          325 328
+          330 331
+          334 335
+          342 343
+          349 350
+          355 359
+          364 366
+          374 380
+          387 387
+          395 401
+          405 407
+          411 416
+          419 423
+          427 427
+          432 436
+          441 445
+          448 448
+          449 452
+          459 463
+          471 471
+          478 483
+          488 492
+          500 505
+          510 516
+          520 525
+          531 537
+          543 545
+          549 552
+          558 560
+          561 566
+          568 574
+          580 582
+          590 596
+          602 603
+          610 616
+          623 623
+          626 630
+          633 639
+          640 645
+          653 658
+          659 659
+          662 667
+          669 671
+          672 678
+          684 688
+          693 699
+          704 708
+          710 711
+          713 719
+          721 726
+          728 734
+          737 737
+          741 746
+          752 754
+          755 756
+          757 763
+          766 772
+          779 780
+          782 786
+          790 792
+          798 802
+          806 812
+          815 818
+          822 822
+          828 831
+          838 842
+          846 848
+          850 855
+          860 860
+          867 871
+          873 876
+          882 883
+          886 890
+          891 895
+          901 904
+          910 913
+          919 921
+          925 931
+          938 942
+          948 949
+          955 958
+          962 963
+          966 970
+          974 975
+          979 981
+          988 990
+          991 997
+          1001 1006
+          1007 1012
+          1014 1015
+          1022 1028
+          1034 1037
+          1041 1044
+          1050 1055
+          1061 1065
+          1069 1071
+          1074 1076
+          1081 1081
+          1087 1087
+          1095 1097
+          1103 1106
+          1111 1117
+          1122 1123
+          1125 1130
+          1135 1137
+          1143 1147
+          1155 1158
+          1163 1163
+          1168 1172
+          1176 1179
+          1187 1187
+          1191 1194
+          1196 1202
+          1209 1211
+          1216 1219
+          1221 1221
+          1222 1222
+          1228 1233
+          1241 1246
+          1253 1257
+          1263 1266
+          1273 1278
+          1281 1284
+          1289 1292
+          1294 1294
+          1297 1298
+          1299 1302
+          1304 1304
+          1305 1311
+          1315 1321
+          1327 1327
+          1328 1330
+          1331 1331
+          1332 1333
+          1340 1345
+          1348 1352
+          1356 1357
+          1361 1362
+          1368 1374
+          1376 1379
+          1382 1384
+          1392 1396
+          1403 1403
+          1408 1414
+          1415 1418
+          1422 1428
+          1431 1435
+          1436 1442
+          1450 1455
+          1458 1462
+          1463 1463
+          1465 1467
+          1471 1475
+          1477 1483
+          1486 1492
+          1499 1505
+          1513 1518
+          1522 1527
+          1532 1532
+          1536 1540
+          1543 1543
+          1546 1550
+          1551 1556
+          1557 1562
+          1570 1571
+          1578 1579
+          1586 1586
+          1588 1589
+          1590 1593
+          1599 1599
+          1603 1604
+          1609 1614
+          1617 1620
+          1623 1625
+          1633 1639
+          1645 1650
+          1656 1661
+          1666 1672
+          1674 1680
+          1683 1686
+          1694 1698
+          1704 1706
+          1712 1713
+          1720 1725
+          1728 1728
+          1734 1734
+          1739 1740
+          1743 1746
+          1749 1753
+          1756 1757
+          1759 1759
+          1767 1770
+          1772 1776
+          1782 1787
+          1789 1794
+          1801 1806
+          1809 1810
+          1814 1817
+          1824 1824
+          1829 1833
+          1841 1847
+          1852 1856
+          1857 1857
+          1861 1864
+          1867 1869
+          1871 1874
+          1881 1887
+          1895 1900
+          1901 1901
+          1902 1906
+          1908 1908
+          1910 1913
+          1919 1922
+          1930 1933
+          1938 1942
+          1945 1948
+          1949 1950
+          1956 1959
+          1960 1966
+          1973 1974
+          1977 1982
+          1984 1990
+          1998 2004
+          2006 2007
+          2014 2017
+          2020 2026
+          2030 2031
+          2035 2035
+          2042 2043
+          2047 2050
+          2053 2053
+          2058 2063
+          2071 2071
+          2076 2077
+          2081 2086
+          2089 2092
+          2096 2102
+          2107 2110
+          2118 2119
+          2123 2128
+          2129 2132
+          2138 2142
+          2146 2152
+          2156 2160
+          685 1296
+        expectedOutput: |
+          -86 -80
+          -77 -73
+          -65 -63
+          -55 -52
+          -45 -40
+          -35 -33
+          -29 -24
+          -18 -16
+          -12 -8
+          -6 -1
+          6 11
+          12 18
+          19 20
+          21 21
+          29 32
+          37 40
+          41 45
+          46 49
+          56 59
+          61 61
+          62 63
+          64 67
+          69 69
+          72 73
+          74 76
+          84 84
+          92 96
+          104 104
+          108 113
+          115 117
+          124 124
+          127 133
+          137 138
+          140 144
+          145 151
+          152 152
+          158 163
+          170 171
+          175 179
+          185 187
+          193 194
+          199 202
+          203 209
+          217 222
+          225 226
+          234 236
+          244 245
+          246 249
+          250 252
+          256 262
+          270 270
+          276 282
+          290 296
+          297 303
+          305 308
+          315 320
+          325 328
+          330 331
+          334 335
+          342 343
+          349 350
+          355 359
+          364 366
+          374 380
+          387 387
+          395 401
+          405 407
+          411 416
+          419 423
+          427 427
+          432 436
+          441 445
+          448 448
+          449 452
+          459 463
+          471 471
+          478 483
+          488 492
+          500 505
+          510 516
+          520 525
+          531 537
+          543 545
+          549 552
+          558 560
+          561 566
+          568 574
+          580 582
+          590 596
+          602 603
+          610 616
+          623 623
+          626 630
+          633 639
+          640 645
+          653 658
+          659 659
+          662 667
+          669 671
+          672 678
+          684 1296
+          1297 1298
+          1299 1302
+          1304 1304
+          1305 1311
+          1315 1321
+          1327 1327
+          1328 1330
+          1331 1331
+          1332 1333
+          1340 1345
+          1348 1352
+          1356 1357
+          1361 1362
+          1368 1374
+          1376 1379
+          1382 1384
+          1392 1396
+          1403 1403
+          1408 1414
+          1415 1418
+          1422 1428
+          1431 1435
+          1436 1442
+          1450 1455
+          1458 1462
+          1463 1463
+          1465 1467
+          1471 1475
+          1477 1483
+          1486 1492
+          1499 1505
+          1513 1518
+          1522 1527
+          1532 1532
+          1536 1540
+          1543 1543
+          1546 1550
+          1551 1556
+          1557 1562
+          1570 1571
+          1578 1579
+          1586 1586
+          1588 1589
+          1590 1593
+          1599 1599
+          1603 1604
+          1609 1614
+          1617 1620
+          1623 1625
+          1633 1639
+          1645 1650
+          1656 1661
+          1666 1672
+          1674 1680
+          1683 1686
+          1694 1698
+          1704 1706
+          1712 1713
+          1720 1725
+          1728 1728
+          1734 1734
+          1739 1740
+          1743 1746
+          1749 1753
+          1756 1757
+          1759 1759
+          1767 1770
+          1772 1776
+          1782 1787
+          1789 1794
+          1801 1806
+          1809 1810
+          1814 1817
+          1824 1824
+          1829 1833
+          1841 1847
+          1852 1856
+          1857 1857
+          1861 1864
+          1867 1869
+          1871 1874
+          1881 1887
+          1895 1900
+          1901 1901
+          1902 1906
+          1908 1908
+          1910 1913
+          1919 1922
+          1930 1933
+          1938 1942
+          1945 1948
+          1949 1950
+          1956 1959
+          1960 1966
+          1973 1974
+          1977 1982
+          1984 1990
+          1998 2004
+          2006 2007
+          2014 2017
+          2020 2026
+          2030 2031
+          2035 2035
+          2042 2043
+          2047 2050
+          2053 2053
+          2058 2063
+          2071 2071
+          2076 2077
+          2081 2086
+          2089 2092
+          2096 2102
+          2107 2110
+          2118 2119
+          2123 2128
+          2129 2132
+          2138 2142
+          2146 2152
+          2156 2160
+        hidden: true
+  - sheetId: prob-12-1-2-fractional-knapsack
+    slug: fractional-knapsack
+    title: "Fractional Knapsack"
+    difficulty: Medium
+    topic: "Greedy Algorithms"
+    subtopic: "Easy Problems"
+    tags: ["greedy", "sorting", "knapsack"]
+    sourceUrl: "https://www.geeksforgeeks.org/problems/fractional-knapsack-1587115620/1"
+    statement: |
+      You have a bag that can carry a total weight of `capacity`, and `n` items; item `i` has
+      value `value[i]` and weight `weight[i]`.
+
+      Unlike the 0/1 knapsack, items here can be **cut**: you may take any fraction `f` with
+      `0 <= f <= 1` of an item, which adds `f * weight[i]` to the load and `f * value[i]` to the
+      value.
+
+      Maximise the total value you carry without exceeding `capacity`.
+    inputFormat: |
+      - Line 1: two integers `n` and `capacity`.
+      - Next `n` lines: two integers each, `value[i]` and `weight[i]`.
+    outputFormat: |
+      Print the maximum total value with **exactly two digits after the decimal point**, rounding
+      half up (for example `240.00` or `240.50`).
+    constraints:
+      - "1 <= n <= 10^5"
+      - "1 <= capacity <= 10^9"
+      - "1 <= value[i] <= 10^4"
+      - "1 <= weight[i] <= 10^4"
+    examples:
+      - input: |
+          3 50
+          60 10
+          100 20
+          120 30
+        output: |
+          240.00
+        explanation: "The value per unit of weight is 6, 5 and 4. Take all of the first item (10 units, value 60), all of the second (20 units, value 100) and 20 of the remaining 30 units of the third, adding 2/3 * 120 = 80. The total is 240.00."
+      - input: |
+          3 6
+          10 2
+          30 5
+          20 10
+        output: |
+          35.00
+        explanation: "Per unit of weight the items are worth 5, 6 and 2. Take the whole second item (5 units, value 30), which leaves room for 1 more unit; the best remaining density is the first item, so take half of it for 5. The total is 35.00 and the third item is never touched."
+    hints:
+      - "Because items may be cut, what matters about an item is not its value but its value per unit of weight."
+      - "Sort the items by value/weight descending and fill the bag greedily; only the last item you touch may need to be cut."
+      - "Compare ratios without floating point by cross-multiplying: item A beats item B when value[A] * weight[B] > value[B] * weight[A]."
+    explanation: |
+      **Brute force - exponential.** Enumerate which items to take whole and which single item to
+      cut. Correct but hopeless for large `n`; useful only for checking a small case by hand.
+
+      **Greedy by value density - O(n log n) time, O(n) space.** Sort the items by
+      `value[i] / weight[i]` in decreasing order. Walk them in that order:
+
+      - if the whole item fits in the remaining capacity, take it and reduce the capacity;
+      - otherwise take the fraction that exactly fills the bag, adding
+        `value[i] * remaining / weight[i]`, and stop.
+
+      The sort dominates, so the algorithm is `O(n log n)` with `O(n)` extra memory (or `O(1)` if
+      sorted in place).
+
+      **Why greedy is optimal here.** Suppose an optimal solution takes a smaller fraction of a
+      denser item `i` than the greedy one does, while taking some of a less dense item `j`. Move
+      a tiny amount of weight `d` from `j` to `i`: the load is unchanged and the value changes by
+      `d * (value[i]/weight[i] - value[j]/weight[j]) >= 0`. Repeating this exchange turns the
+      optimal solution into the greedy one without ever decreasing the value, so greedy is
+      optimal. This argument depends on being allowed to take fractions - in the **0/1 knapsack**
+      the exchange is impossible and greedy fails, which is why that version needs dynamic
+      programming.
+
+      **Practical notes.** Compare densities by cross-multiplication (`v1 * w2` against
+      `v2 * w1`) rather than dividing, so the ordering is exact. Only one item is ever cut, and
+      if the capacity is at least the total weight, everything is taken and no cut happens at
+      all. The answer is printed to two decimals, rounded half up.
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Tuple
+
+
+        def fractional_knapsack(items: List[Tuple[int, int]], capacity: int) -> float:
+            # items[i] = (value, weight). Return the maximum value that fits.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.buffer.read().split()
+            n, capacity = int(data[0]), int(data[1])
+            items = [(int(data[2 + 2 * i]), int(data[3 + 2 * i])) for i in range(n)]
+            print("%.2f" % fractional_knapsack(items, capacity))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List, Tuple
+
+
+        def fractional_knapsack(items: List[Tuple[int, int]], capacity: int) -> float:
+            order = sorted(items, key=lambda item: item[0] / item[1], reverse=True)
+            remaining = capacity
+            total = 0.0
+            for value, weight in order:
+                if remaining <= 0:
+                    break
+                if weight <= remaining:
+                    total += value
+                    remaining -= weight
+                else:
+                    total += value * remaining / weight
+                    remaining = 0
+            return total
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.buffer.read().split()
+            n, capacity = int(data[0]), int(data[1])
+            items = [(int(data[2 + 2 * i]), int(data[3 + 2 * i])) for i in range(n)]
+            print("%.2f" % fractional_knapsack(items, capacity))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          3 50
+          60 10
+          100 20
+          120 30
+        expectedOutput: |
+          240.00
+        hidden: false
+      - input: |
+          3 6
+          10 2
+          30 5
+          20 10
+        expectedOutput: |
+          35.00
+        hidden: false
+      - input: |
+          1 1
+          7 3
+        expectedOutput: |
+          2.33
+        hidden: true
+      - input: |
+          2 100
+          5 2
+          9 4
+        expectedOutput: |
+          14.00
+        hidden: true
+      - input: |
+          2 1
+          1 10000
+          10000 1
+        expectedOutput: |
+          10000.00
+        hidden: true
+      - input: |
+          4 5
+          4 2
+          4 2
+          4 2
+          4 2
+        expectedOutput: |
+          10.00
+        hidden: true
+      - input: |
+          10 97
+          52 32
+          70 30
+          84 16
+          86 40
+          33 8
+          32 34
+          17 7
+          58 36
+          91 20
+          5 12
+        expectedOutput: |
+          329.40
+        hidden: true
+      - input: |
+          200 400000
+          9134 8832
+          9068 6669
+          7780 3097
+          616 6195
+          6517 3243
+          8253 6472
+          5564 1849
+          8960 471
+          3601 9551
+          2092 8206
+          882 9077
+          1244 5978
+          6181 7766
+          4752 8768
+          7191 6189
+          4744 2285
+          1449 1012
+          4931 3210
+          6803 4749
+          3952 4662
+          8954 7101
+          4074 2241
+          412 4064
+          289 191
+          7753 6588
+          1439 8521
+          7823 2680
+          4729 977
+          8055 3659
+          2167 3288
+          4274 2018
+          3136 8982
+          2319 7932
+          8817 2648
+          4137 665
+          956 7700
+          662 5910
+          6725 4900
+          2484 5299
+          4480 6496
+          7801 1061
+          2481 4483
+          6221 5119
+          7671 2212
+          7469 3452
+          7305 5949
+          8942 3908
+          5971 9147
+          2096 7743
+          963 9283
+          6206 3996
+          9888 8853
+          5866 7807
+          3768 4451
+          6146 1023
+          7666 1887
+          6936 2012
+          1578 55
+          921 7044
+          8899 5113
+          8971 2034
+          222 3821
+          7044 8407
+          7645 9196
+          3247 5777
+          8241 2221
+          5270 7519
+          8072 1616
+          3021 4639
+          7986 9350
+          4760 5122
+          791 5952
+          1073 7
+          6442 16
+          4929 5858
+          7528 203
+          2956 9600
+          4737 6602
+          2845 7076
+          1240 3028
+          8894 7873
+          6136 6578
+          2791 6444
+          7856 8546
+          4275 3368
+          3928 9073
+          7033 5760
+          2233 5073
+          5660 1946
+          5518 6275
+          6420 4584
+          7431 1117
+          4627 5520
+          8933 9553
+          3598 1606
+          3834 4161
+          4205 1305
+          692 5990
+          1932 1785
+          6674 3124
+          7011 3594
+          6827 2919
+          1020 5769
+          2223 1535
+          8266 9730
+          1595 8411
+          4672 1245
+          5118 2855
+          5481 4139
+          126 8769
+          7913 9390
+          4782 9589
+          5263 2307
+          7964 2130
+          5111 1452
+          1173 6892
+          3220 5232
+          5089 7397
+          5837 9917
+          7188 9789
+          9570 8981
+          9436 5013
+          523 5102
+          3705 3512
+          3975 2820
+          7232 5272
+          4176 2845
+          2071 8483
+          1200 4208
+          1156 5649
+          4553 7333
+          3094 6378
+          5448 3054
+          8429 6506
+          9405 990
+          4641 7285
+          5523 9296
+          6901 9953
+          8476 8862
+          7341 4823
+          8768 3055
+          9729 1622
+          6039 5948
+          7279 2989
+          6822 8122
+          2119 9490
+          3746 9527
+          9929 9309
+          7177 8008
+          8901 3924
+          1897 8860
+          159 8476
+          5671 9591
+          2425 3734
+          7936 5306
+          3693 6383
+          4189 1663
+          660 9331
+          7501 5589
+          6086 9864
+          5466 5539
+          6545 7366
+          4700 251
+          3549 6573
+          4434 3322
+          9931 9042
+          7898 7613
+          4551 7038
+          3085 2207
+          5530 8966
+          3762 1689
+          5067 7608
+          4661 4870
+          8317 1072
+          4920 4391
+          5566 8178
+          7328 3189
+          752 2519
+          3975 5704
+          9773 6265
+          7485 6041
+          8747 6136
+          2846 5240
+          6496 8712
+          2082 1404
+          1608 4570
+          8755 8634
+          6806 9676
+          155 3190
+          4242 6392
+          55 5598
+          8339 7915
+          6961 9852
+          1365 858
+          7937 3986
+          9895 9963
+          5426 7300
+          8278 5641
+          2249 8951
+          592 3631
+        expectedOutput: |
+          688865.70
+        hidden: true
+  - sheetId: prob-12-2-7-shortest-job-first
+    slug: shortest-job-first
+    title: "Shortest Job First"
+    difficulty: Medium
+    topic: "Greedy Algorithms"
+    subtopic: "Medium/Hard"
+    tags: ["greedy", "sorting", "scheduling"]
+    sourceUrl: "https://www.naukri.com/code360/problems/shortest-job-first"
+    statement: |
+      `n` processes are all sitting in the ready queue at time `0`. Process `i` needs
+      `burst[i]` units of uninterrupted CPU time.
+
+      The CPU runs one process at a time and, once started, a process runs to completion
+      (non-preemptive scheduling). The **waiting time** of a process is how long it sits in the
+      queue before it starts running - so the process that runs first waits `0`, the second waits
+      as long as the first one ran, and so on.
+
+      Under the **Shortest Job First** policy the CPU always picks the waiting process with the
+      smallest burst time. Compute the **average waiting time** under that policy and print it
+      **rounded down** to an integer (that is, the total waiting time divided by `n`, using
+      integer division).
+    inputFormat: |
+      - Line 1: an integer `n`, the number of processes.
+      - Line 2: `n` space-separated integers, the burst times.
+    outputFormat: |
+      Print a single integer: the floor of the average waiting time.
+    constraints:
+      - "1 <= n <= 10^5"
+      - "1 <= burst[i] <= 10^5"
+    examples:
+      - input: |
+          5
+          4 3 7 1 2
+        output: |
+          4
+        explanation: "Run order 1, 2, 3, 4, 7 gives waiting times 0, 1, 3, 6 and 10, a total of 20. Divided by 5 processes that is exactly 4."
+      - input: |
+          3
+          5 5 5
+        output: |
+          5
+        explanation: "Every order is the same: the waiting times are 0, 5 and 10, total 15, and 15 / 3 = 5."
+    hints:
+      - "Write down the total waiting time as a formula: if the run order is b1, b2, ..., bn then the total is (n-1)*b1 + (n-2)*b2 + ... + 1*b(n-1)."
+      - "Each burst time is multiplied by how many processes still wait behind it, so the smallest bursts should carry the largest multipliers."
+      - "Sort ascending and accumulate a running clock; the answer is the sum of the prefix sums, divided by n."
+    explanation: |
+      **Simulate naively - O(n^2) time.** Repeatedly scan the remaining processes for the smallest
+      burst, run it, and add the current clock to the waiting total. Correct, but quadratic.
+
+      **Sort once - O(n log n) time, O(1) extra space.** Suppose the CPU runs the processes in the
+      order `b1, b2, ..., bn`. The k-th process starts at `b1 + ... + b(k-1)`, so
+
+      ```
+      total waiting time = 0 + b1 + (b1 + b2) + ... + (b1 + ... + b(n-1))
+                         = (n-1)*b1 + (n-2)*b2 + ... + 1*b(n-1) + 0*bn
+      ```
+
+      Every burst time is weighted by the number of processes that still have to wait behind it,
+      and those weights are fixed: `n-1, n-2, ..., 1, 0`. Pairing the largest weights with the
+      smallest values minimises the sum - that is the rearrangement inequality, and the exchange
+      argument is direct: if some `b(i) > b(i+1)` appear in that order, swapping them changes the
+      total by `b(i+1) - b(i) < 0`, an improvement. So a sorted-ascending order is optimal, which
+      is exactly what Shortest Job First produces.
+
+      The implementation is then a single sweep: sort ascending, keep a running `clock`, add
+      `clock` to the waiting total before advancing `clock` by the current burst. Sorting
+      dominates at `O(n log n)`; everything else is `O(n)` time and `O(1)` space.
+
+      **Ties and rounding.** Equal burst times may be run in any order without changing the total,
+      so the answer is well defined. The total can reach about `10^5 * 10^5 * 10^5 / 2`, so use
+      64-bit arithmetic (Python integers are unbounded), and divide with integer division at the
+      very end - dividing earlier would lose precision.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def average_waiting_time(burst: List[int]) -> int:
+            # Floor of the average waiting time under shortest-job-first scheduling.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.buffer.read().split()
+            n = int(data[0])
+            burst = [int(x) for x in data[1:1 + n]]
+            print(average_waiting_time(burst))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def average_waiting_time(burst: List[int]) -> int:
+            order = sorted(burst)
+            clock = 0
+            total_waiting = 0
+            for duration in order:
+                total_waiting += clock
+                clock += duration
+            return total_waiting // len(order)
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.buffer.read().split()
+            n = int(data[0])
+            burst = [int(x) for x in data[1:1 + n]]
+            print(average_waiting_time(burst))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          5
+          4 3 7 1 2
+        expectedOutput: |
+          4
+        hidden: false
+      - input: |
+          3
+          5 5 5
+        expectedOutput: |
+          5
+        hidden: false
+      - input: |
+          1
+          9
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          2
+          1 1
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          4
+          100000 1 100000 1
+        expectedOutput: |
+          25001
+        hidden: true
+      - input: |
+          7
+          1 2 3 4 5 6 7
+        expectedOutput: |
+          8
+        hidden: true
+      - input: |
+          300
+          34671 33710 95035 9303 57132 62194 20259 36768 72394 5637 69862 56024 29738 93583 42156 40437 12385 97308 20087 80971 33852 95755 91448 37887 8708 75194 29858 79661 34304 48813 40497 58584 60448 4696 34018 98509 15940 97271 94671 3523 69680 74992 75453 93088 13463 61164 27857 16930 7083 93264 57466 38973 95747 79647 2820 27065 11615 6507 75648 25799 92057 89316 67343 62068 82003 81052 7508 37587 15892 41022 69475 1888 73073 45234 63806 39373 19102 96262 74585 24914 12584 14867 79395 66756 22362 99459 74280 4265 10099 40534 78765 82449 94034 70509 47407 88708 75777 82930 27259 97150 29526 81790 92933 89784 41026 34646 78991 73931 27960 45353 26201 35498 56433 70832 66035 50201 5616 36616 85930 57802 31936 88656 77950 42474 25387 87271 5533 96406 6714 94954 43441 56037 39729 98919 4813 83811 15894 57664 29754 7870 60659 69539 44 45423 51139 36433 24873 23609 33559 85747 54002 8464 6003 52070 13959 97326 66714 64547 11358 86971 73286 44841 3891 48700 43785 26290 41736 10198 12030 8755 98247 29709 42743 30049 71286 39624 80132 11795 32364 64889 54485 30009 52650 85847 69113 82652 85639 39442 15109 62306 1425 67126 42755 84080 2914 21751 55482 37753 57728 76629 46300 91315 78844 72049 50207 6944 53591 93094 90362 14293 6330 93132 33999 33373 5985 19316 45015 63434 1391 13109 5443 22628 95613 95567 16226 53814 30587 86597 13054 12079 57948 17923 87755 87326 9386 31922 2085 95081 4031 51168 98424 8494 6446 17453 56813 50627 98317 36944 16780 35617 34616 23212 57964 28218 67118 26592 90689 66563 24132 85746 25140 81844 66556 68018 51338 30061 44497 74382 54275 58016 98974 82062 13390 54514 51271 90579 55942 71440 88267 26937 12641 80423 78016 42787 14235 85901 61382 2786 21122 80906 69825 85529 45952 44877 98431 2428 67720 21111 41093 28018
+        expectedOutput: |
+          4851415
+        hidden: true
+      - input: |
+          500
+          3 1 3 2 1 3 1 2 1 1 2 3 2 1 2 3 2 1 1 2 2 3 1 3 1 2 1 2 2 2 1 1 1 2 1 1 1 1 2 1 3 2 1 2 2 1 3 1 3 3 1 1 1 3 3 3 1 1 2 1 1 1 3 1 3 2 3 1 1 3 2 3 1 3 3 3 3 2 2 2 3 1 2 3 1 1 1 2 1 2 3 1 1 2 2 1 3 1 1 1 2 1 1 1 3 1 1 2 2 1 2 3 2 3 1 1 3 3 2 3 3 3 2 3 1 2 2 3 3 3 3 3 2 3 3 2 1 3 1 2 1 2 3 1 1 1 2 3 3 2 2 3 2 2 2 3 2 1 1 1 3 2 3 2 1 3 2 1 2 2 3 2 2 2 1 3 3 1 3 3 1 2 1 1 3 2 2 1 2 3 2 2 3 1 2 3 3 2 3 3 2 2 2 1 1 3 3 3 1 2 1 2 2 2 1 3 2 1 3 1 2 1 3 2 1 1 1 3 1 3 2 3 3 1 1 2 2 3 3 2 2 3 2 1 3 1 2 3 3 1 2 3 3 2 1 1 3 2 1 1 3 3 3 2 2 2 1 1 3 3 1 3 2 1 2 3 3 3 3 2 2 3 2 1 3 3 2 3 3 3 3 3 1 3 3 3 1 2 3 3 2 3 1 2 2 1 1 3 3 2 3 1 2 1 2 2 1 3 2 3 1 2 1 2 3 1 1 2 3 1 3 2 1 3 3 2 1 3 2 1 1 1 3 3 2 2 2 3 2 2 3 3 2 2 3 1 3 3 3 2 1 3 3 2 2 1 3 2 1 2 1 2 2 3 1 1 3 3 1 1 3 1 2 2 2 3 3 2 3 3 2 3 1 3 3 3 3 2 3 2 1 3 2 3 1 3 2 1 3 1 3 3 3 3 3 2 3 2 2 2 3 1 1 2 3 2 3 2 2 2 2 1 3 3 3 1 2 2 3 2 2 2 2 2 2 1 2 1 3 3 3 1 1 1 2 3 3 2 1 3 3 2 1 1 2 2 2 1 2 3 2 3 3 3 3 1 3 2 2 1 1 3 3 3 2 3 3 2 3 2 2 1 2 2 1 3 1 1 2 2
+        expectedOutput: |
+          403
+        hidden: true
+  - sheetId: prob-12-2-8-program-for-least-recentl
+    slug: program-for-least-recently-used-lru-page-replacement-algorithm
+    title: "Program for Least Recently Used (LRU) Page Replacement Algorithm"
+    difficulty: Medium
+    topic: "Greedy Algorithms"
+    subtopic: "Medium/Hard"
+    tags: ["greedy", "simulation", "hashing", "cache"]
+    sourceUrl: "https://www.naukri.com/code360/problems/program-for-least-recently-used-lru-page-replacement-algorithm"
+    statement: |
+      An operating system keeps at most `capacity` pages in memory. A program then requests a
+      sequence of `n` pages, one after another.
+
+      For each request:
+
+      - if the page is already in memory it is a **hit**, and the page becomes the most recently
+        used one;
+      - otherwise it is a **page fault**: the page is loaded into memory, and if memory was
+        already full the **least recently used** page is thrown out first. The newly loaded page
+        is then the most recently used one.
+
+      Memory starts empty. Report how many page faults occur, and which pages are left in memory
+      at the end.
+    inputFormat: |
+      - Line 1: two integers `capacity` and `n`.
+      - Line 2: `n` space-separated integers, the requested page numbers.
+    outputFormat: |
+      Print two lines:
+
+      - Line 1: the number of page faults.
+      - Line 2: the pages still in memory, ordered from **least recently used to most recently
+        used**, separated by single spaces; print `empty` if memory holds nothing.
+    constraints:
+      - "1 <= capacity <= 1000"
+      - "1 <= n <= 10^5"
+      - "0 <= page number <= 10^9"
+    examples:
+      - input: |
+          3 8
+          7 0 1 2 0 3 0 4
+        output: |
+          6
+          3 0 4
+        explanation: "The first three requests fault into empty frames. 2 evicts 7 (least recently used), 0 is a hit, 3 evicts 1, 0 is a hit again, and 4 evicts 2. That is 6 faults, leaving 3, 0 and 4 with 3 the least recently used."
+      - input: |
+          2 4
+          5 5 5 5
+        output: |
+          1
+          5
+        explanation: "The first request faults; the remaining three find the page already in memory, so there is a single fault and memory holds only page 5."
+    hints:
+      - "You need two things fast: 'is this page in memory?' and 'which page was used longest ago?'."
+      - "A hash set answers the first in O(1); for the second, keep the pages in a list ordered by recency and move a page to the most-recent end whenever it is touched."
+      - "Moving an element inside a Python list costs O(capacity). A hash map to nodes of a doubly linked list (or collections.OrderedDict with move_to_end) makes every request O(1)."
+    explanation: |
+      **Scan for the victim - O(n * capacity) time.** Keep the pages in an array together with a
+      "last used" timestamp; on a fault scan all frames for the smallest timestamp. Easy to write
+      and fine when `capacity` is small, but each request costs `O(capacity)`.
+
+      **Recency list - O(n * capacity) time as well.** Keep a list ordered from least to most
+      recently used: a hit removes the page and re-appends it, a fault appends and pops the front
+      when full. Conceptually the clearest version, but the removal from the middle is linear.
+
+      **Hash map + doubly linked list - O(n) time, O(capacity) space.** Keep the pages in a doubly
+      linked list ordered by recency, least recently used just after a `head` sentinel and most
+      recently used just before a `tail` sentinel, plus a map `page -> node`.
+
+      - **Hit**: look the node up, unlink it and re-insert it before `tail`. Both are O(1) because
+        a doubly linked node knows its neighbours.
+      - **Fault**: if the map is full, remove the node after `head` and delete its page from the
+        map; then create a node, insert it before `tail`, store it in the map and increment the
+        fault counter.
+
+      Every request does a constant number of hash lookups and pointer updates, so the whole
+      simulation is `O(n)` time and `O(capacity)` memory. In Python, `collections.OrderedDict`
+      provides exactly this behaviour through `move_to_end` and `popitem(last=False)`, and
+      iterating it yields the pages in least-to-most-recently-used order, which is what the
+      second output line asks for.
+
+      **Notes.** The first `capacity` distinct pages always fault (compulsory misses), so the
+      answer is at least the number of distinct pages, and at most `n`. LRU is one of several
+      replacement policies: FIFO evicts by arrival instead of by use, and the optimal policy
+      (Belady's) would evict the page whose *next* use is furthest in the future - impossible
+      online, which is precisely why the greedy "least recently used" heuristic is used instead.
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Tuple
+
+
+        def simulate_lru(capacity: int, pages: List[int]) -> Tuple[int, List[int]]:
+            # Return (number of page faults, pages in memory from least to most recent).
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.buffer.read().split()
+            capacity, n = int(data[0]), int(data[1])
+            pages = [int(x) for x in data[2:2 + n]]
+            faults, memory = simulate_lru(capacity, pages)
+            print(faults)
+            print(" ".join(str(page) for page in memory) if memory else "empty")
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from collections import OrderedDict
+        from typing import List, Tuple
+
+
+        def simulate_lru(capacity: int, pages: List[int]) -> Tuple[int, List[int]]:
+            memory = OrderedDict()
+            faults = 0
+            for page in pages:
+                if page in memory:
+                    memory.move_to_end(page)
+                else:
+                    faults += 1
+                    if len(memory) == capacity:
+                        memory.popitem(last=False)
+                    memory[page] = None
+            return faults, list(memory.keys())
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.buffer.read().split()
+            capacity, n = int(data[0]), int(data[1])
+            pages = [int(x) for x in data[2:2 + n]]
+            faults, memory = simulate_lru(capacity, pages)
+            print(faults)
+            print(" ".join(str(page) for page in memory) if memory else "empty")
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          3 8
+          7 0 1 2 0 3 0 4
+        expectedOutput: |
+          6
+          3 0 4
+        hidden: false
+      - input: |
+          2 4
+          5 5 5 5
+        expectedOutput: |
+          1
+          5
+        hidden: false
+      - input: |
+          1 4
+          1 2 1 2
+        expectedOutput: |
+          4
+          2
+        hidden: true
+      - input: |
+          4 3
+          1 2 3
+        expectedOutput: |
+          3
+          1 2 3
+        hidden: true
+      - input: |
+          3 9
+          1 2 3 1 2 3 1 2 3
+        expectedOutput: |
+          3
+          1 2 3
+        hidden: true
+      - input: |
+          3 12
+          1 2 3 4 1 2 5 1 2 3 4 5
+        expectedOutput: |
+          10
+          3 4 5
+        hidden: true
+      - input: |
+          5 400
+          4 6 2 5 8 7 5 3 9 7 6 6 7 3 0 8 4 6 0 6 9 7 3 1 3 3 5 6 8 5 1 4 7 5 3 8 6 3 8 1 5 3 7 4 8 9 1 5 5 7 4 1 2 0 2 7 8 6 1 5 4 2 8 0 1 8 4 9 7 8 7 7 5 5 9 5 6 3 4 8 7 0 9 2 4 7 4 1 3 3 9 2 8 9 2 8 9 5 0 9 9 4 3 1 4 8 5 5 9 5 0 3 6 1 5 5 7 4 0 9 2 2 3 1 4 5 9 9 7 6 5 6 4 3 2 1 4 2 4 2 1 1 2 4 0 9 2 7 9 3 3 4 9 3 2 9 9 8 6 5 4 4 0 6 2 4 8 4 0 5 8 2 9 2 3 4 6 8 0 5 7 5 3 5 8 5 2 3 3 1 2 0 5 5 3 5 8 7 2 5 3 0 6 0 3 2 7 7 1 3 5 6 1 9 6 8 2 0 4 7 4 9 3 7 8 9 5 0 4 5 7 0 3 3 3 7 7 8 2 2 9 3 7 1 1 0 2 9 5 8 5 7 5 3 7 1 9 3 3 1 9 4 1 2 6 3 4 7 6 2 4 5 8 4 1 3 0 4 9 1 9 2 1 1 5 3 7 8 8 1 3 5 2 9 1 6 4 9 6 7 8 2 2 2 4 9 2 4 9 2 3 6 3 9 2 5 4 8 9 8 9 0 6 0 3 0 9 9 2 8 2 9 9 4 5 0 0 8 7 8 9 5 2 3 9 3 5 5 4 7 2 7 0 9 5 6 6 2 3 0 1 5 8 7 4 8 0 6 1 1 9 3 1 2 7 2 9 9 7 2 3 8 8 5 3 2 0 9 7 2 3 8 4 2 3 3 1 9 2 7
+        expectedOutput: |
+          225
+          3 1 9 2 7
+        hidden: true
+      - input: |
+          20 600
+          894 726 833 795 429 159 65 242 289 326 583 159 317 191 655 558 741 826 554 230 863 237 650 209 936 854 561 366 229 868 740 483 856 649 366 900 335 915 97 463 116 826 396 300 693 773 598 821 598 815 711 816 954 795 114 979 655 818 689 611 40 132 865 233 684 755 956 973 907 25 375 283 917 739 383 438 526 395 893 553 390 322 137 676 204 13 560 255 138 965 378 681 52 800 274 158 359 821 434 181 301 134 122 763 57 340 915 728 807 307 644 965 114 960 148 912 769 986 401 215 720 885 648 447 896 577 409 692 781 264 990 560 605 692 327 569 427 219 153 941 26 955 846 635 317 243 463 797 167 587 858 481 518 222 639 122 327 602 87 290 989 223 545 997 133 68 161 944 650 680 48 882 106 947 115 771 124 393 691 758 423 35 911 257 275 921 389 526 684 417 212 211 161 853 335 646 912 414 964 290 999 190 669 168 340 663 337 338 876 863 460 121 862 738 655 545 487 754 836 103 113 847 96 740 982 557 99 273 343 838 30 860 297 814 49 593 34 138 172 262 507 88 777 252 651 338 550 385 386 330 86 915 414 863 908 572 186 642 514 331 147 981 46 485 941 194 866 396 539 914 875 240 640 52 165 341 482 228 382 650 442 157 360 942 760 893 844 883 94 172 763 149 986 225 399 556 987 819 913 196 457 279 950 289 932 348 380 146 492 324 219 155 641 240 264 778 9 457 221 283 514 350 657 371 88 798 976 474 242 557 642 602 389 798 14 708 744 533 577 262 223 528 268 759 776 399 40 332 536 552 723 255 516 407 378 666 572 665 343 566 503 433 80 241 129 499 338 612 265 200 154 382 855 943 774 888 403 460 156 160 466 935 200 741 71 543 638 384 14 389 422 915 218 968 613 16 744 123 666 646 579 5 778 297 673 281 112 783 812 743 761 450 667 85 828 921 331 300 135 351 271 564 668 747 771 294 870 532 105 173 417 106 225 734 733 30 676 670 490 600 861 777 285 239 140 584 911 601 256 182 64 151 814 938 999 36 318 847 545 417 252 757 909 86 757 115 307 735 293 407 210 93 310 868 528 141 186 984 925 963 594 753 138 447 249 911 740 306 442 998 913 812 305 177 401 414 264 682 121 683 893 719 560 157 903 118 863 734 711 380 165 156 869 644 640 607 919 739 348 862 855 926 32 607 815 445 365 711 554 317 927 931 790 913 715 909 413 365 752 459 233 974 420 737 989 459 445 823 865 44 687 485 745 145 779 460 360 277 407 829 896 302 243 760 839 183 527 795 102 60 711 269 54 742 34 332 657 122 462 527 677 125 88 600 320 668 977 532 884 472 824 972 586 810 543 358 217 208 737 539
+        expectedOutput: |
+          586
+          677 125 88 600 320 668 977 532 884 472 824 972 586 810 543 358 217 208 737 539
+        hidden: true
+  - sheetId: prob-12-2-10-merge-intervals
+    slug: merge-intervals
+    title: "Merge Intervals"
+    difficulty: Medium
+    topic: "Greedy Algorithms"
+    subtopic: "Medium/Hard"
+    tags: ["greedy", "sorting", "intervals"]
+    sourceUrl: "https://leetcode.com/problems/merge-intervals/"
+    statement: |
+      You are given `n` closed intervals, the `i`-th one written as `start[i] end[i]` with
+      `start[i] <= end[i]`. They come in no particular order and may overlap.
+
+      Two intervals **overlap** when they share at least one point - touching at an endpoint
+      counts, so `[1, 4]` and `[4, 7]` overlap and become `[1, 7]`, while `[1, 3]` and `[4, 7]`
+      stay separate.
+
+      Replace every group of intervals that overlap, directly or through a chain of other
+      intervals, by the single interval that covers exactly their union, and print the resulting
+      non-overlapping intervals.
+    inputFormat: |
+      - Line 1: an integer `n`, the number of intervals.
+      - Next `n` lines: two integers each, `start[i]` and `end[i]`.
+    outputFormat: |
+      Print the merged intervals, one per line as `start end`, sorted by increasing start (their
+      starts are all different, so this order is unique).
+    constraints:
+      - "1 <= n <= 10^5"
+      - "0 <= start[i] <= end[i] <= 10^9"
+    examples:
+      - input: |
+          4
+          1 3
+          8 10
+          2 6
+          15 18
+        output: |
+          1 6
+          8 10
+          15 18
+        explanation: "[1,3] and [2,6] share the points 2 and 3, so they become [1,6]. [8,10] and [15,18] touch nothing else and survive unchanged."
+      - input: |
+          2
+          1 4
+          4 5
+        output: |
+          1 5
+        explanation: "The intervals share the single point 4, which counts as overlapping, so they merge into [1,5]."
+    hints:
+      - "In the given order you cannot tell whether a later interval will bridge two earlier ones. What ordering removes that problem?"
+      - "Sort by start. Then an interval can only overlap the group you are currently building, never an earlier finished one."
+      - "Sweep once: if the next start is <= the current end, extend the current end to the maximum of the two; otherwise close the current interval and start a new one."
+    explanation: |
+      **Brute force - O(n^2) or worse.** Compare every pair, union the overlapping ones (for
+      example with a disjoint-set structure) and take the minimum start and maximum end of each
+      component. Correct, but quadratic - and a naive "merge any overlapping pair, repeat"
+      version can be worse still.
+
+      **Sort by start, then sweep - O(n log n) time, O(n) space.** Sort the intervals by start
+      (ties can be broken arbitrarily). Keep a "current" interval, initially the first one, and
+      walk through the rest:
+
+      - if `start[i] <= current_end`, the new interval starts before the current one finishes, so
+        they overlap: set `current_end = max(current_end, end[i])` (the new interval may be
+        completely swallowed, which is why the maximum is needed);
+      - otherwise nothing that comes later can reach back to the current interval, so output it
+        and make interval `i` the new current one.
+
+      Output the last current interval when the loop ends.
+
+      **Why one pass after sorting is enough.** After sorting, all starts to the right are `>=` the
+      current start. If `start[i] > current_end` then every later interval also starts after
+      `current_end`, so the current group is finished for good - the greedy decision to close it
+      is safe. Conversely, while `start[i] <= current_end` the intervals genuinely share points
+      and must be merged. Chains such as `[1,5], [4,8], [7,9]` are handled automatically because
+      `current_end` keeps growing.
+
+      The sort costs `O(n log n)` and the sweep `O(n)`, with `O(n)` space for the output (`O(1)`
+      extra if the merge is written in place). The merged intervals come out already sorted by
+      start, and since they are disjoint no two of them can share a start.
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Tuple
+
+
+        def merge_intervals(intervals: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+            # Merge overlapping intervals; return them sorted by start.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.buffer.read().split()
+            n = int(data[0])
+            intervals = [(int(data[1 + 2 * i]), int(data[2 + 2 * i])) for i in range(n)]
+            merged = merge_intervals(intervals)
+            sys.stdout.write("\n".join("%d %d" % (start, end) for start, end in merged) + "\n")
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List, Tuple
+
+
+        def merge_intervals(intervals: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+            order = sorted(intervals)
+            merged: List[Tuple[int, int]] = []
+            current_start, current_end = order[0]
+            for start, end in order[1:]:
+                if start <= current_end:
+                    if end > current_end:
+                        current_end = end
+                else:
+                    merged.append((current_start, current_end))
+                    current_start, current_end = start, end
+            merged.append((current_start, current_end))
+            return merged
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.buffer.read().split()
+            n = int(data[0])
+            intervals = [(int(data[1 + 2 * i]), int(data[2 + 2 * i])) for i in range(n)]
+            merged = merge_intervals(intervals)
+            sys.stdout.write("\n".join("%d %d" % (start, end) for start, end in merged) + "\n")
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          4
+          1 3
+          8 10
+          2 6
+          15 18
+        expectedOutput: |
+          1 6
+          8 10
+          15 18
+        hidden: false
+      - input: |
+          2
+          1 4
+          4 5
+        expectedOutput: |
+          1 5
+        hidden: false
+      - input: |
+          1
+          5 5
+        expectedOutput: |
+          5 5
+        hidden: true
+      - input: |
+          4
+          1 10
+          2 3
+          4 5
+          6 7
+        expectedOutput: |
+          1 10
+        hidden: true
+      - input: |
+          5
+          9 10
+          7 8
+          5 6
+          3 4
+          1 2
+        expectedOutput: |
+          1 2
+          3 4
+          5 6
+          7 8
+          9 10
+        hidden: true
+      - input: |
+          2
+          0 1000000000
+          1000000000 1000000000
+        expectedOutput: |
+          0 1000000000
+        hidden: true
+      - input: |
+          150
+          374 376
+          87 88
+          323 323
+          331 334
+          239 243
+          339 341
+          298 303
+          381 384
+          340 346
+          221 227
+          363 367
+          214 214
+          221 225
+          144 148
+          371 375
+          393 395
+          208 212
+          340 341
+          382 383
+          160 166
+          317 321
+          86 86
+          352 356
+          320 322
+          375 377
+          275 279
+          357 361
+          20 20
+          329 334
+          227 227
+          333 334
+          242 246
+          277 281
+          379 380
+          52 54
+          350 353
+          397 397
+          172 172
+          291 296
+          18 19
+          311 316
+          363 369
+          161 163
+          140 140
+          106 107
+          393 397
+          25 26
+          189 190
+          388 389
+          87 92
+          124 124
+          388 394
+          11 13
+          148 149
+          268 269
+          348 352
+          102 102
+          17 20
+          316 321
+          390 391
+          373 378
+          332 332
+          128 132
+          100 102
+          20 23
+          333 337
+          54 58
+          74 74
+          377 383
+          18 22
+          233 235
+          265 269
+          258 258
+          264 266
+          133 136
+          313 317
+          176 178
+          195 198
+          165 165
+          208 212
+          325 328
+          171 175
+          224 228
+          214 216
+          70 71
+          368 369
+          239 241
+          179 180
+          131 133
+          241 241
+          291 291
+          178 181
+          84 88
+          14 18
+          399 404
+          241 242
+          16 21
+          108 111
+          271 275
+          358 361
+          226 230
+          119 121
+          231 236
+          231 231
+          70 73
+          290 294
+          261 264
+          218 224
+          34 37
+          35 36
+          160 162
+          4 6
+          60 66
+          196 200
+          395 395
+          222 224
+          370 375
+          191 196
+          143 146
+          185 187
+          115 117
+          307 310
+          108 114
+          302 306
+          19 19
+          47 53
+          315 320
+          288 292
+          252 253
+          147 153
+          303 303
+          389 389
+          209 214
+          219 221
+          289 291
+          391 394
+          106 112
+          337 340
+          269 271
+          288 288
+          315 319
+          125 128
+          28 31
+          186 190
+          4 5
+          358 359
+          307 311
+          10 13
+          301 303
+          29 29
+        expectedOutput: |
+          4 6
+          10 13
+          14 23
+          25 26
+          28 31
+          34 37
+          47 58
+          60 66
+          70 73
+          74 74
+          84 92
+          100 102
+          106 114
+          115 117
+          119 121
+          124 124
+          125 136
+          140 140
+          143 153
+          160 166
+          171 175
+          176 181
+          185 190
+          191 200
+          208 216
+          218 230
+          231 236
+          239 246
+          252 253
+          258 258
+          261 281
+          288 296
+          298 306
+          307 322
+          323 323
+          325 328
+          329 346
+          348 356
+          357 361
+          363 369
+          370 384
+          388 397
+          399 404
+        hidden: true
+      - input: |
+          120
+          7 10
+          22 25
+          5 5
+          7 8
+          0 0
+          5 6
+          16 17
+          16 19
+          1 4
+          24 25
+          11 11
+          28 31
+          29 30
+          21 23
+          7 9
+          8 8
+          29 30
+          17 19
+          11 11
+          14 17
+          27 27
+          21 21
+          12 15
+          10 13
+          24 27
+          26 28
+          27 29
+          18 18
+          4 5
+          25 27
+          13 16
+          19 20
+          26 26
+          22 25
+          11 11
+          25 25
+          3 6
+          12 15
+          19 20
+          25 27
+          15 15
+          18 18
+          4 7
+          28 30
+          16 19
+          28 31
+          10 13
+          9 12
+          15 17
+          19 19
+          8 8
+          25 25
+          19 19
+          13 16
+          3 4
+          20 23
+          20 21
+          6 8
+          24 26
+          19 20
+          21 23
+          3 4
+          22 24
+          0 2
+          6 7
+          10 10
+          29 30
+          2 5
+          14 16
+          21 23
+          13 14
+          5 8
+          20 22
+          14 17
+          18 20
+          7 8
+          21 24
+          23 26
+          0 1
+          3 4
+          1 1
+          29 30
+          11 13
+          20 20
+          15 18
+          3 4
+          25 26
+          23 23
+          10 12
+          10 10
+          12 15
+          23 25
+          16 16
+          8 11
+          24 26
+          20 22
+          8 11
+          22 25
+          14 15
+          13 13
+          29 31
+          7 9
+          0 2
+          12 14
+          1 2
+          11 12
+          6 7
+          7 8
+          0 1
+          4 5
+          3 3
+          25 28
+          3 3
+          22 22
+          24 26
+          14 15
+          3 5
+          11 11
+          16 17
+          21 21
+        expectedOutput: |
+          0 31
+        hidden: true

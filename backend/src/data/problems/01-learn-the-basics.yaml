@@ -1,0 +1,2878 @@
+section: learn-the-basics
+problems:
+  - slug: count-digits
+    title: Count Digits
+    difficulty: Easy
+    topic: Math
+    subtopic: Basic Maths
+    tags: [math, digits]
+    sourceUrl: ""
+    statement: |
+      Given a non-negative integer `n`, determine how many digits it has when
+      written in ordinary decimal notation (without leading zeros).
+
+      The number `0` is written as a single digit, so it has exactly one digit.
+    inputFormat: |
+      - Line 1: a single integer `n`.
+    outputFormat: |
+      Print one integer: the number of decimal digits in `n`.
+    constraints:
+      - "0 <= n <= 10^18"
+    examples:
+      - input: |
+          40721
+        output: |
+          5
+        explanation: The digits are 4, 0, 7, 2 and 1, so there are five of them.
+      - input: |
+          0
+        output: |
+          1
+        explanation: Zero is written as the single digit "0".
+    hints:
+      - The last digit of `n` is `n % 10`. What happens to `n` after `n // 10`?
+      - Keep stripping the last digit until nothing is left, counting each step. Be careful with `n = 0`.
+      - "A logarithm gives the answer directly: `floor(log10(n)) + 1` for `n > 0`, but floating-point error can bite for huge values."
+    explanation: |
+      **Convert to a string - O(d) time, O(d) space.** Turn the number into its
+      decimal text and return the length. Simple, but uses extra memory for the
+      string (`d` is the number of digits).
+
+      **Repeated division - O(d) time, O(1) space.** While `n > 0`, divide it by
+      10 and increase a counter. Handle `n = 0` separately (answer 1), since the
+      loop would never run.
+
+      **Logarithm - O(1) time, O(1) space.** For `n > 0` the digit count is
+      `floor(log10(n)) + 1`. It is constant time, but floating-point rounding can
+      be wrong near powers of ten for very large inputs, so the division loop is
+      the safest general approach.
+    starterCode:
+      python: |
+        import sys
+
+
+        def count_digits(n: int) -> int:
+            # Return the number of decimal digits of n (0 has one digit).
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            print(count_digits(n))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def count_digits(n: int) -> int:
+            if n == 0:
+                return 1
+            count = 0
+            while n > 0:
+                n //= 10
+                count += 1
+            return count
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            print(count_digits(n))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          40721
+        expectedOutput: |
+          5
+        hidden: false
+      - input: |
+          0
+        expectedOutput: |
+          1
+        hidden: false
+      - input: |
+          7
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          10
+        expectedOutput: |
+          2
+        hidden: true
+      - input: |
+          1000000
+        expectedOutput: |
+          7
+        hidden: true
+      - input: |
+          999999999999999999
+        expectedOutput: |
+          18
+        hidden: true
+      - input: |
+          1000000000000000000
+        expectedOutput: |
+          19
+        hidden: true
+
+  - slug: reverse-a-number
+    title: Reverse a Number
+    difficulty: Easy
+    topic: Math
+    subtopic: Basic Maths
+    tags: [math, digits]
+    sourceUrl: ""
+    statement: |
+      Given an integer `n`, write its digits in the opposite order and print the
+      resulting integer.
+
+      - Leading zeros that appear after reversing are dropped (reversing `3400`
+        gives `43`).
+      - The sign is kept: reversing `-81` gives `-18`.
+    inputFormat: |
+      - Line 1: a single integer `n`.
+    outputFormat: |
+      Print the reversed integer.
+    constraints:
+      - "-10^9 <= n <= 10^9"
+    examples:
+      - input: |
+          2759
+        output: |
+          9572
+        explanation: Reading the digits 2, 7, 5, 9 backwards gives 9572.
+      - input: |
+          -3400
+        output: |
+          -43
+        explanation: The digits of 3400 reversed are 0043, which is 43 without leading zeros. The minus sign is kept.
+    hints:
+      - Work with the absolute value and remember the sign separately.
+      - "Build the answer digit by digit: `rev = rev * 10 + n % 10`, then `n //= 10`."
+    explanation: |
+      **String reversal - O(d) time, O(d) space.** Convert `|n|` to a string,
+      reverse it, convert back to an integer (which drops leading zeros) and
+      re-apply the sign.
+
+      **Arithmetic - O(d) time, O(1) space.** Take `m = |n|`. Repeatedly peel off
+      the last digit with `m % 10` and append it to the result with
+      `rev = rev * 10 + digit`, then drop that digit with `m //= 10`. Leading
+      zeros vanish automatically because multiplying 0 by 10 is still 0. Finally
+      negate the result if `n` was negative. `d` is the number of digits.
+    starterCode:
+      python: |
+        import sys
+
+
+        def reverse_number(n: int) -> int:
+            # Return n with its digits reversed, keeping the sign.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            print(reverse_number(n))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def reverse_number(n: int) -> int:
+            sign = -1 if n < 0 else 1
+            m = abs(n)
+            rev = 0
+            while m > 0:
+                rev = rev * 10 + m % 10
+                m //= 10
+            return sign * rev
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            print(reverse_number(n))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          2759
+        expectedOutput: |
+          9572
+        hidden: false
+      - input: |
+          -3400
+        expectedOutput: |
+          -43
+        hidden: false
+      - input: |
+          0
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          8
+        expectedOutput: |
+          8
+        hidden: true
+      - input: |
+          -1
+        expectedOutput: |
+          -1
+        hidden: true
+      - input: |
+          1000000000
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          123456789
+        expectedOutput: |
+          987654321
+        hidden: true
+      - input: |
+          -1000000000
+        expectedOutput: |
+          -1
+        hidden: true
+
+  - slug: palindrome-number
+    title: Palindrome Number
+    difficulty: Easy
+    topic: Math
+    subtopic: Basic Maths
+    tags: [math, digits]
+    sourceUrl: https://leetcode.com/problems/palindrome-number/
+    statement: |
+      An integer is a **palindrome** if its decimal representation reads the same
+      from left to right and from right to left.
+
+      Given an integer `n`, decide whether it is a palindrome. Negative numbers
+      are never palindromes, because the minus sign only appears at the front.
+    inputFormat: |
+      - Line 1: a single integer `n`.
+    outputFormat: |
+      Print `true` if `n` is a palindrome, otherwise `false`.
+    constraints:
+      - "-2^31 <= n <= 2^31 - 1"
+    examples:
+      - input: |
+          4884
+        output: |
+          true
+        explanation: 4884 read backwards is still 4884.
+      - input: |
+          -505
+        output: |
+          false
+        explanation: Backwards the text is "505-", which differs from "-505".
+    hints:
+      - Negative numbers can be rejected immediately.
+      - Reverse the digits of `n` arithmetically and compare with the original.
+      - "Optimization: you only need to reverse the second half of the digits and compare it with the first half."
+    explanation: |
+      **String check - O(d) time, O(d) space.** Convert `n` to a string and
+      compare it with its reverse.
+
+      **Full reversal - O(d) time, O(1) space.** If `n < 0` answer `false`.
+      Otherwise build the reversed number digit by digit (as in *Reverse a
+      Number*) and compare it with `n`.
+
+      **Half reversal - O(d) time, O(1) space.** Numbers ending in 0 (other than 0
+      itself) are not palindromes. Otherwise move digits from the end of `n` into
+      `rev` while `n > rev`. When the loop stops, the number is a palindrome if
+      `n == rev` (even length) or `n == rev // 10` (odd length, the middle digit
+      is ignored). This avoids building a number larger than the input.
+    starterCode:
+      python: |
+        import sys
+
+
+        def is_palindrome(n: int) -> bool:
+            # Return True if n reads the same forwards and backwards.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            print("true" if is_palindrome(n) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def is_palindrome(n: int) -> bool:
+            if n < 0 or (n % 10 == 0 and n != 0):
+                return False
+            rev = 0
+            while n > rev:
+                rev = rev * 10 + n % 10
+                n //= 10
+            return n == rev or n == rev // 10
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            print("true" if is_palindrome(n) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          4884
+        expectedOutput: |
+          true
+        hidden: false
+      - input: |
+          -505
+        expectedOutput: |
+          false
+        hidden: false
+      - input: |
+          0
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          10
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          1234321
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          1000021
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          2147483647
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          1111111111
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          -2147483648
+        expectedOutput: |
+          false
+        hidden: true
+
+  - slug: gcd-of-two-numbers
+    title: GCD of Two Numbers
+    difficulty: Easy
+    topic: Math
+    subtopic: Basic Maths
+    tags: [math, gcd, euclid]
+    sourceUrl: ""
+    statement: |
+      The **greatest common divisor** (GCD) of two non-negative integers `a` and
+      `b` is the largest integer that divides both of them without a remainder.
+
+      Given `a` and `b` (not both zero), compute their GCD. By convention
+      `gcd(x, 0) = x`.
+    inputFormat: |
+      - Line 1: two integers `a` and `b` separated by a space.
+    outputFormat: |
+      Print one integer: `gcd(a, b)`.
+    constraints:
+      - "0 <= a, b <= 10^12"
+      - "a and b are not both zero."
+    examples:
+      - input: |
+          84 60
+        output: |
+          12
+        explanation: The common divisors of 84 and 60 are 1, 2, 3, 4, 6 and 12. The largest is 12.
+      - input: |
+          25 14
+        output: |
+          1
+        explanation: 25 = 5 * 5 and 14 = 2 * 7 share no prime factor, so only 1 divides both.
+    hints:
+      - "A brute force tries every candidate from `min(a, b)` down to 1. That is too slow for values near 10^12."
+      - Any number dividing both `a` and `b` also divides `a - b`, and therefore `a % b`.
+      - "Repeatedly replace `(a, b)` with `(b, a % b)` until `b` becomes 0."
+    explanation: |
+      **Brute force - O(min(a, b)) time, O(1) space.** Try every `d` from
+      `min(a, b)` down to 1 and return the first that divides both. Too slow for
+      the upper constraint.
+
+      **Subtraction (original Euclid) - O(max(a, b)) worst case, O(1) space.**
+      `gcd(a, b) = gcd(a - b, b)` when `a >= b`. Repeatedly subtract the smaller
+      from the larger. Correct, but numbers like `(10^12, 1)` need a huge number
+      of steps.
+
+      **Euclidean algorithm with remainders - O(log(min(a, b))) time, O(1)
+      space.** Since `a % b` is what remains after subtracting `b` as many times
+      as possible, `gcd(a, b) = gcd(b, a % b)`. Loop until `b == 0`; the answer
+      is then `a`. The values shrink at least by half every two steps, which gives
+      the logarithmic bound.
+    starterCode:
+      python: |
+        import sys
+
+
+        def gcd(a: int, b: int) -> int:
+            # Return the greatest common divisor of a and b.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            a, b = int(data[0]), int(data[1])
+            print(gcd(a, b))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def gcd(a: int, b: int) -> int:
+            while b:
+                a, b = b, a % b
+            return a
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            a, b = int(data[0]), int(data[1])
+            print(gcd(a, b))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          84 60
+        expectedOutput: |
+          12
+        hidden: false
+      - input: |
+          25 14
+        expectedOutput: |
+          1
+        hidden: false
+      - input: |
+          0 9
+        expectedOutput: |
+          9
+        hidden: true
+      - input: |
+          13 0
+        expectedOutput: |
+          13
+        hidden: true
+      - input: |
+          7 7
+        expectedOutput: |
+          7
+        hidden: true
+      - input: |
+          1000000000000 250000000000
+        expectedOutput: |
+          250000000000
+        hidden: true
+      - input: |
+          600851475143 6857
+        expectedOutput: |
+          6857
+        hidden: true
+      - input: |
+          123456789012 987654321098
+        expectedOutput: |
+          2
+        hidden: true
+      - input: |
+          1000000000000 1
+        expectedOutput: |
+          1
+        hidden: true
+
+  - slug: armstrong-number
+    title: Armstrong Number
+    difficulty: Easy
+    topic: Math
+    subtopic: Basic Maths
+    tags: [math, digits]
+    sourceUrl: ""
+    statement: |
+      Let `k` be the number of digits of a non-negative integer `n`. The number
+      is called an **Armstrong number** if the sum of each of its digits raised
+      to the power `k` equals `n` itself.
+
+      For example, `370` has 3 digits and `3^3 + 7^3 + 0^3 = 27 + 343 + 0 = 370`,
+      so it is an Armstrong number.
+
+      Given `n`, decide whether it is an Armstrong number.
+    inputFormat: |
+      - Line 1: a single integer `n`.
+    outputFormat: |
+      Print `true` if `n` is an Armstrong number, otherwise `false`.
+    constraints:
+      - "0 <= n <= 10^9"
+    examples:
+      - input: |
+          370
+        output: |
+          true
+        explanation: 3^3 + 7^3 + 0^3 = 27 + 343 + 0 = 370.
+      - input: |
+          250
+        output: |
+          false
+        explanation: 2^3 + 5^3 + 0^3 = 8 + 125 + 0 = 133, which is not 250.
+    hints:
+      - First count the digits of `n` to know the exponent `k`.
+      - Then walk through the digits again with `% 10` and `// 10`, adding `digit ** k`.
+    explanation: |
+      **String based - O(d) time, O(d) space.** Convert `n` to a string, let
+      `k` be its length and sum `int(c) ** k` over its characters. Compare the
+      sum with `n`.
+
+      **Arithmetic - O(d) time, O(1) space.** Count the digits with a division
+      loop (0 has one digit). Then, on a copy of `n`, repeatedly take the last
+      digit, add `digit ** k` to a running total and remove the digit. The number
+      is an Armstrong number exactly when the total equals `n`. Here `d` is the
+      number of digits (at most 10), so both approaches are effectively constant
+      time; computing each power is O(log k) with fast exponentiation.
+    starterCode:
+      python: |
+        import sys
+
+
+        def is_armstrong(n: int) -> bool:
+            # Return True if the sum of digit**(number of digits) equals n.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            print("true" if is_armstrong(n) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def is_armstrong(n: int) -> bool:
+            k = 0
+            m = n
+            while True:
+                k += 1
+                m //= 10
+                if m == 0:
+                    break
+            total = 0
+            m = n
+            while m > 0:
+                total += (m % 10) ** k
+                m //= 10
+            return total == n
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            print("true" if is_armstrong(n) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          370
+        expectedOutput: |
+          true
+        hidden: false
+      - input: |
+          250
+        expectedOutput: |
+          false
+        hidden: false
+      - input: |
+          0
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          9
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          10
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          9474
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          9475
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          548834
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          1000000000
+        expectedOutput: |
+          false
+        hidden: true
+
+  - slug: print-all-divisors
+    title: Print All Divisors
+    difficulty: Easy
+    topic: Math
+    subtopic: Basic Maths
+    tags: [math, divisors]
+    sourceUrl: ""
+    statement: |
+      A positive integer `d` is a **divisor** of `n` when dividing `n` by `d`
+      leaves no remainder. Every `n` has at least two divisors: `1` and `n`
+      itself (for `n = 1` those coincide, so there is only one).
+
+      Given a positive integer `n`, list every divisor of `n` in **increasing
+      order**.
+    inputFormat: |
+      - Line 1: a single integer `n`.
+    outputFormat: |
+      Print all divisors of `n` on one line, space-separated, in ascending order.
+    constraints:
+      - "1 <= n <= 10^10"
+    examples:
+      - input: |
+          20
+        output: |
+          1 2 4 5 10 20
+        explanation: Each of these numbers divides 20 with remainder 0, and no other positive integer does.
+      - input: |
+          17
+        output: |
+          1 17
+        explanation: 17 is prime, so its only divisors are 1 and itself.
+    hints:
+      - Checking every number from 1 to `n` works but is far too slow for `n = 10^10`.
+      - "Divisors come in pairs `(i, n // i)`. One element of each pair is at most `sqrt(n)`."
+      - Collect the small partners in increasing order and the large partners in decreasing order, then join them. Watch out for perfect squares.
+    explanation: |
+      **Brute force - O(n) time, O(number of divisors) space.** Test every
+      `i` from 1 to `n`. Already sorted, but 10^10 iterations is far too many.
+
+      **Square-root pairing - O(sqrt(n)) time, O(number of divisors) space.**
+      Loop `i` from 1 while `i * i <= n`. Whenever `i` divides `n`, record `i` in
+      a `small` list and, if `n // i != i`, record `n // i` in a `large` list.
+      `small` is increasing and `large` is decreasing, so the sorted answer is
+      `small` followed by `large` reversed. The `i != n // i` check prevents
+      printing the square root of a perfect square twice. Collecting all divisors
+      and calling a sort also works, adding an `O(k log k)` term for `k`
+      divisors.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def all_divisors(n: int) -> List[int]:
+            # Return every divisor of n in increasing order.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            print(" ".join(map(str, all_divisors(n))))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def all_divisors(n: int) -> List[int]:
+            small: List[int] = []
+            large: List[int] = []
+            i = 1
+            while i * i <= n:
+                if n % i == 0:
+                    small.append(i)
+                    if i != n // i:
+                        large.append(n // i)
+                i += 1
+            return small + large[::-1]
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            print(" ".join(map(str, all_divisors(n))))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          20
+        expectedOutput: |
+          1 2 4 5 10 20
+        hidden: false
+      - input: |
+          17
+        expectedOutput: |
+          1 17
+        hidden: false
+      - input: |
+          1
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          36
+        expectedOutput: |
+          1 2 3 4 6 9 12 18 36
+        hidden: true
+      - input: |
+          9699690
+        expectedOutput: |
+          1 2 3 5 6 7 10 11 13 14 15 17 19 21 22 26 30 33 34 35 38 39 42 51 55 57 65 66 70 77 78 85 91 95 102 105 110 114 119 130 133 143 154 165 170 182 187 190 195 209 210 221 231 238 247 255 266 273 285 286 323 330 357 374 385 390 399 418 429 442 455 462 494 510 546 561 570 595 627 646 663 665 714 715 741 770 798 858 910 935 969 1001 1045 1105 1122 1155 1190 1235 1254 1309 1326 1330 1365 1430 1463 1482 1547 1615 1729 1785 1870 1938 1995 2002 2090 2145 2210 2261 2310 2431 2470 2618 2717 2730 2805 2926 3003 3094 3135 3230 3315 3458 3553 3570 3705 3927 3990 4199 4290 4389 4522 4641 4845 4862 5005 5187 5434 5610 6006 6270 6545 6630 6783 7106 7293 7315 7410 7735 7854 8151 8398 8645 8778 9282 9690 10010 10374 10659 11305 12155 12597 13090 13566 13585 14586 14630 15015 15470 16302 17017 17290 17765 19019 19635 20995 21318 21945 22610 23205 24310 24871 25194 25935 27170 29393 30030 33915 34034 35530 36465 38038 39270 40755 41990 43890 46189 46410 49742 51051 51870 53295 57057 58786 62985 67830 72930 74613 81510 85085 88179 92378 95095 102102 106590 114114 124355 125970 138567 146965 149226 170170 176358 190190 230945 248710 255255 277134 285285 293930 323323 373065 440895 461890 510510 570570 646646 692835 746130 881790 969969 1385670 1616615 1939938 3233230 4849845 9699690
+        hidden: true
+      - input: |
+          1000000000
+        expectedOutput: |
+          1 2 4 5 8 10 16 20 25 32 40 50 64 80 100 125 128 160 200 250 256 320 400 500 512 625 640 800 1000 1250 1280 1600 2000 2500 2560 3125 3200 4000 5000 6250 6400 8000 10000 12500 12800 15625 16000 20000 25000 31250 32000 40000 50000 62500 64000 78125 80000 100000 125000 156250 160000 200000 250000 312500 320000 390625 400000 500000 625000 781250 800000 1000000 1250000 1562500 1600000 1953125 2000000 2500000 3125000 3906250 4000000 5000000 6250000 7812500 8000000 10000000 12500000 15625000 20000000 25000000 31250000 40000000 50000000 62500000 100000000 125000000 200000000 250000000 500000000 1000000000
+        hidden: true
+      - input: |
+          9999800001
+        expectedOutput: |
+          1 3 9 27 41 81 123 271 369 813 1107 1681 2439 3321 5043 7317 11111 15129 21951 33333 45387 73441 99999 136161 220323 299997 455551 660969 899991 1366653 1982907 3011081 4099959 5948721 9033243 12299877 27099729 36899631 81299187 123454321 243897561 370362963 1111088889 3333266667 9999800001
+        hidden: true
+      - input: |
+          9999999967
+        expectedOutput: |
+          1 9999999967
+        hidden: true
+
+  - slug: check-prime
+    title: Check Prime
+    difficulty: Easy
+    topic: Math
+    subtopic: Basic Maths
+    tags: [math, primes]
+    sourceUrl: ""
+    statement: |
+      A **prime** is an integer greater than 1 whose only positive divisors are 1
+      and the number itself.
+
+      Given a positive integer `n`, decide whether it is prime.
+    inputFormat: |
+      - Line 1: a single integer `n`.
+    outputFormat: |
+      Print `true` if `n` is prime, otherwise `false`.
+    constraints:
+      - "1 <= n <= 10^12"
+    examples:
+      - input: |
+          29
+        output: |
+          true
+        explanation: No integer between 2 and 28 divides 29.
+      - input: |
+          91
+        output: |
+          false
+        explanation: 91 = 7 * 13, so it has divisors other than 1 and 91.
+    hints:
+      - Remember that 1 is not prime.
+      - "If `n` has a divisor `d` with `1 < d < n`, then it also has one that is at most `sqrt(n)`."
+      - "After handling 2 and 3, every prime has the form `6k - 1` or `6k + 1`, so you can skip most candidates."
+    explanation: |
+      **Brute force - O(n) time, O(1) space.** Count divisors from 1 to `n`;
+      `n` is prime when the count is exactly 2. Impossible for `n = 10^12`.
+
+      **Trial division up to sqrt(n) - O(sqrt(n)) time, O(1) space.** If `n` is
+      composite, `n = a * b` with `a <= b`, so `a <= sqrt(n)`. Test divisors
+      `i = 2, 3, ...` while `i * i <= n`; if none divides `n` (and `n > 1`), it
+      is prime. That is at most 10^6 checks.
+
+      **6k +/- 1 optimization - O(sqrt(n)) time with a ~3x smaller constant, O(1)
+      space.** Handle `n < 4`, and divisibility by 2 and 3, directly. Every other
+      candidate divisor can be taken from `5, 7, 11, 13, 17, 19, ...` (pairs
+      `i` and `i + 2`, stepping `i` by 6), because all remaining integers are
+      multiples of 2 or 3.
+    starterCode:
+      python: |
+        import sys
+
+
+        def is_prime(n: int) -> bool:
+            # Return True if n is a prime number.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            print("true" if is_prime(n) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def is_prime(n: int) -> bool:
+            if n < 2:
+                return False
+            if n < 4:
+                return True
+            if n % 2 == 0 or n % 3 == 0:
+                return False
+            i = 5
+            while i * i <= n:
+                if n % i == 0 or n % (i + 2) == 0:
+                    return False
+                i += 6
+            return True
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            print("true" if is_prime(n) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          29
+        expectedOutput: |
+          true
+        hidden: false
+      - input: |
+          91
+        expectedOutput: |
+          false
+        hidden: false
+      - input: |
+          1
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          2
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          25
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          1000000007
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          999966000289
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          999999999989
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          1000000000000
+        expectedOutput: |
+          false
+        hidden: true
+
+  - slug: frequency-queries
+    title: Frequency Queries
+    difficulty: Easy
+    topic: Hashing
+    subtopic: Basic Hashing
+    tags: [hashing, array, counting]
+    sourceUrl: ""
+    statement: |
+      You are given an integer array `arr` of length `n` and a list of `q`
+      query values.
+
+      For every query value `x`, report how many times `x` occurs in `arr`. A
+      value that never occurs has frequency 0.
+    inputFormat: |
+      - Line 1: an integer `n`.
+      - Line 2: `n` space-separated integers, the array `arr`.
+      - Line 3: an integer `q`.
+      - Line 4: `q` space-separated integers, the query values.
+    outputFormat: |
+      Print `q` integers on one line, space-separated: the frequency of each
+      query value, in the order the queries are given.
+    constraints:
+      - "1 <= n <= 10^5"
+      - "1 <= q <= 10^5"
+      - "-10^9 <= arr[i], query values <= 10^9"
+    examples:
+      - input: |
+          7
+          4 1 4 9 1 4 6
+          4
+          4 1 5 6
+        output: |
+          3 2 0 1
+        explanation: 4 appears three times, 1 appears twice, 5 never appears and 6 appears once.
+      - input: |
+          3
+          -2 -2 -2
+          2
+          2 -2
+        output: |
+          0 3
+        explanation: Only -2 is present, three times. The positive value 2 does not occur.
+    hints:
+      - Scanning the whole array for every query costs O(n * q). How can you avoid repeating that work?
+      - Values can be as large as 10^9 or negative, so a plain counting array indexed by value would be huge.
+      - Count every value once in a hash map, then answer each query with a single lookup.
+    explanation: |
+      **Brute force - O(n * q) time, O(1) extra space.** For each query walk
+      the whole array and count matches. Up to 10^10 operations at the limits.
+
+      **Sort + binary search - O((n + q) log n) time, O(1) extra space (besides
+      the sort).** Sort the array; the frequency of `x` is the distance between
+      the first position `>= x` and the first position `> x`, both found by
+      binary search.
+
+      **Hash map precomputation - O(n + q) expected time, O(k) space** for `k`
+      distinct values. One pass builds a map `value -> count`. Every query is then
+      a single lookup that defaults to 0. A plain array indexed by value (a
+      "counting array") works the same way when values are small and
+      non-negative, but not for this range of values.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def frequency_queries(arr: List[int], queries: List[int]) -> List[int]:
+            # Return, for each query value, how many times it occurs in arr.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            arr = [int(x) for x in data[1:1 + n]]
+            q = int(data[1 + n])
+            queries = [int(x) for x in data[2 + n:2 + n + q]]
+            print(" ".join(map(str, frequency_queries(arr, queries))))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def frequency_queries(arr: List[int], queries: List[int]) -> List[int]:
+            counts = {}
+            for value in arr:
+                counts[value] = counts.get(value, 0) + 1
+            return [counts.get(x, 0) for x in queries]
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            arr = [int(x) for x in data[1:1 + n]]
+            q = int(data[1 + n])
+            queries = [int(x) for x in data[2 + n:2 + n + q]]
+            print(" ".join(map(str, frequency_queries(arr, queries))))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          7
+          4 1 4 9 1 4 6
+          4
+          4 1 5 6
+        expectedOutput: |
+          3 2 0 1
+        hidden: false
+      - input: |
+          3
+          -2 -2 -2
+          2
+          2 -2
+        expectedOutput: |
+          0 3
+        hidden: false
+      - input: |
+          1
+          5
+          1
+          5
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          1
+          5
+          3
+          4 6 -5
+        expectedOutput: |
+          0 0 0
+        hidden: true
+      - input: |
+          5
+          8 8 8 8 8
+          3
+          8 8 0
+        expectedOutput: |
+          5 5 0
+        hidden: true
+      - input: |
+          500
+          1000000000 1000000000 1000000000 1000000000 1000000000 -1000000000 -1000000000 0 0 -1000000000 0 -1000000000 0 0 -1000000000 1000000000 -1000000000 1000000000 -1000000000 -1000000000 0 -1000000000 -1000000000 0 -1000000000 -1000000000 -1000000000 0 0 -1000000000 -1000000000 0 0 -1000000000 -1000000000 0 1000000000 1000000000 0 1000000000 1000000000 1000000000 -1000000000 1000000000 1000000000 0 1000000000 -1000000000 -1000000000 1000000000 -1000000000 1000000000 0 0 1000000000 -1000000000 1000000000 1000000000 -1000000000 0 -1000000000 1000000000 1000000000 0 1000000000 1000000000 -1000000000 0 1000000000 0 0 -1000000000 1000000000 1000000000 0 1000000000 1000000000 0 -1000000000 -1000000000 0 1000000000 1000000000 0 0 -1000000000 1000000000 0 -1000000000 0 0 0 -1000000000 1000000000 1000000000 -1000000000 -1000000000 0 -1000000000 1000000000 0 -1000000000 0 1000000000 1000000000 0 1000000000 -1000000000 0 -1000000000 0 -1000000000 1000000000 1000000000 1000000000 -1000000000 1000000000 -1000000000 1000000000 0 0 -1000000000 1000000000 1000000000 0 1000000000 -1000000000 1000000000 -1000000000 0 1000000000 0 0 1000000000 0 1000000000 1000000000 -1000000000 -1000000000 -1000000000 0 -1000000000 0 -1000000000 0 1000000000 -1000000000 0 -1000000000 0 0 1000000000 0 1000000000 -1000000000 1000000000 1000000000 -1000000000 0 -1000000000 -1000000000 0 1000000000 1000000000 1000000000 0 0 -1000000000 0 1000000000 -1000000000 -1000000000 0 1000000000 1000000000 1000000000 -1000000000 1000000000 1000000000 -1000000000 1000000000 0 0 0 -1000000000 0 1000000000 1000000000 0 -1000000000 1000000000 -1000000000 0 0 1000000000 -1000000000 1000000000 -1000000000 -1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000 0 1000000000 1000000000 0 -1000000000 -1000000000 1000000000 0 -1000000000 1000000000 0 -1000000000 1000000000 0 0 0 -1000000000 0 1000000000 0 1000000000 1000000000 0 -1000000000 1000000000 0 -1000000000 1000000000 -1000000000 1000000000 -1000000000 0 1000000000 0 1000000000 -1000000000 1000000000 0 1000000000 0 1000000000 -1000000000 1000000000 1000000000 1000000000 -1000000000 -1000000000 1000000000 -1000000000 -1000000000 -1000000000 0 -1000000000 0 0 0 -1000000000 1000000000 -1000000000 0 -1000000000 0 1000000000 -1000000000 1000000000 -1000000000 -1000000000 -1000000000 -1000000000 1000000000 0 1000000000 1000000000 -1000000000 -1000000000 -1000000000 1000000000 0 0 1000000000 -1000000000 -1000000000 0 1000000000 0 1000000000 0 0 -1000000000 1000000000 -1000000000 -1000000000 0 1000000000 -1000000000 1000000000 1000000000 0 1000000000 0 1000000000 0 0 0 -1000000000 -1000000000 -1000000000 -1000000000 1000000000 0 0 1000000000 -1000000000 0 0 0 -1000000000 -1000000000 -1000000000 -1000000000 0 1000000000 1000000000 1000000000 -1000000000 1000000000 1000000000 1000000000 0 -1000000000 0 -1000000000 1000000000 -1000000000 0 -1000000000 0 1000000000 -1000000000 0 1000000000 0 0 1000000000 -1000000000 0 1000000000 1000000000 1000000000 0 1000000000 1000000000 1000000000 1000000000 -1000000000 0 1000000000 0 1000000000 -1000000000 1000000000 0 0 1000000000 0 1000000000 0 0 1000000000 0 1000000000 1000000000 0 0 1000000000 0 -1000000000 -1000000000 -1000000000 1000000000 1000000000 0 -1000000000 1000000000 0 -1000000000 0 -1000000000 -1000000000 1000000000 1000000000 1000000000 0 0 -1000000000 0 0 -1000000000 -1000000000 -1000000000 1000000000 1000000000 1000000000 -1000000000 0 -1000000000 0 0 -1000000000 1000000000 0 -1000000000 1000000000 -1000000000 -1000000000 1000000000 1000000000 1000000000 0 0 0 1000000000 -1000000000 1000000000 -1000000000 -1000000000 0 -1000000000 -1000000000 0 1000000000 0 -1000000000 -1000000000 -1000000000 0 1000000000 0 0 -1000000000 1000000000 1000000000 0 -1000000000 -1000000000 -1000000000 0 -1000000000 -1000000000 1000000000 0 0 0 -1000000000 -1000000000 -1000000000 -1000000000 -1000000000 -1000000000 0 1000000000 -1000000000 1000000000 0 -1000000000 0 1000000000 0 -1000000000 0 0 -1000000000 1000000000 1000000000 1000000000 1000000000 0 1000000000 1000000000 1000000000 0 0 -1000000000 1000000000 -1000000000 1000000000 1000000000 1000000000 -1000000000 -1000000000 0 1000000000 0 -1000000000 0 -1000000000
+          5
+          1000000000 -1000000000 0 1 999999999
+        expectedOutput: |
+          173 167 160 0 0
+        hidden: true
+      - input: |
+          800
+          12 -28 13 -6 30 -20 25 11 -24 -7 2 -15 25 18 7 -2 12 6 8 2 17 5 9 4 -15 -15 -19 -3 -13 4 10 -1 21 -4 10 -4 3 22 -5 28 -22 17 1 -28 21 20 -19 22 0 30 8 -11 13 3 27 15 0 -18 -29 25 -26 30 -27 -7 -29 24 -10 30 0 -14 -4 27 8 -27 -2 4 7 -11 14 -23 9 -23 -27 18 6 9 -17 -13 7 1 27 -22 -29 5 -24 -26 -9 19 -16 12 -23 12 -20 0 12 -20 24 28 24 26 -30 -27 -8 -6 29 -6 -7 4 17 17 30 -2 -3 -18 -2 -6 -21 11 16 10 -1 30 0 -4 -19 -13 -24 15 -19 9 -29 -23 5 1 -18 25 -14 17 25 -18 -9 9 30 12 30 22 16 17 -19 -24 -23 26 -5 6 -22 -13 -2 -27 2 17 -11 11 24 12 -5 0 22 3 -1 -25 -5 -13 15 0 17 -30 25 2 16 -25 30 -20 -27 27 16 18 -8 4 -2 -21 -15 -15 0 19 16 -30 -22 14 22 -16 -24 -24 -22 -24 28 2 -21 -4 17 12 29 -28 -9 20 -25 18 -12 10 -7 19 -21 27 -11 -30 -24 -24 9 10 12 -1 20 -5 0 21 9 28 -13 28 -30 0 19 -15 -18 -3 -16 9 -17 14 -29 14 -1 6 24 -7 -4 15 -22 -26 -7 -22 28 11 -4 1 -23 -13 13 -15 -5 12 -25 17 -26 -10 0 -6 30 9 29 5 -6 11 14 -28 -30 16 30 -18 8 25 -23 -3 -24 2 11 8 30 4 -1 13 -10 28 2 12 -20 15 -4 18 -7 18 6 13 -12 -29 8 3 -21 -24 14 26 -14 2 0 12 -17 15 -13 -7 21 16 -7 14 -25 17 -4 -25 27 -30 -24 -1 -20 -17 -11 18 10 10 -10 -3 0 -7 26 -29 0 -24 -25 -25 3 8 9 22 13 8 -9 23 1 4 -7 -28 -5 -15 -29 28 10 8 1 -16 -26 0 26 -1 -1 -14 -2 -29 27 -11 -18 -27 11 -12 21 -9 0 25 -29 -1 -19 -9 -21 4 -25 3 21 -22 25 5 -11 -15 1 16 -23 28 -9 -29 -26 3 21 -16 22 29 -30 -11 13 -15 24 16 -3 29 -18 -20 -21 -8 12 21 9 19 9 10 2 19 -1 -6 2 4 1 11 -29 10 23 -5 -17 13 -25 -24 17 2 -28 -4 -3 -15 5 4 7 -7 -27 26 -5 -20 -20 20 25 21 -14 25 -2 -11 9 -16 20 -25 6 12 -15 21 14 -24 -16 8 22 28 -5 16 -15 29 -9 13 16 -13 -12 23 -1 20 -25 -14 12 16 -15 -19 27 -15 -4 -8 -15 -9 27 -26 4 -14 -29 -1 -2 28 19 -24 -18 -23 22 -23 0 -16 9 -20 22 1 -19 1 -8 -8 -11 -6 2 -18 -25 18 5 22 6 14 3 15 25 -27 -3 -28 0 -8 -8 27 2 25 -1 -17 26 -20 -12 30 12 23 14 -26 -9 -2 30 24 6 19 24 -29 -18 1 -5 -7 22 -10 -29 -19 -8 25 -9 2 -24 -24 23 22 21 -24 3 -17 -4 19 30 -18 14 21 23 -5 7 -12 26 2 -7 29 7 -7 11 20 7 17 -17 -3 -26 -17 1 23 17 -21 12 15 5 -7 26 -28 11 8 26 25 4 -3 20 -23 12 -9 28 0 -6 8 29 -19 -3 -12 2 -23 25 15 -20 -4 -30 -2 11 21 4 14 -27 -27 23 11 29 30 -10 -5 23 1 15 22 -17 -18 -9 -22 -13 -5 -14 -16 0 17 -25 -9 22 -6 -13 -23 -22 -25 -6 17 5 17 -19 27 -14 30 -8 15 1 -22 15 20 -13 26 -6 -24 -7 -20 -25 16 -12 11 4 -14 14 13 -14 15 13 10 -17 26 -15 12 7 -14 17 26 29 14 -16 9 -29 7 -11 -28 -14 -29 -27 -9 -30 15 -2 -24 12 -4 16 5 -5 16 -22 -11 -14 -21 0 27 -21 17 -25 5 -28 -25 17 17 -3 12 29 -15 19 -2 10 -11 24 -6 22 29 -23 -12 2 -28 5 -7 30 27 -14 -30
+          300
+          -3 -33 11 16 -1 8 1 32 -12 27 33 -17 32 -1 -37 18 -3 24 10 2 -24 21 6 16 37 -13 6 -27 22 40 -23 -24 40 -26 -3 -18 -3 15 -12 -27 -2 7 -33 31 -27 17 25 9 26 5 19 -12 6 36 -21 -19 7 25 4 29 -39 -2 -29 38 18 27 3 -13 -26 -12 34 34 -4 -10 30 -5 37 39 -16 -9 29 32 -1 -40 5 39 -27 34 -36 35 17 -36 -5 14 4 -14 -33 -36 18 9 -24 -30 29 -17 2 -23 37 -3 -3 15 33 29 -30 7 1 11 -9 3 -24 -40 10 28 18 24 36 -27 33 3 -9 37 36 38 -7 -11 20 21 0 5 38 -14 29 25 -11 5 -38 25 27 -2 21 16 23 32 21 27 3 -23 1 22 15 -23 -37 -27 38 34 21 20 -38 -35 -4 33 -3 -18 -11 -17 -37 -30 29 24 19 -14 17 8 -18 -15 -24 23 -12 1 -22 -20 9 34 1 -4 12 36 7 -40 5 14 29 -28 11 24 -12 16 28 -16 -6 33 26 -20 -6 9 34 38 -37 -17 34 31 -33 30 40 35 -39 6 27 3 25 -33 -15 28 -12 -14 30 -18 -31 -39 -38 9 20 -33 -22 -23 22 20 19 -9 -34 -25 26 20 33 5 15 -5 -11 -25 -20 5 -29 -5 -22 -21 6 0 -3 -10 27 -40 -4 35 -7 -14 20 33 19 11 27 17 37 37 -28 -29 4 0 -31 5 -29 -13 -28 26 -5 37 -35 36 33 23 36 33
+        expectedOutput: |
+          12 0 13 15 14 12 14 0 9 13 0 11 0 14 0 8 12 9 12 17 21 13 8 15 0 12 8 12 16 0 14 21 0 9 12 13 12 14 9 12 13 9 0 0 12 21 16 15 13 12 10 9 8 0 10 11 9 16 14 12 0 13 17 0 8 13 9 12 9 9 0 0 14 6 18 15 0 0 10 15 12 0 14 0 12 0 12 0 0 0 21 0 15 14 14 15 0 0 8 15 21 11 12 11 17 14 0 12 12 14 0 12 11 9 14 13 15 9 21 0 12 12 8 9 0 12 0 9 15 0 0 0 18 13 9 13 21 12 0 15 12 16 13 12 0 16 13 13 13 15 9 0 13 13 9 14 14 16 14 14 0 12 0 0 13 9 0 0 14 0 12 13 13 11 0 11 12 9 10 15 21 12 13 18 21 9 9 14 12 13 15 0 14 14 21 0 9 0 12 14 12 11 13 9 9 15 12 10 13 0 13 13 13 15 0 0 0 11 0 0 0 18 0 0 0 8 13 9 16 0 18 12 9 15 18 13 0 0 0 15 9 0 12 14 16 9 10 15 0 18 13 9 0 12 14 15 13 18 13 12 17 15 12 10 8 21 12 6 13 0 14 0 18 15 9 0 10 13 13 21 0 0 11 17 14 21 0 12 17 12 11 13 15 0 0 0 0 9 0 0
+        hidden: true
+  - sheetId: prob-1-6-1-understand-recursion-by-p
+    slug: understand-recursion-by-print-something-n-times
+    title: Understand recursion by print something N times
+    difficulty: Easy
+    topic: Recursion
+    subtopic: Learn Basic Recursion
+    tags: [recursion, basics]
+    sourceUrl: ""
+    statement: |
+      A function that calls itself is a **recursive** function. Every recursive
+      function needs two things: a *base case* that stops the chain of calls, and a
+      *recursive case* that does a little work and then calls itself on a smaller
+      version of the same task.
+
+      Your task is the smallest possible exercise of that idea: given an integer
+      `n`, print the word `Recursion` on `n` separate lines.
+
+      Solve it recursively - no loop is allowed in your function. Think of the job
+      "print the word n times" as "print it once, then print it n - 1 times".
+    inputFormat: |
+      - Line 1: a single integer `n`.
+    outputFormat: |
+      Print `n` lines, each containing exactly the word `Recursion`.
+    constraints:
+      - "1 <= n <= 1000"
+    examples:
+      - input: |
+          3
+        output: |
+          Recursion
+          Recursion
+          Recursion
+        explanation: "The word is printed once, and then the same job is repeated for n = 2 and n = 1. When n reaches 0 the calls stop."
+      - input: |
+          1
+        output: |
+          Recursion
+        explanation: "A single call prints the word once and then asks for n = 0, which is the base case and prints nothing."
+    hints:
+      - "Write the function so that it prints one line and then calls itself with n - 1."
+      - "Decide what the function should do when n is 0: that is the base case, and it must print nothing and return immediately."
+      - "Without a base case the function would call itself forever and Python would raise a RecursionError, so always write the stopping condition first."
+    explanation: |
+      **Loop - O(n) time, O(1) space.** A `for` loop that prints the word `n` times
+      is the obvious solution, but it does not practise recursion.
+
+      **Recursion - O(n) time, O(n) space.** Define `f(n)`:
+
+      - if `n <= 0`, return immediately (base case);
+      - otherwise print the word once and call `f(n - 1)` (recursive case).
+
+      `f(n)` triggers exactly `n + 1` calls, so the time is O(n). The space is O(n)
+      as well, because the calls stack up: `f(n)` is still alive while `f(n - 1)`
+      runs, and only the base case lets the whole stack unwind. This is the one real
+      cost of recursion over a loop, and it is why deep recursion can overflow the
+      call stack.
+
+      Printing before the recursive call prints the lines while going *down* the
+      stack; printing after it would produce the same output here, because every line
+      is identical.
+    starterCode:
+      python: |
+        import sys
+
+
+        def print_message(n: int) -> None:
+            # Print the word "Recursion" on n separate lines, recursively.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            sys.setrecursionlimit(10 ** 6)
+            n = int(sys.stdin.readline())
+            print_message(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def print_message(n: int) -> None:
+            if n <= 0:
+                return
+            print("Recursion")
+            print_message(n - 1)
+
+
+        # --- Input/output handling ---
+        def main():
+            sys.setrecursionlimit(10 ** 6)
+            n = int(sys.stdin.readline())
+            print_message(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          3
+        expectedOutput: |
+          Recursion
+          Recursion
+          Recursion
+        hidden: false
+      - input: |
+          1
+        expectedOutput: |
+          Recursion
+        hidden: false
+      - input: |
+          2
+        expectedOutput: |
+          Recursion
+          Recursion
+        hidden: true
+      - input: |
+          5
+        expectedOutput: |
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+        hidden: true
+      - input: |
+          8
+        expectedOutput: |
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+        hidden: true
+      - input: |
+          12
+        expectedOutput: |
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+        hidden: true
+      - input: |
+          40
+        expectedOutput: |
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+          Recursion
+        hidden: true
+  - sheetId: prob-1-6-2-print-name-n-times-using-
+    slug: print-name-n-times-using-recursion
+    title: Print name N times using recursion
+    difficulty: Easy
+    topic: Recursion
+    subtopic: Learn Basic Recursion
+    tags: [recursion, basics, string]
+    sourceUrl: ""
+    statement: |
+      You are given a `name` and a count `n`. Print the name on `n` separate lines.
+
+      Solve it recursively. Compared to printing a fixed word, the only new idea is
+      that the recursive function now carries a second piece of information - the
+      name - that does **not** change from one call to the next, while `n` shrinks
+      towards the base case.
+    inputFormat: |
+      - Line 1: the string `name` (no spaces).
+      - Line 2: a single integer `n`.
+    outputFormat: |
+      Print `n` lines, each containing `name`.
+    constraints:
+      - "1 <= |name| <= 20"
+      - "`name` consists of English letters and digits only."
+      - "1 <= n <= 1000"
+    examples:
+      - input: |
+          Rohit
+          3
+        output: |
+          Rohit
+          Rohit
+          Rohit
+        explanation: "The name is printed once and the function then repeats the job for n = 2 and n = 1."
+      - input: |
+          dsa
+          1
+        output: |
+          dsa
+        explanation: "One line is printed; the next call receives n = 0 and stops."
+    hints:
+      - "Pass both the name and the remaining count to the recursive function."
+      - "Only the count changes between calls: print the name once, then call yourself with n - 1."
+      - "The base case is n == 0, where the function returns without printing anything."
+    explanation: |
+      **Recursion - O(n) time, O(n) space.** The function takes two parameters,
+      `name` and `n`. If `n <= 0` it returns at once; otherwise it prints `name` and
+      calls itself with `n - 1`. There are `n + 1` calls in total, each doing O(1)
+      work besides the printing, so the time is O(n) (plus the cost of writing the
+      output). The recursion depth reaches `n`, so O(n) stack space is used.
+
+      Note that `name` is carried unchanged through every call. That is very common:
+      a recursive function usually has *state* that shrinks (here `n`, and it drives
+      the base case) and *context* that stays the same (here `name`).
+
+      **Loop - O(n) time, O(1) space.** Iteration solves the same task without the
+      stack, and for a job this simple it is what you would actually write. Recursion
+      is practised here because the same shape - do one step, recurse on the rest -
+      is what later powers subsequences, trees and backtracking.
+    starterCode:
+      python: |
+        import sys
+
+
+        def print_name(name: str, n: int) -> None:
+            # Print name on n separate lines, recursively.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            sys.setrecursionlimit(10 ** 6)
+            data = sys.stdin.read().split()
+            name = data[0]
+            n = int(data[1])
+            print_name(name, n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def print_name(name: str, n: int) -> None:
+            if n <= 0:
+                return
+            print(name)
+            print_name(name, n - 1)
+
+
+        # --- Input/output handling ---
+        def main():
+            sys.setrecursionlimit(10 ** 6)
+            data = sys.stdin.read().split()
+            name = data[0]
+            n = int(data[1])
+            print_name(name, n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          Rohit
+          3
+        expectedOutput: |
+          Rohit
+          Rohit
+          Rohit
+        hidden: false
+      - input: |
+          dsa
+          1
+        expectedOutput: |
+          dsa
+        hidden: false
+      - input: |
+          a
+          2
+        expectedOutput: |
+          a
+          a
+        hidden: true
+      - input: |
+          DSAForge
+          5
+        expectedOutput: |
+          DSAForge
+          DSAForge
+          DSAForge
+          DSAForge
+          DSAForge
+        hidden: true
+      - input: |
+          Zz9
+          7
+        expectedOutput: |
+          Zz9
+          Zz9
+          Zz9
+          Zz9
+          Zz9
+          Zz9
+          Zz9
+        hidden: true
+      - input: |
+          qwertyuiopasdfghjklz
+          4
+        expectedOutput: |
+          qwertyuiopasdfghjklz
+          qwertyuiopasdfghjklz
+          qwertyuiopasdfghjklz
+          qwertyuiopasdfghjklz
+        hidden: true
+      - input: |
+          Ravi
+          30
+        expectedOutput: |
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+          Ravi
+        hidden: true
+  - sheetId: prob-1-6-3-print-1-to-n-using-recurs
+    slug: print-1-to-n-using-recursion
+    title: Print 1 to N using Recursion
+    difficulty: Easy
+    topic: Recursion
+    subtopic: Learn Basic Recursion
+    tags: [recursion, basics]
+    sourceUrl: ""
+    statement: |
+      Given an integer `n`, produce the numbers `1, 2, 3, ..., n` in increasing
+      order.
+
+      Solve it recursively. The interesting part is that the recursion naturally
+      counts *down* (each call hands a smaller problem to the next one), so you have
+      to arrange the calls in a way that still yields an increasing sequence.
+    inputFormat: |
+      - Line 1: a single integer `n`.
+    outputFormat: |
+      Print the `n` numbers on one line, separated by single spaces, in increasing
+      order.
+    constraints:
+      - "1 <= n <= 2000"
+    examples:
+      - input: |
+          5
+        output: |
+          1 2 3 4 5
+        explanation: "The numbers 1 through 5 in increasing order."
+      - input: |
+          1
+        output: |
+          1
+        explanation: "Only the number 1 is produced."
+    hints:
+      - "One way: a function f(k) that records k and then calls f(k + 1), stopping once k exceeds n. The counter grows, so the order is already correct."
+      - "Another way: keep counting down with f(n), but call f(n - 1) *before* recording n. The deepest call finishes first, so the smallest number is recorded first."
+      - "Collect the numbers in a list and join them once at the end instead of concatenating strings inside the recursion."
+    explanation: |
+      **Loop - O(n) time, O(1) extra space.** Walk `k` from `1` to `n`. Correct, but
+      it does not exercise recursion.
+
+      **Forward recursion - O(n) time, O(n) space.** Define `f(k)`: if `k > n`
+      return, otherwise record `k` and call `f(k + 1)`. The call chain is
+      `f(1) -> f(2) -> ... -> f(n)`, and because each value is recorded *before* the
+      deeper call, they come out in increasing order. Here `k` grows while the
+      distance to the base case `n - k` shrinks.
+
+      **Backward recursion - O(n) time, O(n) space.** Define `g(k)`: if `k == 0`
+      return, otherwise call `g(k - 1)` first and record `k` afterwards. Now nothing
+      is recorded on the way down; the work happens while the stack unwinds, so `1`
+      is recorded first and `n` last. This trick - doing the work *after* the
+      recursive call instead of before it - reverses the order of a recursion for
+      free, and it is the same idea used to print a linked list backwards.
+
+      Both recursive versions use `n` stack frames, so the space is O(n) against the
+      loop's O(1). Building the answer in a list and joining once keeps the output
+      cost linear; repeated string `+` would be quadratic.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def numbers_one_to_n(n: int) -> List[int]:
+            # Return [1, 2, ..., n], built recursively.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            sys.setrecursionlimit(10 ** 6)
+            n = int(sys.stdin.readline())
+            print(" ".join(str(v) for v in numbers_one_to_n(n)))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def numbers_one_to_n(n: int) -> List[int]:
+            values: List[int] = []
+
+            def go(k: int) -> None:
+                if k > n:
+                    return
+                values.append(k)
+                go(k + 1)
+
+            go(1)
+            return values
+
+
+        # --- Input/output handling ---
+        def main():
+            sys.setrecursionlimit(10 ** 6)
+            n = int(sys.stdin.readline())
+            print(" ".join(str(v) for v in numbers_one_to_n(n)))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          5
+        expectedOutput: |
+          1 2 3 4 5
+        hidden: false
+      - input: |
+          1
+        expectedOutput: |
+          1
+        hidden: false
+      - input: |
+          2
+        expectedOutput: |
+          1 2
+        hidden: true
+      - input: |
+          3
+        expectedOutput: |
+          1 2 3
+        hidden: true
+      - input: |
+          10
+        expectedOutput: |
+          1 2 3 4 5 6 7 8 9 10
+        hidden: true
+      - input: |
+          100
+        expectedOutput: |
+          1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100
+        hidden: true
+      - input: |
+          1000
+        expectedOutput: |
+          1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 239 240 241 242 243 244 245 246 247 248 249 250 251 252 253 254 255 256 257 258 259 260 261 262 263 264 265 266 267 268 269 270 271 272 273 274 275 276 277 278 279 280 281 282 283 284 285 286 287 288 289 290 291 292 293 294 295 296 297 298 299 300 301 302 303 304 305 306 307 308 309 310 311 312 313 314 315 316 317 318 319 320 321 322 323 324 325 326 327 328 329 330 331 332 333 334 335 336 337 338 339 340 341 342 343 344 345 346 347 348 349 350 351 352 353 354 355 356 357 358 359 360 361 362 363 364 365 366 367 368 369 370 371 372 373 374 375 376 377 378 379 380 381 382 383 384 385 386 387 388 389 390 391 392 393 394 395 396 397 398 399 400 401 402 403 404 405 406 407 408 409 410 411 412 413 414 415 416 417 418 419 420 421 422 423 424 425 426 427 428 429 430 431 432 433 434 435 436 437 438 439 440 441 442 443 444 445 446 447 448 449 450 451 452 453 454 455 456 457 458 459 460 461 462 463 464 465 466 467 468 469 470 471 472 473 474 475 476 477 478 479 480 481 482 483 484 485 486 487 488 489 490 491 492 493 494 495 496 497 498 499 500 501 502 503 504 505 506 507 508 509 510 511 512 513 514 515 516 517 518 519 520 521 522 523 524 525 526 527 528 529 530 531 532 533 534 535 536 537 538 539 540 541 542 543 544 545 546 547 548 549 550 551 552 553 554 555 556 557 558 559 560 561 562 563 564 565 566 567 568 569 570 571 572 573 574 575 576 577 578 579 580 581 582 583 584 585 586 587 588 589 590 591 592 593 594 595 596 597 598 599 600 601 602 603 604 605 606 607 608 609 610 611 612 613 614 615 616 617 618 619 620 621 622 623 624 625 626 627 628 629 630 631 632 633 634 635 636 637 638 639 640 641 642 643 644 645 646 647 648 649 650 651 652 653 654 655 656 657 658 659 660 661 662 663 664 665 666 667 668 669 670 671 672 673 674 675 676 677 678 679 680 681 682 683 684 685 686 687 688 689 690 691 692 693 694 695 696 697 698 699 700 701 702 703 704 705 706 707 708 709 710 711 712 713 714 715 716 717 718 719 720 721 722 723 724 725 726 727 728 729 730 731 732 733 734 735 736 737 738 739 740 741 742 743 744 745 746 747 748 749 750 751 752 753 754 755 756 757 758 759 760 761 762 763 764 765 766 767 768 769 770 771 772 773 774 775 776 777 778 779 780 781 782 783 784 785 786 787 788 789 790 791 792 793 794 795 796 797 798 799 800 801 802 803 804 805 806 807 808 809 810 811 812 813 814 815 816 817 818 819 820 821 822 823 824 825 826 827 828 829 830 831 832 833 834 835 836 837 838 839 840 841 842 843 844 845 846 847 848 849 850 851 852 853 854 855 856 857 858 859 860 861 862 863 864 865 866 867 868 869 870 871 872 873 874 875 876 877 878 879 880 881 882 883 884 885 886 887 888 889 890 891 892 893 894 895 896 897 898 899 900 901 902 903 904 905 906 907 908 909 910 911 912 913 914 915 916 917 918 919 920 921 922 923 924 925 926 927 928 929 930 931 932 933 934 935 936 937 938 939 940 941 942 943 944 945 946 947 948 949 950 951 952 953 954 955 956 957 958 959 960 961 962 963 964 965 966 967 968 969 970 971 972 973 974 975 976 977 978 979 980 981 982 983 984 985 986 987 988 989 990 991 992 993 994 995 996 997 998 999 1000
+        hidden: true
+  - sheetId: prob-1-6-4-print-n-to-1-using-recurs
+    slug: print-n-to-1-using-recursion
+    title: Print N to 1 using Recursion
+    difficulty: Easy
+    topic: Recursion
+    subtopic: Learn Basic Recursion
+    tags: [recursion, basics]
+    sourceUrl: ""
+    statement: |
+      Given an integer `n`, produce the numbers `n, n - 1, ..., 2, 1` in decreasing
+      order.
+
+      Solve it recursively. This is the mirror image of printing `1` to `n`: compare
+      the two solutions and notice that the only difference is *when* each call does
+      its own bit of work - before or after it recurses.
+    inputFormat: |
+      - Line 1: a single integer `n`.
+    outputFormat: |
+      Print the `n` numbers on one line, separated by single spaces, in decreasing
+      order.
+    constraints:
+      - "1 <= n <= 2000"
+    examples:
+      - input: |
+          5
+        output: |
+          5 4 3 2 1
+        explanation: "The numbers 5 down to 1."
+      - input: |
+          1
+        output: |
+          1
+        explanation: "Only the number 1 is produced."
+    hints:
+      - "A function f(k) that records k and then calls f(k - 1) already produces a decreasing sequence."
+      - "The base case is k == 0 (or k < 1): return without recording anything."
+      - "If instead you count upwards with f(k) -> f(k + 1), record k *after* the recursive call and the sequence comes out reversed."
+    explanation: |
+      **Backward recursion - O(n) time, O(n) space.** Define `f(k)`: if `k < 1`
+      return, otherwise record `k` and call `f(k - 1)`. Each value is recorded on the
+      way *down*, so they appear as `n, n - 1, ..., 1`. There are `n + 1` calls and
+      the stack grows to depth `n`.
+
+      **Forward recursion - O(n) time, O(n) space.** Define `g(k)`: if `k > n`
+      return, otherwise call `g(k + 1)` first and record `k` afterwards. Nothing is
+      recorded until the deepest call returns, so `n` is recorded first and `1` last.
+
+      Putting this problem next to "print 1 to N" is the point of the exercise: the
+      same call chain gives either order depending on whether the work is placed
+      before the recursive call (pre-order) or after it (post-order). That single
+      choice is what later distinguishes pre-order from post-order traversals of a
+      tree.
+
+      **Loop - O(n) time, O(1) extra space.** Iterating `k` from `n` down to `1`
+      costs no stack at all, which is the practical trade-off recursion makes.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def numbers_n_to_one(n: int) -> List[int]:
+            # Return [n, n - 1, ..., 1], built recursively.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            sys.setrecursionlimit(10 ** 6)
+            n = int(sys.stdin.readline())
+            print(" ".join(str(v) for v in numbers_n_to_one(n)))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def numbers_n_to_one(n: int) -> List[int]:
+            values: List[int] = []
+
+            def go(k: int) -> None:
+                if k < 1:
+                    return
+                values.append(k)
+                go(k - 1)
+
+            go(n)
+            return values
+
+
+        # --- Input/output handling ---
+        def main():
+            sys.setrecursionlimit(10 ** 6)
+            n = int(sys.stdin.readline())
+            print(" ".join(str(v) for v in numbers_n_to_one(n)))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          5
+        expectedOutput: |
+          5 4 3 2 1
+        hidden: false
+      - input: |
+          1
+        expectedOutput: |
+          1
+        hidden: false
+      - input: |
+          2
+        expectedOutput: |
+          2 1
+        hidden: true
+      - input: |
+          4
+        expectedOutput: |
+          4 3 2 1
+        hidden: true
+      - input: |
+          9
+        expectedOutput: |
+          9 8 7 6 5 4 3 2 1
+        hidden: true
+      - input: |
+          100
+        expectedOutput: |
+          100 99 98 97 96 95 94 93 92 91 90 89 88 87 86 85 84 83 82 81 80 79 78 77 76 75 74 73 72 71 70 69 68 67 66 65 64 63 62 61 60 59 58 57 56 55 54 53 52 51 50 49 48 47 46 45 44 43 42 41 40 39 38 37 36 35 34 33 32 31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1
+        hidden: true
+      - input: |
+          1000
+        expectedOutput: |
+          1000 999 998 997 996 995 994 993 992 991 990 989 988 987 986 985 984 983 982 981 980 979 978 977 976 975 974 973 972 971 970 969 968 967 966 965 964 963 962 961 960 959 958 957 956 955 954 953 952 951 950 949 948 947 946 945 944 943 942 941 940 939 938 937 936 935 934 933 932 931 930 929 928 927 926 925 924 923 922 921 920 919 918 917 916 915 914 913 912 911 910 909 908 907 906 905 904 903 902 901 900 899 898 897 896 895 894 893 892 891 890 889 888 887 886 885 884 883 882 881 880 879 878 877 876 875 874 873 872 871 870 869 868 867 866 865 864 863 862 861 860 859 858 857 856 855 854 853 852 851 850 849 848 847 846 845 844 843 842 841 840 839 838 837 836 835 834 833 832 831 830 829 828 827 826 825 824 823 822 821 820 819 818 817 816 815 814 813 812 811 810 809 808 807 806 805 804 803 802 801 800 799 798 797 796 795 794 793 792 791 790 789 788 787 786 785 784 783 782 781 780 779 778 777 776 775 774 773 772 771 770 769 768 767 766 765 764 763 762 761 760 759 758 757 756 755 754 753 752 751 750 749 748 747 746 745 744 743 742 741 740 739 738 737 736 735 734 733 732 731 730 729 728 727 726 725 724 723 722 721 720 719 718 717 716 715 714 713 712 711 710 709 708 707 706 705 704 703 702 701 700 699 698 697 696 695 694 693 692 691 690 689 688 687 686 685 684 683 682 681 680 679 678 677 676 675 674 673 672 671 670 669 668 667 666 665 664 663 662 661 660 659 658 657 656 655 654 653 652 651 650 649 648 647 646 645 644 643 642 641 640 639 638 637 636 635 634 633 632 631 630 629 628 627 626 625 624 623 622 621 620 619 618 617 616 615 614 613 612 611 610 609 608 607 606 605 604 603 602 601 600 599 598 597 596 595 594 593 592 591 590 589 588 587 586 585 584 583 582 581 580 579 578 577 576 575 574 573 572 571 570 569 568 567 566 565 564 563 562 561 560 559 558 557 556 555 554 553 552 551 550 549 548 547 546 545 544 543 542 541 540 539 538 537 536 535 534 533 532 531 530 529 528 527 526 525 524 523 522 521 520 519 518 517 516 515 514 513 512 511 510 509 508 507 506 505 504 503 502 501 500 499 498 497 496 495 494 493 492 491 490 489 488 487 486 485 484 483 482 481 480 479 478 477 476 475 474 473 472 471 470 469 468 467 466 465 464 463 462 461 460 459 458 457 456 455 454 453 452 451 450 449 448 447 446 445 444 443 442 441 440 439 438 437 436 435 434 433 432 431 430 429 428 427 426 425 424 423 422 421 420 419 418 417 416 415 414 413 412 411 410 409 408 407 406 405 404 403 402 401 400 399 398 397 396 395 394 393 392 391 390 389 388 387 386 385 384 383 382 381 380 379 378 377 376 375 374 373 372 371 370 369 368 367 366 365 364 363 362 361 360 359 358 357 356 355 354 353 352 351 350 349 348 347 346 345 344 343 342 341 340 339 338 337 336 335 334 333 332 331 330 329 328 327 326 325 324 323 322 321 320 319 318 317 316 315 314 313 312 311 310 309 308 307 306 305 304 303 302 301 300 299 298 297 296 295 294 293 292 291 290 289 288 287 286 285 284 283 282 281 280 279 278 277 276 275 274 273 272 271 270 269 268 267 266 265 264 263 262 261 260 259 258 257 256 255 254 253 252 251 250 249 248 247 246 245 244 243 242 241 240 239 238 237 236 235 234 233 232 231 230 229 228 227 226 225 224 223 222 221 220 219 218 217 216 215 214 213 212 211 210 209 208 207 206 205 204 203 202 201 200 199 198 197 196 195 194 193 192 191 190 189 188 187 186 185 184 183 182 181 180 179 178 177 176 175 174 173 172 171 170 169 168 167 166 165 164 163 162 161 160 159 158 157 156 155 154 153 152 151 150 149 148 147 146 145 144 143 142 141 140 139 138 137 136 135 134 133 132 131 130 129 128 127 126 125 124 123 122 121 120 119 118 117 116 115 114 113 112 111 110 109 108 107 106 105 104 103 102 101 100 99 98 97 96 95 94 93 92 91 90 89 88 87 86 85 84 83 82 81 80 79 78 77 76 75 74 73 72 71 70 69 68 67 66 65 64 63 62 61 60 59 58 57 56 55 54 53 52 51 50 49 48 47 46 45 44 43 42 41 40 39 38 37 36 35 34 33 32 31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1
+        hidden: true
+  - sheetId: prob-1-6-5-sum-of-first-n-numbers
+    slug: sum-of-first-n-numbers
+    title: Sum of First N Numbers
+    difficulty: Easy
+    topic: Recursion
+    subtopic: Learn Basic Recursion
+    tags: [recursion, math, basics]
+    sourceUrl: ""
+    statement: |
+      Given an integer `n`, compute `1 + 2 + 3 + ... + n`.
+
+      Solve it recursively. Unlike the previous exercises the function now has to
+      *return* a value, so each call has to combine its own contribution with the
+      answer that the deeper call gives back.
+    inputFormat: |
+      - Line 1: a single integer `n`.
+    outputFormat: |
+      Print one integer: the sum of the first `n` positive integers.
+    constraints:
+      - "1 <= n <= 5000"
+    examples:
+      - input: |
+          5
+        output: |
+          15
+        explanation: "1 + 2 + 3 + 4 + 5 = 15."
+      - input: |
+          1
+        output: |
+          1
+        explanation: "The sum of the first 1 positive integers is 1 itself."
+    hints:
+      - "Express the answer for n in terms of the answer for n - 1."
+      - "sum(n) = n + sum(n - 1), and sum(0) = 0 is the base case."
+      - "The deeper call returns a number; add n to it and return the total - do not print anything inside the recursion."
+    explanation: |
+      **Recursion - O(n) time, O(n) space.** Let `sum(n)` be the answer. Every
+      recursive definition needs the same two lines:
+
+      - base case: `sum(0) = 0`;
+      - recursive case: `sum(n) = n + sum(n - 1)`.
+
+      The chain `sum(n) -> sum(n - 1) -> ... -> sum(0)` makes `n + 1` calls, each
+      doing one addition, so the time is O(n). The additions happen while the stack
+      unwinds: the deepest call returns `0`, then `1`, then `1 + 2`, and so on. The
+      stack holds `n` frames, hence O(n) space - the reason the constraint on `n`
+      here is modest.
+
+      **Loop - O(n) time, O(1) space.** Add the numbers one by one in a running
+      total. Same time, no stack.
+
+      **Closed form - O(1) time, O(1) space.** `1 + 2 + ... + n = n(n + 1)/2`.
+      Pair the first number with the last, the second with the second-to-last, and
+      so on: every pair sums to `n + 1` and there are `n/2` pairs. Use this to check
+      your recursive answer - it is exact in Python because the product of two
+      consecutive integers is always even.
+    starterCode:
+      python: |
+        import sys
+
+
+        def sum_first_n(n: int) -> int:
+            # Return 1 + 2 + ... + n, computed recursively.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            sys.setrecursionlimit(10 ** 6)
+            n = int(sys.stdin.readline())
+            print(sum_first_n(n))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def sum_first_n(n: int) -> int:
+            if n <= 0:
+                return 0
+            return n + sum_first_n(n - 1)
+
+
+        # --- Input/output handling ---
+        def main():
+            sys.setrecursionlimit(10 ** 6)
+            n = int(sys.stdin.readline())
+            print(sum_first_n(n))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          5
+        expectedOutput: |
+          15
+        hidden: false
+      - input: |
+          1
+        expectedOutput: |
+          1
+        hidden: false
+      - input: |
+          2
+        expectedOutput: |
+          3
+        hidden: true
+      - input: |
+          3
+        expectedOutput: |
+          6
+        hidden: true
+      - input: |
+          10
+        expectedOutput: |
+          55
+        hidden: true
+      - input: |
+          100
+        expectedOutput: |
+          5050
+        hidden: true
+      - input: |
+          1000
+        expectedOutput: |
+          500500
+        hidden: true
+      - input: |
+          5000
+        expectedOutput: |
+          12502500
+        hidden: true
+  - sheetId: prob-1-6-6-factorial-of-a-given-numb
+    slug: factorial-of-a-given-number
+    title: Factorial of a given number
+    difficulty: Easy
+    topic: Recursion
+    subtopic: Learn Basic Recursion
+    tags: [recursion, math, basics]
+    sourceUrl: ""
+    statement: |
+      The factorial of a non-negative integer `n`, written `n!`, is the product of
+      all integers from `1` to `n`:
+
+      ```
+      n! = 1 x 2 x 3 x ... x n
+      ```
+
+      By definition `0! = 1` (an empty product).
+
+      Given `n`, print `n!` exactly - the value can be far larger than a 64-bit
+      integer, and Python integers grow as needed.
+
+      Solve it recursively.
+    inputFormat: |
+      - Line 1: a single integer `n`.
+    outputFormat: |
+      Print one integer: the exact value of `n!`.
+    constraints:
+      - "0 <= n <= 300"
+    examples:
+      - input: |
+          5
+        output: |
+          120
+        explanation: "5! = 1 x 2 x 3 x 4 x 5 = 120."
+      - input: |
+          0
+        output: |
+          1
+        explanation: "The factorial of 0 is defined as 1."
+    hints:
+      - "n! is just n multiplied by (n - 1)!."
+      - "Stop at n == 0 and return 1 - that base case is what makes 1! come out as 1."
+      - "Do not use floating point: the answer must be exact, so keep everything in integers."
+    explanation: |
+      **Recursion - O(n) multiplications, O(n) space.** Write the definition
+      directly:
+
+      - base case: `fact(0) = 1`;
+      - recursive case: `fact(n) = n * fact(n - 1)`.
+
+      There are `n + 1` calls and `n` multiplications, and the stack reaches depth
+      `n`. (Counting *big-integer* multiplications as O(1) is a simplification: `n!`
+      has about `n log n` digits, so the real cost of the multiplications grows a
+      little faster than linearly. That is true of the loop as well.)
+
+      **Loop - O(n) time, O(1) space.** A running product from `1` to `n`; identical
+      arithmetic, no stack frames.
+
+      Two things to be careful about. First, the base case must be `1`, not `0` -
+      returning `0` would make every answer `0`. Second, in languages with fixed-width
+      integers `n!` overflows at `n = 21` for 64-bit types, which is why such problems
+      usually ask for the answer modulo a prime; Python's arbitrary-precision integers
+      let us print the exact value instead.
+    starterCode:
+      python: |
+        import sys
+
+
+        def factorial(n: int) -> int:
+            # Return n! (with 0! = 1), computed recursively.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            sys.setrecursionlimit(10 ** 6)
+            n = int(sys.stdin.readline())
+            print(factorial(n))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def factorial(n: int) -> int:
+            if n <= 1:
+                return 1
+            return n * factorial(n - 1)
+
+
+        # --- Input/output handling ---
+        def main():
+            sys.setrecursionlimit(10 ** 6)
+            n = int(sys.stdin.readline())
+            print(factorial(n))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          5
+        expectedOutput: |
+          120
+        hidden: false
+      - input: |
+          0
+        expectedOutput: |
+          1
+        hidden: false
+      - input: |
+          1
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          2
+        expectedOutput: |
+          2
+        hidden: true
+      - input: |
+          10
+        expectedOutput: |
+          3628800
+        hidden: true
+      - input: |
+          20
+        expectedOutput: |
+          2432902008176640000
+        hidden: true
+      - input: |
+          50
+        expectedOutput: |
+          30414093201713378043612608166064768844377641568960512000000000000
+        hidden: true
+      - input: |
+          300
+        expectedOutput: |
+          306057512216440636035370461297268629388588804173576999416776741259476533176716867465515291422477573349939147888701726368864263907759003154226842927906974559841225476930271954604008012215776252176854255965356903506788725264321896264299365204576448830388909753943489625436053225980776521270822437639449120128678675368305712293681943649956460498166450227716500185176546469340112226034729724066333258583506870150169794168850353752137554910289126407157154830282284937952636580145235233156936482233436799254594095276820608062232812387383880817049600000000000000000000000000000000000000000000000000000000000000000000000000
+        hidden: true
+  - sheetId: prob-1-6-7-reverse-an-array
+    slug: reverse-an-array
+    title: Reverse an array
+    difficulty: Easy
+    topic: Recursion
+    subtopic: Learn Basic Recursion
+    tags: [recursion, array, two pointers]
+    sourceUrl: ""
+    statement: |
+      You are given an integer array `arr` of length `n`. Print its elements in
+      reverse order: the last element first and the first element last.
+
+      Solve it recursively, and do it by **swapping** elements rather than by
+      building a new array: keep two positions, one at each end, swap them, and hand
+      the shorter middle part to the next call.
+    inputFormat: |
+      - Line 1: a single integer `n`.
+      - Line 2: `n` space-separated integers, the array `arr`.
+    outputFormat: |
+      Print the `n` elements of the reversed array on one line, separated by single
+      spaces.
+    constraints:
+      - "1 <= n <= 1000"
+      - "-10^9 <= arr[i] <= 10^9"
+    examples:
+      - input: |
+          5
+          3 8 1 4 9
+        output: |
+          9 4 1 8 3
+        explanation: "Reading 3 8 1 4 9 from the right gives 9 4 1 8 3. As swaps: 3 and 9 are exchanged, then 8 and 4, and the middle element 1 stays where it is."
+      - input: |
+          4
+          -7 -7 2 0
+        output: |
+          0 2 -7 -7
+        explanation: "The two halves are exchanged pairwise: -7 with 0 and -7 with 2."
+    hints:
+      - "Give the recursive function the two positions it should work on, for example left = 0 and right = n - 1."
+      - "Swap arr[left] and arr[right], then recurse on left + 1 and right - 1."
+      - "Stop when left >= right: the part that remains is empty or is a single middle element that does not move. That makes the recursion depth about n / 2."
+    explanation: |
+      **Extra array - O(n) time, O(n) space.** Copy the elements into a new array
+      back to front. Simple, but it allocates a second array.
+
+      **Two pointers, iterative - O(n) time, O(1) extra space.** Swap `arr[0]` with
+      `arr[n-1]`, `arr[1]` with `arr[n-2]`, and so on, stopping in the middle.
+
+      **Two pointers, recursive - O(n) time, O(n) stack space.** Exactly the same
+      swaps, expressed as a recursion:
+
+      - base case: `left >= right`, nothing left to do;
+      - recursive case: swap `arr[left]` and `arr[right]`, then solve the smaller
+        problem `(left + 1, right - 1)`.
+
+      Each call fixes two positions, so there are about `n / 2` calls and every
+      element is moved exactly once. Correctness follows by induction: after the
+      swap, the two outermost elements are in their final places, and the recursive
+      call reverses everything strictly between them.
+
+      A common variant passes only one index `i` and swaps `arr[i]` with
+      `arr[n - 1 - i]`, stopping at `i >= n / 2`. Take care not to run the loop all
+      the way to `n - 1` in either version - that would swap every pair twice and
+      return the original array.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def reverse_array(arr: List[int]) -> List[int]:
+            # Reverse arr in place by swapping from both ends, recursively, and return it.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            sys.setrecursionlimit(10 ** 6)
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            arr = [int(x) for x in data[1:1 + n]]
+            print(" ".join(str(v) for v in reverse_array(arr)))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def reverse_array(arr: List[int]) -> List[int]:
+            def swap(left: int, right: int) -> None:
+                if left >= right:
+                    return
+                arr[left], arr[right] = arr[right], arr[left]
+                swap(left + 1, right - 1)
+
+            swap(0, len(arr) - 1)
+            return arr
+
+
+        # --- Input/output handling ---
+        def main():
+            sys.setrecursionlimit(10 ** 6)
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            arr = [int(x) for x in data[1:1 + n]]
+            print(" ".join(str(v) for v in reverse_array(arr)))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          5
+          3 8 1 4 9
+        expectedOutput: |
+          9 4 1 8 3
+        hidden: false
+      - input: |
+          4
+          -7 -7 2 0
+        expectedOutput: |
+          0 2 -7 -7
+        hidden: false
+      - input: |
+          1
+          42
+        expectedOutput: |
+          42
+        hidden: true
+      - input: |
+          2
+          1 2
+        expectedOutput: |
+          2 1
+        hidden: true
+      - input: |
+          6
+          5 5 5 5 5 5
+        expectedOutput: |
+          5 5 5 5 5 5
+        hidden: true
+      - input: |
+          7
+          -1000000000 1000000000 0 -1 1 999999999 -999999999
+        expectedOutput: |
+          -999999999 999999999 1 -1 0 1000000000 -1000000000
+        hidden: true
+      - input: |
+          3
+          10 20 30
+        expectedOutput: |
+          30 20 10
+        hidden: true
+      - input: |
+          120
+          671098287 -53533937 -749065421 -983912182 -805344350 956305976 733024478 250324204 -924996630 442171593 488393902 -819744029 -788640266 646005275 -238425836 -491454876 -962573551 -933827408 693876516 -965982952 -256779607 392248069 338486781 39910182 322454142 -4538310 -680981329 -803962208 -606815839 532036568 -754300023 815372135 -968606413 80363995 45290967 890795832 -463498298 -861353557 432920372 161978030 959181850 509547 -852748665 291632926 449824051 -809026791 106050643 243398800 -901290227 -421069551 770346149 194929835 -864541710 384341474 -350538553 33017743 825744134 -237129744 -427793871 -464949901 407636321 -570434077 -26356648 882386933 138512524 428960424 -958554503 91140579 -848412699 -987587032 -283792547 -691259664 524741984 15388094 411658032 -189652534 -641128723 -883659644 -836288779 261707861 66401023 -647805746 -838247888 196857572 -538088304 -690234664 -941741640 -256474902 655666883 -761867875 137486079 -696715691 439891685 -344174160 -24738158 -914981932 -106108269 -405611550 422463866 731972425 -913661024 -619158723 -416590739 -668062340 -355169129 820185002 -668103402 673255589 790763620 -2489474 -911818300 209261270 -170677197 641232610 -249256251 64844272 -266188105 251684020 753341071 5278232
+        expectedOutput: |
+          5278232 753341071 251684020 -266188105 64844272 -249256251 641232610 -170677197 209261270 -911818300 -2489474 790763620 673255589 -668103402 820185002 -355169129 -668062340 -416590739 -619158723 -913661024 731972425 422463866 -405611550 -106108269 -914981932 -24738158 -344174160 439891685 -696715691 137486079 -761867875 655666883 -256474902 -941741640 -690234664 -538088304 196857572 -838247888 -647805746 66401023 261707861 -836288779 -883659644 -641128723 -189652534 411658032 15388094 524741984 -691259664 -283792547 -987587032 -848412699 91140579 -958554503 428960424 138512524 882386933 -26356648 -570434077 407636321 -464949901 -427793871 -237129744 825744134 33017743 -350538553 384341474 -864541710 194929835 770346149 -421069551 -901290227 243398800 106050643 -809026791 449824051 291632926 -852748665 509547 959181850 161978030 432920372 -861353557 -463498298 890795832 45290967 80363995 -968606413 815372135 -754300023 532036568 -606815839 -803962208 -680981329 -4538310 322454142 39910182 338486781 392248069 -256779607 -965982952 693876516 -933827408 -962573551 -491454876 -238425836 646005275 -788640266 -819744029 488393902 442171593 -924996630 250324204 733024478 956305976 -805344350 -983912182 -749065421 -53533937 671098287
+        hidden: true
+  - sheetId: prob-1-6-8-check-if-string-is-palind
+    slug: check-if-string-is-palindrome-or-not
+    title: Check if String is Palindrome or Not
+    difficulty: Easy
+    topic: Recursion
+    subtopic: Learn Basic Recursion
+    tags: [recursion, string, two pointers]
+    sourceUrl: "https://leetcode.com/problems/valid-palindrome/"
+    statement: |
+      A string is a **palindrome** if it reads the same from left to right and from
+      right to left, for example `madam` or `1221`.
+
+      Given a string `s`, decide whether it is a palindrome.
+
+      Solve it recursively: compare the two outermost characters and let the next
+      call deal with everything in between.
+    inputFormat: |
+      - Line 1: the string `s`.
+    outputFormat: |
+      Print `true` if `s` is a palindrome and `false` otherwise.
+    constraints:
+      - "1 <= |s| <= 2000"
+      - "`s` consists of lowercase English letters and digits only (no spaces)."
+    examples:
+      - input: |
+          madam
+        output: |
+          true
+        explanation: "The first and last characters match (m and m), then a and a, and the middle d is left alone, so the string reads the same both ways."
+      - input: |
+          recursion
+        output: |
+          false
+        explanation: "The very first comparison fails: the string starts with r but ends with n."
+    hints:
+      - "Give the recursive function the two positions being compared, for example left = 0 and right = |s| - 1."
+      - "If s[left] != s[right] the answer is false immediately - there is no need to look any further."
+      - "If they match, the answer is whatever the call on (left + 1, right - 1) says. The base case left >= right means the remaining part is empty or one character, which is always a palindrome, so return true."
+    explanation: |
+      **Reverse and compare - O(n) time, O(n) space.** Build the reversed string and
+      test it for equality with the original. Easy to write and a good way to check
+      your answer, but it allocates a second string.
+
+      **Two pointers, iterative - O(n) time, O(1) space.** Move `left` forward and
+      `right` backward while the characters match; the string is a palindrome exactly
+      when the pointers meet without a mismatch.
+
+      **Two pointers, recursive - O(n) time, O(n) stack space.** Define
+      `check(left, right)`:
+
+      - if `left >= right`, return `true` (an empty or single-character stretch is a
+        palindrome);
+      - if `s[left] != s[right]`, return `false`;
+      - otherwise return `check(left + 1, right - 1)`.
+
+      Each call inspects one pair, so at most `n / 2` calls are made and the work per
+      call is O(1). Because the result of the deeper call is returned unchanged, the
+      recursion short-circuits on the first mismatch - it does not keep scanning.
+
+      Avoid the tempting `is_palindrome(s[1:-1])` formulation: it is just as
+      recursive, but every call slices a fresh string and that turns the solution
+      into O(n^2) time and space.
+    starterCode:
+      python: |
+        import sys
+
+
+        def is_palindrome(s: str) -> bool:
+            # Return True if s reads the same forwards and backwards. Solve recursively.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            sys.setrecursionlimit(10 ** 6)
+            s = sys.stdin.readline().strip()
+            print("true" if is_palindrome(s) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def is_palindrome(s: str) -> bool:
+            def check(left: int, right: int) -> bool:
+                if left >= right:
+                    return True
+                if s[left] != s[right]:
+                    return False
+                return check(left + 1, right - 1)
+
+            return check(0, len(s) - 1)
+
+
+        # --- Input/output handling ---
+        def main():
+            sys.setrecursionlimit(10 ** 6)
+            s = sys.stdin.readline().strip()
+            print("true" if is_palindrome(s) else "false")
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          madam
+        expectedOutput: |
+          true
+        hidden: false
+      - input: |
+          recursion
+        expectedOutput: |
+          false
+        hidden: false
+      - input: |
+          a
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          ab
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          aa
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          1221
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          abcba1
+        expectedOutput: |
+          false
+        hidden: true
+      - input: |
+          5f8jg3i7h51369gj706cg4e7g3b134de0201g03308g3hgbhai60839d09hh41eg159ei29004fe0g8cdfae4h1hcgjh49i5633gcjjie8i6d5gg2f6h01b872cdhb6eg9c6fh58ffce9d979a9d7f70adiafbd99g8gg4f50i44g28439egfj2gf14ad0ah63bg94757b30a607ifh9d3cefa0ji5f143590fbdd13f6db3aihd078eg88d3d9i37fha6dg278348fh7ji814d22j066hh1h348jjg47bi2gi36e0j7ec6h49ijh62jf51a92ced390gc8ibi6g3fg5ic4dd8ie28dh8hfje2de03007ha9i2e8if6ig7e37geehia9d363b5ei141j5847bjf251651fc67igf4409aed3bjcc54g66h06j5j8bg75hj0i0be977i11eb1a900gfj46bfd5i2b3gee1a413hd0940a9634ged635254hb46cid171c05985i326idah63fegaaibd0fhh6icebi1c617fd1ia867349hbe1i7a4h14beg0c8d4cchacf4ggh5398c3626ieh1ge5aei3h32f2248di7i9e0d1c15d8ge6e4d99248834508096hfh93a6461bjf8ihh883416c46j0a9g5gj436ce573ji60cegc77b85gffci2e70j005f4h24c6bb3jfgbd8egcfdd0ad7h9964g5gaj12iac641037g4ecjdfh916h2f1ge2cfhajd89h503gbbig049ga8hc7h5i56f61b7b43032ccf08ie9d7815ha2f21eb2f19chhieja513319baib5bg6g9h65f86acdad5b9jj299b6b7dh83cbc0cdb3icd8369b554d226eg2f58eggbj6j2a41a895baj0e1g4aej6g92ig4gh5bad29ba3hfi3953ib4bfmfb4bi3593ifh3ab92dab5hg4gi29g6jea4g1e0jab598a14a2j6jbgge85f2ge622d455b9638dci3bdc0cbc38hd7b6b992jj9b5dadca68f56h9g6gb5biab913315ajeihhc91f2be12f2ah5187d9ei80fcc23034b7b16f65i5h7ch8ag940gibbg305h98djahfc2eg1f2h619hfdjce4g730146cai21jag5g4699h7da0ddfcge8dbgfj3bb6c42h4f500j07e2icffg58b77cgec06ij375ec634jg5g9a0j64c614388hhi8fjb1646a39hfh69080543884299d4e6eg8d51c1d0e9i7id8422f23h3iea5eg1hei6263c8935hgg4fcahcc4d8c0geb41h4a7i1ebh943768ai1df716c1ibeci6hhf0dbiaagef36hadi623i58950c171dic64bh452536deg4369a0490dh314a1eeg3b2i5dfb64jfg009a1be11i779eb0i0jh57gb8j5j60h66g45ccjb3dea9044fgi76cf156152fjb7485j141ie5b363d9aiheeg73e7gi6fi8e2i9ah70030ed2ejfh8hd82ei8dd4ci5gf3g6ibi8cg093dec29a15fj26hji94h6ce7j0e63ig2ib74gjj843h1hh660j22d418ij7hf843872gd6ahf73i9d3d88ge870dhia3bd6f31ddbf095341f5ij0afec3d9hfi706a03b75749gb36ha0da41fg2jfge93482g44i05f4gg8g99dbfaida07f7d9a979d9ecff85hf6c9ge6bhdc278b10h6f2gg5d6i8eijjcg3365i94hjgch1h4eafdc8g0ef40092ie951ge14hh90d93806iahbgh3g80330g1020ed431b3g7e4gc607jg96315h7i3gj8f5
+        expectedOutput: |
+          true
+        hidden: true
+      - input: |
+          5f8jg3i7h51369gj706cg4e7g3b134de0201g03308g3hgbhai60839d09hh41eg159ei29004fe0g8cdfae4h1hcgjh49i5633gcjjie8i6d5gg2f6h01b872cdhb6eg9c6fh58ffce9d979a9d7f70adiafbd99g8gg4f50i44g28439egfj2gf14ad0ah63bg94757b30a607ifh9d3cefa0ji5f143590fbdd13f6db3aihd078eg88d3d9i37fha6dg278348fh7ji814d22j066hh1h348jjg47bi2gi36e0j7ec6h49ijh62jf51a92ced390gc8ibi6g3fg5ic4dd8ie28dh8hfje2de03007ha9i2e8if6ig7e37geehia9d363b5ei141j5847bjf251651fc67igf4409aed3bjcc54g66h06j5j8bg75hj0i0be977i11eb1a900gfj46bfd5i2b3gee1a413hd0940a9634ged635254hb46cid171c05985i326idah63fegaaibd0fhh6icebi1c617fd1ia867349hbe1i7a4h14beg0c8d4cchacf4ggh5398c3626ieh1ge5aei3h32f2248di7i9e0d1c15d8ge6e4d99248834508096hfh93a6461bjf8ihh883416c46j0a9g5gj436ce573ji60cegc77b85gffci2e70j005f4h24c6bb3jfgbd8egcfdd0ad7h9964g5gaj12iac641037g4ecjdfh916h2f1ge2cfhajd89h503gbbig049ga8hc7h5i56f61b7b43032ccf08ie9d7815ha2f21eb2f19chhieja513319baib5bg6g9h65f86acdad5b9jj299b6b7dh83cbc0cdb3icd8369b554d226eg2f58eggbj6j2a41a895baj0e1g4aej6g92ig4gh5bad29ba3hfi3953ib4zfmfb4bi3593ifh3ab92dab5hg4gi29g6jea4g1e0jab598a14a2j6jbgge85f2ge622d455b9638dci3bdc0cbc38hd7b6b992jj9b5dadca68f56h9g6gb5biab913315ajeihhc91f2be12f2ah5187d9ei80fcc23034b7b16f65i5h7ch8ag940gibbg305h98djahfc2eg1f2h619hfdjce4g730146cai21jag5g4699h7da0ddfcge8dbgfj3bb6c42h4f500j07e2icffg58b77cgec06ij375ec634jg5g9a0j64c614388hhi8fjb1646a39hfh69080543884299d4e6eg8d51c1d0e9i7id8422f23h3iea5eg1hei6263c8935hgg4fcahcc4d8c0geb41h4a7i1ebh943768ai1df716c1ibeci6hhf0dbiaagef36hadi623i58950c171dic64bh452536deg4369a0490dh314a1eeg3b2i5dfb64jfg009a1be11i779eb0i0jh57gb8j5j60h66g45ccjb3dea9044fgi76cf156152fjb7485j141ie5b363d9aiheeg73e7gi6fi8e2i9ah70030ed2ejfh8hd82ei8dd4ci5gf3g6ibi8cg093dec29a15fj26hji94h6ce7j0e63ig2ib74gjj843h1hh660j22d418ij7hf843872gd6ahf73i9d3d88ge870dhia3bd6f31ddbf095341f5ij0afec3d9hfi706a03b75749gb36ha0da41fg2jfge93482g44i05f4gg8g99dbfaida07f7d9a979d9ecff85hf6c9ge6bhdc278b10h6f2gg5d6i8eijjcg3365i94hjgch1h4eafdc8g0ef40092ie951ge14hh90d93806iahbgh3g80330g1020ed431b3g7e4gc607jg96315h7i3gj8f5
+        expectedOutput: |
+          false
+        hidden: true
+  - sheetId: prob-1-6-9-fibonacci-number
+    slug: fibonacci-number
+    title: Fibonacci Number
+    difficulty: Easy
+    topic: Recursion
+    subtopic: Learn Basic Recursion
+    tags: [recursion, memoization, math]
+    sourceUrl: "https://leetcode.com/problems/fibonacci-number/"
+    statement: |
+      The Fibonacci sequence starts with `F(0) = 0` and `F(1) = 1`, and every later
+      term is the sum of the two before it:
+
+      ```
+      F(k) = F(k - 1) + F(k - 2)   for k >= 2
+      ```
+
+      so the sequence begins `0, 1, 1, 2, 3, 5, 8, 13, ...`.
+
+      Given `n`, print `F(n)`.
+
+      Solve it recursively. This is the first exercise where a recursive call makes
+      **two** further calls, and writing the definition down naively is far too slow
+      for the given limit - part of the task is to notice why and fix it.
+    inputFormat: |
+      - Line 1: a single integer `n`.
+    outputFormat: |
+      Print one integer: `F(n)`.
+    constraints:
+      - "0 <= n <= 90"
+    examples:
+      - input: |
+          10
+        output: |
+          55
+        explanation: "The terms are 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, so F(10) = 55."
+      - input: |
+          2
+        output: |
+          1
+        explanation: "F(2) = F(1) + F(0) = 1 + 0 = 1."
+    hints:
+      - "Start from the definition: F(n) = F(n - 1) + F(n - 2) with the two base cases F(0) = 0 and F(1) = 1."
+      - "Draw the call tree for n = 6. F(3) is computed more than once, and the number of repeated calls doubles as n grows - that is why the plain version is exponential."
+      - "Store every value the first time you compute it and look it up afterwards, so each F(k) is computed exactly once."
+    explanation: |
+      **Naive recursion - O(phi^n) time, O(n) space.** Translating the definition
+      literally gives `fib(n) = fib(n-1) + fib(n-2)`. The call tree branches twice at
+      every level, and the number of calls grows like the Fibonacci numbers
+      themselves - roughly `1.618^n`. For `n = 90` that is astronomically slow, even
+      though the answer is tiny. The problem is not the recursion, it is the repeated
+      work: `fib(n-2)` is computed inside `fib(n-1)` and then again on its own.
+
+      **Recursion with memoization - O(n) time, O(n) space.** Keep a cache of the
+      values already computed. Before computing `fib(k)`, check the cache; after
+      computing it, store it. Each of the `n + 1` values is computed once and every
+      other call is an O(1) lookup, so the total time is linear. The stack still goes
+      `n` deep.
+
+      **Bottom-up iteration - O(n) time, O(1) space.** Keep only the last two terms
+      and slide forwards `n` times. This is what memoization converges to once you
+      notice that `F(k)` needs nothing older than `F(k - 2)`.
+
+      For reference, `F(90) = 2880067194370816120`, which just fits in a signed
+      64-bit integer - that is why the limit on `n` is 90. Beyond that you would need
+      big integers (Python has them) or an answer modulo some prime.
+    starterCode:
+      python: |
+        import sys
+
+
+        def fibonacci(n: int) -> int:
+            # Return F(n) with F(0) = 0 and F(1) = 1. Solve recursively.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            sys.setrecursionlimit(10 ** 6)
+            n = int(sys.stdin.readline())
+            print(fibonacci(n))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import Dict
+
+
+        def fibonacci(n: int) -> int:
+            memo: Dict[int, int] = {0: 0, 1: 1}
+
+            def fib(k: int) -> int:
+                if k in memo:
+                    return memo[k]
+                memo[k] = fib(k - 1) + fib(k - 2)
+                return memo[k]
+
+            return fib(n)
+
+
+        # --- Input/output handling ---
+        def main():
+            sys.setrecursionlimit(10 ** 6)
+            n = int(sys.stdin.readline())
+            print(fibonacci(n))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          10
+        expectedOutput: |
+          55
+        hidden: false
+      - input: |
+          2
+        expectedOutput: |
+          1
+        hidden: false
+      - input: |
+          0
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          1
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          7
+        expectedOutput: |
+          13
+        hidden: true
+      - input: |
+          30
+        expectedOutput: |
+          832040
+        hidden: true
+      - input: |
+          50
+        expectedOutput: |
+          12586269025
+        hidden: true
+      - input: |
+          90
+        expectedOutput: |
+          2880067194370816120
+        hidden: true
+  - sheetId: prob-1-7-1-basic-hashing
+    slug: basic-hashing
+    title: Basic Hashing
+    difficulty: Easy
+    topic: Hashing
+    subtopic: Learn Basic Hashing
+    tags: [hashing, string, counting]
+    sourceUrl: ""
+    statement: |
+      **Hashing** means paying a one-time linear cost to build a table of answers, so
+      that every later question can be answered in constant time. This exercise is
+      the character version of that idea.
+
+      You are given a string `s` of lowercase English letters and `q` query
+      characters. For each query character, report how many times it occurs in `s`.
+      A character that does not occur at all has count `0`.
+
+      The queries are many and `s` is long, so answering each query by rescanning the
+      string is the wrong shape of solution - count everything once, then look the
+      answers up.
+    inputFormat: |
+      - Line 1: the string `s`.
+      - Line 2: an integer `q`, the number of queries.
+      - Line 3: `q` space-separated lowercase letters, the query characters.
+    outputFormat: |
+      Print `q` integers on one line, separated by single spaces: the count of each
+      query character, in the order the queries are given.
+    constraints:
+      - "1 <= |s| <= 10^5"
+      - "1 <= q <= 10^5"
+      - "`s` and every query character consist of lowercase English letters only."
+    examples:
+      - input: |
+          abbccc
+          4
+          a b c d
+        output: |
+          1 2 3 0
+        explanation: "The string holds one a, two b's and three c's, and no d at all."
+      - input: |
+          z
+          2
+          z a
+        output: |
+          1 0
+        explanation: "z occurs once; a never occurs, so its count is 0."
+    hints:
+      - "Answering a single query is easy; the cost is that you would repeat the same scan q times, for a total of O(|s| x q)."
+      - "There are only 26 distinct lowercase letters, so one array of 26 counters can hold every answer at once."
+      - "Map the character to a slot with ord(c) - ord('a') (or use a dictionary), fill the table in a single pass over s, and then answer each query with one lookup."
+    explanation: |
+      **Scan per query - O(|s| x q) time, O(1) space.** For each query character,
+      walk the whole string and count matches. With both values as large as `10^5`
+      that is `10^10` character comparisons - far too slow.
+
+      **Hash table (precomputed counts) - O(|s| + q) time, O(1) space.** The key
+      observation is that the *set of possible keys is small and known*: 26 lowercase
+      letters. Create an array `count` of 26 zeros, walk `s` once and increment
+      `count[ord(c) - ord('a')]` for every character, then answer each query with a
+      single array read. Building the table costs O(|s|), each query costs O(1), and
+      the table's size does not depend on the input, so the extra space is O(26) =
+      O(1).
+
+      An `int -> int` dictionary (or `collections.Counter`) does exactly the same job
+      and is what you would reach for when the keys are not a small fixed alphabet -
+      arbitrary integers, words, or pairs. The trade-off is a constant factor: array
+      indexing is faster than hashing, so when the alphabet is small and dense the
+      array wins.
+
+      This precompute-then-answer pattern is the whole of "basic hashing", and it is
+      the tool behind counting duplicates, frequency-based problems and the sliding
+      window problems later in the sheet.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def character_counts(s: str, queries: List[str]) -> List[int]:
+            # Return, for each query character, how many times it occurs in s.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            s = data[0]
+            q = int(data[1])
+            queries = data[2:2 + q]
+            print(" ".join(str(v) for v in character_counts(s, queries)))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def character_counts(s: str, queries: List[str]) -> List[int]:
+            counts = [0] * 26
+            for ch in s:
+                counts[ord(ch) - ord("a")] += 1
+            return [counts[ord(ch) - ord("a")] for ch in queries]
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            s = data[0]
+            q = int(data[1])
+            queries = data[2:2 + q]
+            print(" ".join(str(v) for v in character_counts(s, queries)))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          abbccc
+          4
+          a b c d
+        expectedOutput: |
+          1 2 3 0
+        hidden: false
+      - input: |
+          z
+          2
+          z a
+        expectedOutput: |
+          1 0
+        hidden: false
+      - input: |
+          a
+          1
+          a
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          aaaaaaaaaa
+          2
+          a b
+        expectedOutput: |
+          10 0
+        hidden: true
+      - input: |
+          abcdefghijklmnopqrstuvwxyz
+          3
+          a m z
+        expectedOutput: |
+          1 1 1
+        hidden: true
+      - input: |
+          mississippi
+          5
+          m i s p x
+        expectedOutput: |
+          1 4 4 2 0
+        hidden: true
+      - input: |
+          qqqwwweeerrr
+          4
+          q w e r
+        expectedOutput: |
+          3 3 3 3
+        hidden: true
+      - input: |
+          ggdjcddcbegiibjhdgjjdfgdchcjfbibhfgaeiagdfibhidjhafcdchjcicabachgbgbcejagfcigdadheigcfhacjcjgbbbceccgcdifhdebfcbieajafdggfgggfibcafghdedebfddgehbhgebiefhicegegjcegjjhdgfdfafedcegdgfgabiidaiecihdeghiijjedabebjaagefijjedbggcehfcchggicfedehjgchjhcbidhiabfhbfajieajfgeccjagaafidiechagddbhceefbidicfibbcccibaigcfdjjjcfafgdecbchiadgbdjhjbcchfefjajgaeccaeieebhgbafcjfffagejdicaeggidcigaddecjbgajadcceaecjgcaaighbcjdfgchjbficdjhdbgjdcchdceciiibddidggiibdefjfhdbaagafdaeceeajiedfbcfgceiedhaafdcjbgaffgdicbaacddfjebagbgbfhgigieffbeidbadefjbeejjddhhiajebgbaehhgfidjibegdbjehhfjbaajbcgdgjjaabfddbageccecgbecggbbeieecebajbehgcejhdieheiechecdficidjfjibdigcjafgjbagbghbbadbdedbceecidbjbfadegfiahehijfdfcafiddijghcjficiieaajjfccgabifiefcifbieafgdcacbhggiigfjgebdfcbebafgfjdjbjeegccceaiiiecdgiiceeggbfahdhbhediachbficfiabadahdihhadajdcgccihejaaeaadjgfhcejfcafjfidgeciehbggejehaicaedcacideefgfgcefcacihhehfcfjcjaigijchdibgfgiffdbbddgcdgdfbcaabhgdehfiacigjgfecjchjfchhhchihjjeihjhbhahdbfhaggfadcbigiabcjdcdeafaadaddjddiachehffffdeahbcjadgeffchfehhahaeijbfbagfacfffjfefegcjdeibbhbbdbfgfddacieigcaffdgehccjaacaefhcacefjedfdadegbjbicajdfhgfcjddgihegdhdeiadfhdbiacadegabbcadbbbbbaeffchgjagchdihfbfceejaddaiifdjhbeigdbachbcdccgbjebddiiajhjhjejeihcihifhdijbcbbcjdicijgeaegcfjabjdiefcchfjhcffddeedjijbhjcheehcdjeaiheafagcjieibcgijjcifdcaibhbjgeigjihajbhjjjfdffbabcdejddjhaedgheacdjbbgcigjcdjgebbbfhcdibbgdiehdifjgjjfchcdcghhefgfbjiadhiiahgiadbhjghaddbdigccdfgfbjjhadgigcafifdefbdhehfjgcabjiaifiehaahccegfadejhjjjgadjbhicdchfbhibhjjcaicgddeccaeefhdghjebihafdcfaacgiafiggfdbfjcjcbaifgafeecbdaebibjgibeibhdccfbfiegbdjhcfijehbjacjabdfihidjghcdhjfehbajafgedeebcjabfjfjdcdgcdajaafaghefdidgdjedbfaabbjjagcdijbjdfhjgcegdheghefhjjidhicfdjigehieeefdecebeaegjdhbgcgbhjhdaaihjijdabafhidjedefjgbbbhcdidaciiidfcecaffebbdifegdfegeibjgbfjahibfccghfbgchhgfhjgdjhebbjchechigbajeaabjaaggejfgbichbghdcahaeabagcagjbfddfiejbieaafcfjahhjichbbagecbhgdffacedjgaajibijfjjaacfeecfbbcgedidehiacicgefagicigggdbcegigijbdfgabeddjgjjhigaiiedabcaifafdegdhdacgbdhfdgfigdccaehebjdeaidgdbhdihcbdihbgdjffhbbcffahhfdgdhggbeibcbbjcffjfafbciddaaehjgcghjdeebabdhhjjfaggaefaghdegfacefjggcdghbfghciffhcacajfdgbebfebaecejehbhjjedgiacafhcbdahaicjeibabfficdecjbehjadiaicbfadbgaibfgahbebahbhddfdciaeidchjhiabjfiddfggdbaifbfcififejjacdadjfdijibdgheifeheghifejddejgaheghachdgidhiefggefcdcigihjichbcihebjagjgihijhbjcebjicfefdadcgdjffhjicjbbggfecagfdaefdaecihjfcbhcicbggbcbhbchieieiijggfgdbchijbdijdfehcedihhfaedbgbcgbdhgieaidhbccbijdceejfahiefhchcjcejgbhibcdheiieidjgahdaidaaabhdgjhbbbbbhjjieehefgiejgheaaaiegjbhjijcdaijbdgibjjfffhbcacbfbjjgfiefijdhagecbccagaibeghbdbbigjfdfdbiffecgcjjcgiadgbafedeadbhebgcabcjjiahabbfjagajgcedabafjcbhhgdfdhcbhaaecjfjdbeigjcfidebadhihaabjcehjbejecacijhjchdhdeajecaegifcgbhchjdbfhghdahcddfijcdghidaajdeibbcgigaibifbibiegbjfiafihfeebgaidcjjfbaaigaaijgcafehgaageddbffcbaiieddeigchicdjijfjjhhfiahdhgbaiaahdgeaijbedccfdfggieefdhifeahhggfcbgejfagjgffgeejhedfbabddajgghgghefcihhdcajgccjibjdiijeegjaaafjjdhgdjdfgfbibbgcjgeebbfibcecggjhjcigjbdiijjihdej
+          26
+          a b c d e f g h i j k l m n o p q r s t u v w x y z
+        expectedOutput: |
+          302 304 313 320 299 291 299 277 297 298 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        hidden: true
+  - sheetId: prob-1-7-3-highest-occurring-element
+    slug: highest-occurring-element-in-an-array
+    title: Highest Occurring Element in an Array
+    difficulty: Easy
+    topic: Hashing
+    subtopic: Learn Basic Hashing
+    tags: [hashing, array, counting]
+    sourceUrl: ""
+    statement: |
+      You are given an integer array `arr` of length `n`.
+
+      Find the value that occurs most often in `arr`. If several values are tied for
+      the highest number of occurrences, report the **smallest** of them, so that the
+      answer is always unique.
+
+      Print that value together with how many times it occurs.
+    inputFormat: |
+      - Line 1: a single integer `n`.
+      - Line 2: `n` space-separated integers, the array `arr`.
+    outputFormat: |
+      Print two integers on one line, separated by a space: the most frequent value
+      and its number of occurrences.
+    constraints:
+      - "1 <= n <= 10^5"
+      - "-10^9 <= arr[i] <= 10^9"
+    examples:
+      - input: |
+          8
+          4 1 4 7 4 1 9 1
+        output: |
+          1 3
+        explanation: "Both 4 and 1 occur three times and every other value occurs once. The tie is broken in favour of the smaller value, 1."
+      - input: |
+          5
+          -2 5 -2 -2 8
+        output: |
+          -2 3
+        explanation: "-2 occurs three times, which beats 5 and 8 with one occurrence each."
+    hints:
+      - "Count the occurrences of every distinct value first, then pick the best entry from those counts."
+      - "The values can be as large as 10^9, so a plain array indexed by value is impossible - use a dictionary keyed by the value."
+      - "When comparing two candidates, take the one with the larger count, and on equal counts the one with the smaller value."
+    explanation: |
+      **Brute force - O(n^2) time, O(1) space.** For every position, count how many
+      elements equal `arr[i]` and keep the best pair seen. With `n = 10^5` that is
+      `10^10` comparisons.
+
+      **Sorting - O(n log n) time, O(1) extra space.** After sorting, equal values sit
+      next to each other, so one pass measures the length of every run. Because the
+      array is sorted ascending and we only replace the best candidate on a *strictly*
+      larger count, the first run of the maximum length is kept - which is exactly the
+      smallest value among the tied ones.
+
+      **Hashing - O(n) time, O(k) space** where `k` is the number of distinct values.
+      Walk the array once and increment `counts[value]` in a dictionary. Then walk the
+      dictionary once and keep the entry with the largest count, breaking ties by the
+      smaller value:
+
+      ```
+      better = count > best_count or (count == best_count and value < best_value)
+      ```
+
+      A dictionary is necessary here rather than a fixed-size array because the values
+      range over `+/- 10^9` while there are at most `10^5` of them - hashing spends
+      space proportional to how many distinct values actually appear, not to how large
+      they can be. The tie-break has to be written explicitly; iterating a dictionary
+      happens to visit keys in insertion order in CPython, which is not the order the
+      statement asks for.
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Tuple
+
+
+        def highest_occurring(arr: List[int]) -> Tuple[int, int]:
+            # Return (value, count) for the most frequent value, smallest on a tie.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            arr = [int(x) for x in data[1:1 + n]]
+            value, count = highest_occurring(arr)
+            print(value, count)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import Dict, List, Tuple
+
+
+        def highest_occurring(arr: List[int]) -> Tuple[int, int]:
+            counts: Dict[int, int] = {}
+            for value in arr:
+                counts[value] = counts.get(value, 0) + 1
+
+            best_value = arr[0]
+            best_count = 0
+            for value, count in counts.items():
+                if count > best_count or (count == best_count and value < best_value):
+                    best_value = value
+                    best_count = count
+            return best_value, best_count
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            arr = [int(x) for x in data[1:1 + n]]
+            value, count = highest_occurring(arr)
+            print(value, count)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          8
+          4 1 4 7 4 1 9 1
+        expectedOutput: |
+          1 3
+        hidden: false
+      - input: |
+          5
+          -2 5 -2 -2 8
+        expectedOutput: |
+          -2 3
+        hidden: false
+      - input: |
+          1
+          1000000000
+        expectedOutput: |
+          1000000000 1
+        hidden: true
+      - input: |
+          4
+          3 2 1 4
+        expectedOutput: |
+          1 1
+        hidden: true
+      - input: |
+          6
+          -1000000000 -1000000000 5 5 5 -1000000000
+        expectedOutput: |
+          -1000000000 3
+        hidden: true
+      - input: |
+          7
+          0 0 0 0 0 0 0
+        expectedOutput: |
+          0 7
+        hidden: true
+      - input: |
+          9
+          -5 -5 -5 -4 -4 -4 -3 -3 -3
+        expectedOutput: |
+          -5 3
+        hidden: true
+      - input: |
+          600
+          -9 -31 0 33 -44 -41 18 -38 -4 24 -43 14 -23 -46 -39 5 3 -42 -20 -39 20 4 -43 22 -35 -22 30 30 24 -43 23 24 0 -44 -22 -45 21 -33 -13 3 -32 19 -35 23 -11 21 37 -27 -37 24 23 31 -26 -3 -38 20 41 -42 22 -43 29 -24 13 37 18 4 49 -10 9 24 8 -4 -12 -19 -27 39 49 -19 -40 23 -12 17 13 -7 43 7 -14 27 -41 -35 15 3 -29 46 -7 -31 12 3 -45 35 -41 47 21 23 -10 -7 38 -6 26 13 24 8 -42 -39 -16 10 39 35 -42 -43 43 39 -11 32 23 37 7 -14 41 -1 35 -6 -48 9 -5 -29 28 -36 13 -43 -23 48 -14 -34 44 -19 0 0 13 -40 -29 7 1 20 -15 -33 5 20 -15 40 3 -5 37 -2 -21 -31 -40 -28 -31 -21 34 -21 -49 12 25 -27 -17 -14 -50 -32 3 18 -3 28 22 -10 -34 38 15 29 33 36 44 -44 8 49 37 21 0 0 1 0 -37 11 31 1 -43 -26 -42 -24 6 -30 -36 -7 26 -44 -37 -50 22 -31 18 -38 -4 28 -47 -41 -24 28 -2 -31 31 -18 -6 27 -4 10 -35 -36 12 9 11 11 -11 -40 -32 -37 45 -7 44 -17 11 38 -30 16 -48 -24 17 -4 -32 38 19 -47 47 17 -12 32 -39 39 -17 16 -4 -29 -5 48 -22 18 19 49 14 -8 31 -22 28 50 47 -26 -20 1 44 -21 -25 16 13 -5 43 -47 -47 -15 10 -17 -26 38 27 -6 7 42 -6 -4 -40 -22 -37 -21 10 -25 -7 -24 11 29 28 -50 11 33 -6 32 -40 34 -35 -1 50 41 46 -25 11 -28 5 31 -8 -39 42 0 9 1 45 -40 42 -30 -29 -34 -47 -31 25 9 33 -32 28 26 10 34 -6 -31 20 20 -34 -48 -49 42 33 -37 17 45 -33 5 -26 -23 -47 -18 -23 -13 14 -20 47 25 -9 -17 19 3 -34 -43 44 -5 8 34 24 16 3 14 -34 18 -31 17 15 -48 6 49 -27 27 -50 49 -31 -28 -32 10 29 42 -35 21 -43 -9 37 16 17 21 11 50 49 -37 21 -43 -19 -26 -15 -45 48 -38 14 7 21 -47 47 -42 6 -9 28 14 27 15 -25 38 -15 7 15 18 11 14 -19 39 16 -17 21 -25 7 -33 3 -35 0 6 -10 -41 35 -20 4 -41 -23 35 -12 50 -35 49 -31 41 32 34 -4 -32 -18 -33 9 -22 45 -38 0 12 -30 35 -22 -30 40 5 15 1 -7 3 -25 -5 -10 -39 42 -4 -48 -7 20 8 6 40 -48 -1 -8 16 29 -13 15 -42 -36 50 -21 -37 -40 -17 -16 -45 49 -27 -16 46 -34 4 36 -17 1 -31 18 15 23 13 39 -9 -39 -15 -43 38 -27 4 -41 -16 -48 31 -39 -17 -40 27 -22 -42 -17 -35 8 -49 -7 20 3 -16 29 -34 -45 17 40 -20 -36 -30 -17 -44 -27 -25 -11 30 -11 17 47 -24 -13 7 14 36 -28 -16 -6 -48 -18 -46 -49 -48
+        expectedOutput: |
+          -31 12
+        hidden: true

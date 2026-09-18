@@ -1,0 +1,872 @@
+{
+ "note": "Maps DSAForge problem slugs (backend/src/data/problems/*.yaml) to A2Z sheet ids in sheet.json.",
+ "mapping": {
+  "count-digits": "prob-1-5-1-count-all-digits-of-a-num",
+  "reverse-a-number": "prob-1-5-2-reverse-a-number",
+  "palindrome-number": "prob-1-5-3-palindrome-number",
+  "gcd-of-two-numbers": "prob-1-5-4-gcd-of-two-numbers",
+  "armstrong-number": "prob-1-5-5-check-if-the-number-is-ar",
+  "print-all-divisors": "prob-1-5-6-print-all-divisors",
+  "check-prime": "prob-1-5-7-check-for-prime-number",
+  "frequency-queries": "prob-1-7-2-counting-frequencies-of-a",
+  "selection-sort": "prob-2-1-1-selection-sort",
+  "bubble-sort": "prob-2-1-2-bubble-sort",
+  "insertion-sort": "prob-2-1-3-insertion-sorting",
+  "merge-sort": "prob-2-2-1-merge-sorting",
+  "recursive-bubble-sort": "prob-2-2-2-recursive-bubble-sort",
+  "quick-sort": "prob-2-2-4-quick-sorting",
+  "largest-element": "prob-3-1-1-largest-element",
+  "second-largest-element": "prob-3-1-2-second-largest-element",
+  "check-if-array-is-sorted": "prob-3-1-3-check-if-the-array-is-sor",
+  "remove-duplicates-from-sorted-array": "prob-3-1-4-remove-duplicates-from-so",
+  "left-rotate-array-by-k-places": "prob-3-1-6-left-rotate-array-by-k-pl",
+  "move-zeros-to-end": "prob-3-1-7-move-zeros-to-end",
+  "find-missing-number": "prob-3-1-10-find-missing-number",
+  "maximum-consecutive-ones": "prob-3-1-11-maximum-consecutive-ones",
+  "single-number": "prob-3-1-12-find-the-number-that-appe",
+  "longest-subarray-with-sum-k": "prob-3-1-13-longest-subarray-with-giv",
+  "two-sum": "prob-3-2-1-two-sum",
+  "sort-an-array-of-0s-1s-and-2s": "prob-3-2-2-sort-an-array-of-0s-1s-an",
+  "majority-element": "prob-3-2-3-majority-element-i",
+  "maximum-subarray-sum": "prob-3-2-4-kadanes-algorithm",
+  "best-time-to-buy-and-sell-stock": "prob-3-2-6-stock-buy-and-sell",
+  "rearrange-array-elements-by-sign": "prob-3-2-7-rearrange-array-elements-",
+  "next-permutation": "prob-3-2-8-next-permutation",
+  "leaders-in-an-array": "prob-3-2-9-leaders-in-an-array",
+  "longest-consecutive-sequence": "prob-3-2-10-longest-consecutive-seque",
+  "set-matrix-zeroes": "prob-3-2-11-set-matrix-zeroes",
+  "rotate-matrix-by-90-degrees": "prob-3-2-12-rotate-matrix-by-90-degre",
+  "spiral-matrix": "prob-3-2-13-print-the-matrix-in-spira",
+  "3sum": "prob-3-3-3-3-sum",
+  "merge-overlapping-intervals": "prob-3-3-7-merge-overlapping-subinte",
+  "count-inversions": "prob-3-3-10-count-inversions",
+  "binary-search": "prob-4-1-1-search-x-in-sorted-array",
+  "lower-bound": "prob-4-1-2-lower-bound",
+  "search-insert-position": "prob-4-1-4-search-insert-position",
+  "first-and-last-occurrence": "prob-4-1-6-first-and-last-occurrence",
+  "search-in-rotated-sorted-array": "prob-4-1-8-search-in-rotated-sorted-",
+  "find-minimum-in-rotated-sorted-array": "prob-4-1-10-find-minimum-in-rotated-s",
+  "single-element-in-a-sorted-array": "prob-4-1-12-single-element-in-a-sorte",
+  "find-peak-element": "prob-4-1-13-find-peak-element",
+  "floor-square-root": "prob-4-2-1-find-square-root-of-a-num",
+  "koko-eating-bananas": "prob-4-2-3-koko-eating-bananas",
+  "aggressive-cows": "prob-4-2-8-aggressive-cows",
+  "median-of-two-sorted-arrays": "prob-4-2-13-median-of-2-sorted-arrays",
+  "remove-outermost-parentheses": "prob-5-1-1-remove-outermost-parenthe",
+  "reverse-words-in-a-string": "prob-5-1-2-reverse-words-in-a-given-",
+  "largest-odd-number-in-string": "prob-5-1-3-largest-odd-number-in-a-s",
+  "longest-common-prefix": "prob-5-1-4-longest-common-prefix",
+  "isomorphic-strings": "prob-5-1-5-isomorphic-string",
+  "rotate-string": "prob-5-1-6-rotate-string",
+  "valid-anagram": "prob-5-1-7-check-if-two-strings-are-",
+  "sort-characters-by-frequency": "prob-5-2-1-sort-characters-by-freque",
+  "maximum-nesting-depth-of-parentheses": "prob-5-2-2-maximum-nesting-depth-of-",
+  "roman-to-integer": "prob-5-2-3-roman-to-integer",
+  "string-to-integer-atoi": "prob-5-2-4-string-to-integer-atoi",
+  "longest-palindromic-substring": "prob-5-2-6-longest-palindromic-subst",
+  "middle-of-the-linked-list": "prob-6-3-1-middle-of-a-linkedlist-to",
+  "reverse-a-linked-list": "prob-6-3-2-reverse-a-linkedlist-iter",
+  "detect-a-cycle-in-linked-list": "prob-6-3-4-detect-a-loop-in-ll",
+  "palindrome-linked-list": "prob-6-3-7-check-if-ll-is-palindrome",
+  "odd-even-linked-list": "prob-6-3-8-segregate-odd-and-even-no",
+  "remove-nth-node-from-end-of-list": "prob-6-3-9-remove-nth-node-from-the-",
+  "add-two-numbers": "prob-6-3-15-add-two-numbers-in-linked",
+  "power-with-modulo": "prob-7-1-2-powx-n",
+  "generate-parentheses": "prob-7-2-2-generate-parentheses",
+  "subsets": "prob-7-2-3-power-set",
+  "combination-sum": "prob-7-2-7-combination-sum",
+  "subset-sums": "prob-7-2-9-subsets-i",
+  "word-search": "prob-7-3-2-word-search",
+  "n-queens": "prob-7-3-3-n-queen",
+  "check-if-ith-bit-is-set": "prob-8-1-2-check-if-the-i-th-bit-is-",
+  "power-of-two": "prob-8-1-4-check-if-a-number-is-powe",
+  "count-set-bits": "prob-8-1-5-count-the-number-of-set-b",
+  "divide-two-integers": "prob-8-1-8-divide-two-numbers-withou",
+  "minimum-bit-flips-to-convert-number": "prob-8-2-1-minimum-bit-flips-to-conv",
+  "xor-of-numbers-in-a-range": "prob-8-2-4-xor-of-numbers-in-a-given",
+  "single-number-iii": "prob-8-2-5-single-number-iii",
+  "implement-queue-using-stacks": "prob-9-1-4-implement-queue-using-sta",
+  "valid-parentheses": "prob-9-1-7-balanced-paranthesis",
+  "min-stack": "prob-9-1-8-implement-min-stack",
+  "next-greater-element": "prob-9-3-1-next-greater-element",
+  "trapping-rain-water": "prob-9-3-5-trapping-rainwater",
+  "asteroid-collision": "prob-9-3-7-asteroid-collision",
+  "largest-rectangle-in-histogram": "prob-9-3-10-largest-rectangle-in-a-hi",
+  "sliding-window-maximum": "prob-9-4-1-sliding-window-maximum",
+  "stock-span": "prob-9-4-2-stock-span-problem",
+  "lru-cache": "prob-9-4-4-lru-cache",
+  "longest-substring-without-repeating-characters": "prob-10-1-1-longest-substring-without",
+  "max-consecutive-ones-iii": "prob-10-1-2-max-consecutive-ones-iii",
+  "fruit-into-baskets": "prob-10-1-3-fruit-into-baskets",
+  "longest-repeating-character-replacement": "prob-10-1-4-longest-repeating-charact",
+  "binary-subarrays-with-sum": "prob-10-1-5-binary-subarrays-with-sum",
+  "count-number-of-nice-subarrays": "prob-10-1-6-count-number-of-nice-suba",
+  "number-of-substrings-containing-all-three-characters": "prob-10-1-7-number-of-substrings-cont",
+  "maximum-points-you-can-obtain-from-cards": "prob-10-1-8-maximum-points-you-can-ob",
+  "minimum-window-substring": "prob-10-2-3-minimum-window-substring",
+  "check-if-array-represents-min-heap": "prob-11-1-3-check-if-an-array-represe",
+  "kth-largest-element-in-an-array": "prob-11-2-1-k-th-largest-element-in-a",
+  "merge-k-sorted-arrays": "prob-11-2-4-merge-k-sorted-lists",
+  "task-scheduler": "prob-11-2-6-task-scheduler",
+  "hand-of-straights": "prob-11-2-7-hand-of-straights",
+  "find-median-from-data-stream": "prob-11-3-5-find-median-from-data-str",
+  "top-k-frequent-elements": "prob-11-3-6-top-k-frequent-elements",
+  "assign-cookies": "prob-12-1-1-assign-cookies",
+  "lemonade-change": "prob-12-1-3-lemonade-change",
+  "valid-parenthesis-string": "prob-12-1-4-valid-paranthesis-checker",
+  "n-meetings-in-one-room": "prob-12-2-1-n-meetings-in-one-room",
+  "jump-game": "prob-12-2-2-jump-game-i",
+  "jump-game-ii": "prob-12-2-3-jump-game-ii",
+  "minimum-platforms": "prob-12-2-4-minimum-number-of-platfor",
+  "job-sequencing": "prob-12-2-5-job-sequencing-problem",
+  "candy": "prob-12-2-6-candy",
+  "insert-interval": "prob-12-2-9-insert-interval",
+  "non-overlapping-intervals": "prob-12-2-11-non-overlapping-intervals",
+  "binary-tree-preorder-traversal": "prob-13-1-4-preorder-traversal",
+  "binary-tree-inorder-traversal": "prob-13-1-5-inorder-traversal-of-bina",
+  "binary-tree-postorder-traversal": "prob-13-1-6-postorder-traversal",
+  "binary-tree-level-order-traversal": "prob-13-1-7-level-order-traversal",
+  "maximum-depth-of-binary-tree": "prob-13-2-1-maximum-depth-in-bt",
+  "balanced-binary-tree": "prob-13-2-2-check-for-balanced-binary",
+  "diameter-of-binary-tree": "prob-13-2-3-diameter-of-binary-tree",
+  "binary-tree-maximum-path-sum": "prob-13-2-4-maximum-path-sum",
+  "same-tree": "prob-13-2-5-check-if-two-trees-are-id",
+  "binary-tree-zigzag-level-order-traversal": "prob-13-2-6-zig-zag-or-spiral-travers",
+  "vertical-order-traversal": "prob-13-2-8-vertical-order-traversal",
+  "binary-tree-right-side-view": "prob-13-2-11-rightleft-view-of-binary-",
+  "symmetric-tree": "prob-13-2-12-symmetric-binary-tree",
+  "lowest-common-ancestor-of-a-binary-tree": "prob-13-3-2-lca-in-bt",
+  "search-in-a-binary-search-tree": "prob-14-1-2-search-in-a-binary-search",
+  "floor-and-ceil-in-a-bst": "prob-14-2-1-floor-and-ceil-in-a-bst",
+  "insert-into-a-binary-search-tree": "prob-14-2-3-insert-a-given-node-in-bs",
+  "kth-smallest-element-in-a-bst": "prob-14-2-5-kth-smallest-and-largest-",
+  "validate-binary-search-tree": "prob-14-2-6-check-if-a-tree-is-a-bst-",
+  "lowest-common-ancestor-of-a-binary-search-tree": "prob-14-2-7-lca-in-bst",
+  "construct-bst-from-preorder-traversal": "prob-14-2-8-construct-a-bst-from-a-pr",
+  "number-of-provinces": "prob-15-2-1-number-of-provinces",
+  "rotting-oranges": "prob-15-2-3-rotten-oranges",
+  "flood-fill": "prob-15-2-4-flood-fill-algorithm",
+  "detect-cycle-in-an-undirected-graph": "prob-15-2-6-detect-a-cycle-in-an-undi",
+  "distance-of-nearest-cell-having-1": "prob-15-2-7-distance-of-nearest-cell-",
+  "surrounded-regions": "prob-15-2-8-surrounded-regions",
+  "word-ladder": "prob-15-2-10-word-ladder-i",
+  "number-of-islands": "prob-15-2-12-number-of-islands",
+  "is-graph-bipartite": "prob-15-2-13-bipartite-graph-dfs",
+  "topological-sort": "prob-15-3-1-topo-sort",
+  "detect-cycle-in-a-directed-graph": "prob-15-3-3-detect-a-cycle-in-a-direc",
+  "course-schedule": "prob-15-3-4-course-schedule-i",
+  "dijkstras-shortest-path": "prob-15-4-3-djisktras-algorithm",
+  "bellman-ford-algorithm": "prob-15-4-11-bellman-ford-algorithm",
+  "floyd-warshall-algorithm": "prob-15-4-12-floyd-warshall-algorithm",
+  "minimum-spanning-tree-weight": "prob-15-5-4-find-the-mst-weight",
+  "kosaraju-strongly-connected-components": "prob-15-6-3-kosarajus-algorithm",
+  "climbing-stairs": "prob-16-2-1-climbing-stairs",
+  "frog-jump": "prob-16-2-2-frog-jump",
+  "frog-jump-with-k-distances": "prob-16-2-3-frog-jump-with-k-distance",
+  "house-robber": "prob-16-2-4-maximum-sum-of-non-adjace",
+  "house-robber-ii": "prob-16-2-5-house-robber",
+  "ninjas-training": "prob-16-3-1-ninjas-training",
+  "unique-paths": "prob-16-3-2-grid-unique-paths-dp-on-g",
+  "unique-paths-ii": "prob-16-3-3-unique-paths-ii",
+  "minimum-path-sum": "prob-16-3-4-minimum-falling-path-sum",
+  "triangle": "prob-16-3-5-triangle",
+  "cherry-pickup-ii": "prob-16-3-6-ninja-and-his-friends",
+  "subset-sum-equal-to-target": "prob-16-4-1-subset-sum-equal-to-targe",
+  "partition-equal-subset-sum": "prob-16-4-2-partition-equal-subset-su",
+  "coin-change": "prob-16-4-7-minimum-coins-dp-20",
+  "coin-change-ii": "prob-16-4-9-coin-change-2-dp-22",
+  "rod-cutting": "prob-16-4-11-rod-cutting-problem-dp-24",
+  "longest-common-subsequence": "prob-16-5-1-longest-common-subsequenc",
+  "longest-palindromic-subsequence": "prob-16-5-4-longest-palindromic-subse",
+  "edit-distance": "prob-16-5-9-edit-distance",
+  "wildcard-matching": "prob-16-5-10-wildcard-matching",
+  "best-time-to-buy-and-sell-stock-with-cooldown": "prob-16-6-5-best-time-to-buy-and-sell",
+  "longest-increasing-subsequence": "prob-16-7-1-longest-increasing-subseq",
+  "matrix-chain-multiplication": "prob-16-8-1-matrix-chain-multiplicati",
+  "burst-balloons": "prob-16-8-4-burst-balloons",
+  "palindrome-partitioning-ii": "prob-16-8-6-palindrome-partitioning-i",
+  "maximal-rectangle": "prob-16-9-1-maximum-rectangle-area-wi",
+  "count-square-submatrices-with-all-ones": "prob-16-9-2-count-square-submatrices-",
+  "implement-trie": "prob-17-1-1-trie-implementation-and-o",
+  "implement-trie-ii": "prob-17-2-1-trie-implementation-and-a",
+  "longest-word-with-all-prefixes": "prob-17-2-2-longest-word-with-all-pre",
+  "count-distinct-substrings": "prob-17-2-3-number-of-distinct-substr",
+  "maximum-xor-of-two-numbers-in-an-array": "prob-17-2-5-maximum-xor-of-two-number",
+  "maximum-xor-with-an-element-from-array": "prob-17-2-6-maximum-xor-with-an-eleme",
+  "zero-one-knapsack": "prob-16-4-6-assign-cookies"
+ },
+ "unmapped": [
+  {
+   "slug": "merge-two-sorted-lists",
+   "title": "Merge Two Sorted Lists",
+   "reason": "not on the sheet - the A2Z linked-list step has no 'merge two sorted linked lists' entry (prob-11-2-4 'Merge K sorted Lists' is LeetCode 23, a different problem)"
+  },
+  {
+   "slug": "permutations",
+   "title": "Permutations",
+   "reason": "not on the sheet - the A2Z recursion step has no 'print all permutations' entry (only 'Next Permutation', which is a different problem)"
+  }
+ ],
+ "notes": [
+  {
+   "slug": "3sum",
+   "sheetId": "prob-3-3-3-3-sum",
+   "note": "sheet title is '3 Sum'"
+  },
+  {
+   "slug": "add-two-numbers",
+   "sheetId": "prob-6-3-15-add-two-numbers-in-linked",
+   "note": "sheet title is 'Add two numbers in Linked List'"
+  },
+  {
+   "slug": "armstrong-number",
+   "sheetId": "prob-1-5-5-check-if-the-number-is-ar",
+   "note": "sheet title is 'Check if the Number is Armstrong'"
+  },
+  {
+   "slug": "balanced-binary-tree",
+   "sheetId": "prob-13-2-2-check-for-balanced-binary",
+   "note": "sheet title is 'Check for balanced binary tree'; difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "bellman-ford-algorithm",
+   "sheetId": "prob-15-4-11-bellman-ford-algorithm",
+   "note": "difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "best-time-to-buy-and-sell-stock",
+   "sheetId": "prob-3-2-6-stock-buy-and-sell",
+   "note": "sheet also has the same problem at prob-16-6-1 (DP on stocks); mapped to the arrays step where ours lives; difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "binary-search",
+   "sheetId": "prob-4-1-1-search-x-in-sorted-array",
+   "note": "sheet title is 'Search X in sorted array'"
+  },
+  {
+   "slug": "binary-subarrays-with-sum",
+   "sheetId": "prob-10-1-5-binary-subarrays-with-sum",
+   "note": "difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "binary-tree-inorder-traversal",
+   "sheetId": "prob-13-1-5-inorder-traversal-of-bina",
+   "note": "sheet title is 'Inorder Traversal of Binary Tree'"
+  },
+  {
+   "slug": "binary-tree-level-order-traversal",
+   "sheetId": "prob-13-1-7-level-order-traversal",
+   "note": "difficulty differs: ours Medium, sheet Easy"
+  },
+  {
+   "slug": "binary-tree-maximum-path-sum",
+   "sheetId": "prob-13-2-4-maximum-path-sum",
+   "note": "difficulty differs: ours Hard, sheet Medium"
+  },
+  {
+   "slug": "binary-tree-right-side-view",
+   "sheetId": "prob-13-2-11-rightleft-view-of-binary-",
+   "note": "sheet entry is 'Right/Left View of Binary Tree' and links to LeetCode 'Binary Tree Right Side View'"
+  },
+  {
+   "slug": "binary-tree-zigzag-level-order-traversal",
+   "sheetId": "prob-13-2-6-zig-zag-or-spiral-travers",
+   "note": "sheet title is 'Zig Zag or Spiral Traversal'"
+  },
+  {
+   "slug": "check-if-array-is-sorted",
+   "sheetId": "prob-3-1-3-check-if-the-array-is-sor",
+   "note": "sheet entry is titled 'Check if the Array is Sorted II' and its LeetCode link points to 'Check if Array Is Sorted and Rotated', but its takeuforward article is the plain 'check if an array is sorted' problem, which is what ours asks; it is the only sortedness-check slot on the sheet"
+  },
+  {
+   "slug": "check-if-array-represents-min-heap",
+   "sheetId": "prob-11-1-3-check-if-an-array-represe",
+   "note": "sheet title is 'Check if an array represents a min heap'; difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "check-if-ith-bit-is-set",
+   "sheetId": "prob-8-1-2-check-if-the-i-th-bit-is-",
+   "note": "sheet title is 'Check if the i-th bit is Set or Not'"
+  },
+  {
+   "slug": "check-prime",
+   "sheetId": "prob-1-5-7-check-for-prime-number",
+   "note": "sheet title is 'Check for Prime Number'"
+  },
+  {
+   "slug": "cherry-pickup-ii",
+   "sheetId": "prob-16-3-6-ninja-and-his-friends",
+   "note": "sheet title is 'Ninja and his Friends' (DP-13), which is the same problem as Cherry Pickup II; difficulty differs: ours Hard, sheet Medium"
+  },
+  {
+   "slug": "climbing-stairs",
+   "sheetId": "prob-16-2-1-climbing-stairs",
+   "note": "difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "coin-change",
+   "sheetId": "prob-16-4-7-minimum-coins-dp-20",
+   "note": "sheet title is 'Minimum Coins (DP - 20)'; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "coin-change-ii",
+   "sheetId": "prob-16-4-9-coin-change-2-dp-22",
+   "note": "sheet title is 'Coin Change 2 (DP - 22)'; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "combination-sum",
+   "sheetId": "prob-7-2-7-combination-sum",
+   "note": "ours has distinct candidates with unlimited reuse, so it is Combination Sum (I), not II or III"
+  },
+  {
+   "slug": "construct-bst-from-preorder-traversal",
+   "sheetId": "prob-14-2-8-construct-a-bst-from-a-pr",
+   "note": "sheet title is 'Construct a BST from a preorder traversal'"
+  },
+  {
+   "slug": "count-digits",
+   "sheetId": "prob-1-5-1-count-all-digits-of-a-num",
+   "note": "sheet title is 'Count all Digits of a Number'"
+  },
+  {
+   "slug": "count-distinct-substrings",
+   "sheetId": "prob-17-2-3-number-of-distinct-substr",
+   "note": "sheet title is 'Number of distinct substrings in a string'"
+  },
+  {
+   "slug": "count-number-of-nice-subarrays",
+   "sheetId": "prob-10-1-6-count-number-of-nice-suba",
+   "note": "difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "count-set-bits",
+   "sheetId": "prob-8-1-5-count-the-number-of-set-b",
+   "note": "UNCERTAIN: ours counts the total set bits over all numbers from 1 to n (n up to 1e9); the sheet's takeuforward article for this slot counts the set bits of a single number, although its code360 link is the 1..N variant. It is the sheet's only set-bit-counting slot; difficulty differs: ours Medium, sheet Easy"
+  },
+  {
+   "slug": "count-square-submatrices-with-all-ones",
+   "sheetId": "prob-16-9-2-count-square-submatrices-",
+   "note": "sheet title is 'Count Square Submatrices with All Ones|(DP-56)'; difficulty differs: ours Medium, sheet Easy"
+  },
+  {
+   "slug": "course-schedule",
+   "sheetId": "prob-15-3-4-course-schedule-i",
+   "note": "ours returns a boolean, so it is Course Schedule I (15.3.4), not Course Schedule II; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "detect-a-cycle-in-linked-list",
+   "sheetId": "prob-6-3-4-detect-a-loop-in-ll",
+   "note": "sheet title is 'Detect a loop in LL'; difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "detect-cycle-in-a-directed-graph",
+   "sheetId": "prob-15-3-3-detect-a-cycle-in-a-direc",
+   "note": "sheet has two equivalent entries; mapped to 15.3.3 (Kahn's, under Topo Sort) to match our sub-step. The DFS duplicate is prob-15-2-14; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "detect-cycle-in-an-undirected-graph",
+   "sheetId": "prob-15-2-6-detect-a-cycle-in-an-undi",
+   "note": "mapped to the DFS entry (15.2.6); the sheet also has a BFS entry at prob-15-2-5; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "dijkstras-shortest-path",
+   "sheetId": "prob-15-4-3-djisktras-algorithm",
+   "note": "sheet title is \"Djisktra's Algorithm\"; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "distance-of-nearest-cell-having-1",
+   "sheetId": "prob-15-2-7-distance-of-nearest-cell-",
+   "note": "sheet title is 'Distance of nearest cell having one'"
+  },
+  {
+   "slug": "divide-two-integers",
+   "sheetId": "prob-8-1-8-divide-two-numbers-withou",
+   "note": "sheet title is 'Divide two numbers without multiplication and division'"
+  },
+  {
+   "slug": "find-minimum-in-rotated-sorted-array",
+   "sheetId": "prob-4-1-10-find-minimum-in-rotated-s",
+   "note": "difficulty differs: ours Medium, sheet Easy"
+  },
+  {
+   "slug": "find-missing-number",
+   "sheetId": "prob-3-1-10-find-missing-number",
+   "note": "ours uses the range 1..n (as does the sheet's GfG link)"
+  },
+  {
+   "slug": "find-peak-element",
+   "sheetId": "prob-4-1-13-find-peak-element",
+   "note": "sheet title is 'Find peak element'"
+  },
+  {
+   "slug": "first-and-last-occurrence",
+   "sheetId": "prob-4-1-6-first-and-last-occurrence",
+   "note": "difficulty differs: ours Medium, sheet Easy"
+  },
+  {
+   "slug": "flood-fill",
+   "sheetId": "prob-15-2-4-flood-fill-algorithm",
+   "note": "sheet title is 'Flood fill algorithm'; difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "floor-and-ceil-in-a-bst",
+   "sheetId": "prob-14-2-1-floor-and-ceil-in-a-bst",
+   "note": "difficulty differs: ours Medium, sheet Easy"
+  },
+  {
+   "slug": "floor-square-root",
+   "sheetId": "prob-4-2-1-find-square-root-of-a-num",
+   "note": "sheet title is 'Find square root of a number'; difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "floyd-warshall-algorithm",
+   "sheetId": "prob-15-4-12-floyd-warshall-algorithm",
+   "note": "sheet title is 'Floyd warshall algorithm'; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "frequency-queries",
+   "sheetId": "prob-1-7-2-counting-frequencies-of-a",
+   "note": "sub-step 1.7 'Learn Basic Hashing': ours answers q lookup queries, the sheet entry counts the frequency of every element - same hashing exercise, slightly different I/O"
+  },
+  {
+   "slug": "frog-jump",
+   "sheetId": "prob-16-2-2-frog-jump",
+   "note": "difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "house-robber",
+   "sheetId": "prob-16-2-4-maximum-sum-of-non-adjace",
+   "note": "sheet title is 'Maximum sum of non adjacent elements' (DP-5) and it links to LeetCode 'House Robber' - the linear version, which is ours"
+  },
+  {
+   "slug": "house-robber-ii",
+   "sheetId": "prob-16-2-5-house-robber",
+   "note": "sheet title is just 'House robber' (DP-6) but it links to LeetCode 'House Robber II' - the circular version, which is ours"
+  },
+  {
+   "slug": "implement-queue-using-stacks",
+   "sheetId": "prob-9-1-4-implement-queue-using-sta",
+   "note": "sheet title is 'Implement Queue using Stack'"
+  },
+  {
+   "slug": "implement-trie",
+   "sheetId": "prob-17-1-1-trie-implementation-and-o",
+   "note": "sheet title is 'Trie Implementation and Operations'; it links to LeetCode 'Implement Trie (Prefix Tree)'; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "implement-trie-ii",
+   "sheetId": "prob-17-2-1-trie-implementation-and-a",
+   "note": "sheet title is 'Trie Implementation and Advanced Operations'; its article is takeuforward's 'Implement Trie II'; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "insert-into-a-binary-search-tree",
+   "sheetId": "prob-14-2-3-insert-a-given-node-in-bs",
+   "note": "sheet title is 'Insert a given node in BST'"
+  },
+  {
+   "slug": "insertion-sort",
+   "sheetId": "prob-2-1-3-insertion-sorting",
+   "note": "sheet title is 'Insertion Sorting'; note the sheet's 'Recursive Insertion Sort' (prob-2-2-3) is a different entry and is left unmapped"
+  },
+  {
+   "slug": "is-graph-bipartite",
+   "sheetId": "prob-15-2-13-bipartite-graph-dfs",
+   "note": "sheet title is 'Bipartite Graph (DFS)'; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "isomorphic-strings",
+   "sheetId": "prob-5-1-5-isomorphic-string",
+   "note": "sheet title is 'Isomorphic String'"
+  },
+  {
+   "slug": "job-sequencing",
+   "sheetId": "prob-12-2-5-job-sequencing-problem",
+   "note": "sheet title is 'Job sequencing Problem'"
+  },
+  {
+   "slug": "jump-game",
+   "sheetId": "prob-12-2-2-jump-game-i",
+   "note": "sheet title is 'Jump Game - I'; difficulty differs: ours Medium, sheet Easy"
+  },
+  {
+   "slug": "kosaraju-strongly-connected-components",
+   "sheetId": "prob-15-6-3-kosarajus-algorithm",
+   "note": "sheet title is \"Kosaraju's algorithm\""
+  },
+  {
+   "slug": "kth-largest-element-in-an-array",
+   "sheetId": "prob-11-2-1-k-th-largest-element-in-a",
+   "note": "sheet title is 'K-th Largest element in an array'"
+  },
+  {
+   "slug": "kth-smallest-element-in-a-bst",
+   "sheetId": "prob-14-2-5-kth-smallest-and-largest-",
+   "note": "sheet entry covers both the kth smallest and the kth largest element in a BST"
+  },
+  {
+   "slug": "largest-odd-number-in-string",
+   "sheetId": "prob-5-1-3-largest-odd-number-in-a-s",
+   "note": "sheet title is 'Largest Odd Number in a String'"
+  },
+  {
+   "slug": "largest-rectangle-in-histogram",
+   "sheetId": "prob-9-3-10-largest-rectangle-in-a-hi",
+   "note": "sheet title is 'Largest rectangle in a histogram'"
+  },
+  {
+   "slug": "leaders-in-an-array",
+   "sheetId": "prob-3-2-9-leaders-in-an-array",
+   "note": "difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "longest-common-subsequence",
+   "sheetId": "prob-16-5-1-longest-common-subsequenc",
+   "note": "difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "longest-consecutive-sequence",
+   "sheetId": "prob-3-2-10-longest-consecutive-seque",
+   "note": "sheet title is 'Longest Consecutive Sequence in an Array'"
+  },
+  {
+   "slug": "longest-increasing-subsequence",
+   "sheetId": "prob-16-7-1-longest-increasing-subseq",
+   "note": "sheet has a duplicate LIS entry at prob-16-7-3 '(DP-43)'; mapped to the first one"
+  },
+  {
+   "slug": "longest-palindromic-subsequence",
+   "sheetId": "prob-16-5-4-longest-palindromic-subse",
+   "note": "difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "longest-repeating-character-replacement",
+   "sheetId": "prob-10-1-4-longest-repeating-charact",
+   "note": "difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "longest-subarray-with-sum-k",
+   "sheetId": "prob-3-1-13-longest-subarray-with-giv",
+   "note": "mapped to the positives-only entry (3.1.13), not 3.1.14, because our statement restricts the array to non-negative integers"
+  },
+  {
+   "slug": "longest-word-with-all-prefixes",
+   "sheetId": "prob-17-2-2-longest-word-with-all-pre",
+   "note": "sheet title is 'Longest Word with All Prefixes'"
+  },
+  {
+   "slug": "lowest-common-ancestor-of-a-binary-tree",
+   "sheetId": "prob-13-3-2-lca-in-bt",
+   "note": "sheet title is 'LCA in BT'; note it sits under 'Hard Problems' on the sheet; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "lru-cache",
+   "sheetId": "prob-9-4-4-lru-cache",
+   "note": "difficulty differs: ours Hard, sheet Medium"
+  },
+  {
+   "slug": "majority-element",
+   "sheetId": "prob-3-2-3-majority-element-i",
+   "note": "sheet title is 'Majority Element-I' (the > n/2 version, which is ours)"
+  },
+  {
+   "slug": "maximal-rectangle",
+   "sheetId": "prob-16-9-1-maximum-rectangle-area-wi",
+   "note": "sheet has the same problem twice: prob-9-3-11 'Maximum Rectangles' (monotonic stack) and prob-16-9-1 '(DP-55)'; mapped to the DP one to match our sub-step"
+  },
+  {
+   "slug": "maximum-depth-of-binary-tree",
+   "sheetId": "prob-13-2-1-maximum-depth-in-bt",
+   "note": "sheet title is 'Maximum Depth in BT'; difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "maximum-nesting-depth-of-parentheses",
+   "sheetId": "prob-5-2-2-maximum-nesting-depth-of-",
+   "note": "sheet title is 'Maximum Nesting Depth of the Parentheses'; difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "maximum-subarray-sum",
+   "sheetId": "prob-3-2-4-kadanes-algorithm",
+   "note": "sheet title is \"Kadane's Algorithm\""
+  },
+  {
+   "slug": "maximum-xor-of-two-numbers-in-an-array",
+   "sheetId": "prob-17-2-5-maximum-xor-of-two-number",
+   "note": "difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "maximum-xor-with-an-element-from-array",
+   "sheetId": "prob-17-2-6-maximum-xor-with-an-eleme",
+   "note": "sheet title is 'Maximum Xor with an element from an array'"
+  },
+  {
+   "slug": "median-of-two-sorted-arrays",
+   "sheetId": "prob-4-2-13-median-of-2-sorted-arrays",
+   "note": "sheet title is 'Median of 2 sorted arrays'"
+  },
+  {
+   "slug": "merge-k-sorted-arrays",
+   "sheetId": "prob-11-2-4-merge-k-sorted-lists",
+   "note": "UNCERTAIN: sheet entry is 'Merge K sorted Lists' (LeetCode 23, linked lists); ours merges k sorted arrays. Same k-way merge problem, different data representation; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "merge-overlapping-intervals",
+   "sheetId": "prob-3-3-7-merge-overlapping-subinte",
+   "note": "sheet also has the same problem at prob-12-2-10 'Merge Intervals' (greedy); mapped to the arrays step where ours lives"
+  },
+  {
+   "slug": "merge-sort",
+   "sheetId": "prob-2-2-1-merge-sorting",
+   "note": "sheet title is 'Merge Sorting'"
+  },
+  {
+   "slug": "middle-of-the-linked-list",
+   "sheetId": "prob-6-3-1-middle-of-a-linkedlist-to",
+   "note": "sheet title is 'Middle of a LinkedList [TortoiseHare Method]'"
+  },
+  {
+   "slug": "min-stack",
+   "sheetId": "prob-9-1-8-implement-min-stack",
+   "note": "sheet title is 'Implement Min Stack'; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "minimum-bit-flips-to-convert-number",
+   "sheetId": "prob-8-2-1-minimum-bit-flips-to-conv",
+   "note": "sheet difficulty and title match; difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "minimum-path-sum",
+   "sheetId": "prob-16-3-4-minimum-falling-path-sum",
+   "note": "UNCERTAIN: sheet entry is titled 'Minimum Falling Path Sum', but its LeetCode link is /problems/minimum-path-sum and its article is takeuforward's 'Minimum path sum in a grid (DP-10)'; it also sits in the DP-10 position, between 'Unique paths II' (DP-9) and 'Triangle' (DP-11). The title looks like a scrape glitch - verify before relying on it"
+  },
+  {
+   "slug": "minimum-platforms",
+   "sheetId": "prob-12-2-4-minimum-number-of-platfor",
+   "note": "sheet title is 'Minimum number of platforms required for a railway'"
+  },
+  {
+   "slug": "minimum-spanning-tree-weight",
+   "sheetId": "prob-15-5-4-find-the-mst-weight",
+   "note": "sheet title is 'Find the MST weight'; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "n-meetings-in-one-room",
+   "sheetId": "prob-12-2-1-n-meetings-in-one-room",
+   "note": "sheet title is 'N meetings in one room'; difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "n-queens",
+   "sheetId": "prob-7-3-3-n-queen",
+   "note": "sheet title is 'N Queen'"
+  },
+  {
+   "slug": "next-greater-element",
+   "sheetId": "prob-9-3-1-next-greater-element",
+   "note": "mapped to the non-circular entry (9.3.1); the circular variant is prob-9-3-2 'Next Greater Element - 2'"
+  },
+  {
+   "slug": "number-of-islands",
+   "sheetId": "prob-15-2-12-number-of-islands",
+   "note": "mapped to 15.2.12 (4-directional, LeetCode); prob-15-2-2 'Connected Components Problem in Matrix' is the 8-directional variant"
+  },
+  {
+   "slug": "number-of-substrings-containing-all-three-characters",
+   "sheetId": "prob-10-1-7-number-of-substrings-cont",
+   "note": "difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "odd-even-linked-list",
+   "sheetId": "prob-6-3-8-segregate-odd-and-even-no",
+   "note": "sheet title is 'Segregate odd and even nodes in Linked List' but it links to LeetCode 'Odd Even Linked List' (grouping by position), which is exactly ours"
+  },
+  {
+   "slug": "palindrome-linked-list",
+   "sheetId": "prob-6-3-7-check-if-ll-is-palindrome",
+   "note": "sheet title is 'Check if LL is palindrome or not'"
+  },
+  {
+   "slug": "partition-equal-subset-sum",
+   "sheetId": "prob-16-4-2-partition-equal-subset-su",
+   "note": "difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "power-of-two",
+   "sheetId": "prob-8-1-4-check-if-a-number-is-powe",
+   "note": "sheet title is 'Check if a Number is Power of 2 or Not'"
+  },
+  {
+   "slug": "power-with-modulo",
+   "sheetId": "prob-7-1-2-powx-n",
+   "note": "UNCERTAIN: mapped to the sheet's Pow(x, n) slot in the same sub-step ('Get a Strong Hold'). Ours is modular exponentiation (integer base, exponent up to 1e18, answer mod 1e9+7); the sheet's LeetCode 50 is a real-valued power with possibly negative exponents. Same technique, different statement; difficulty differs: ours Medium, sheet Easy"
+  },
+  {
+   "slug": "quick-sort",
+   "sheetId": "prob-2-2-4-quick-sorting",
+   "note": "sheet title is 'Quick Sorting'; difficulty differs: ours Medium, sheet Easy"
+  },
+  {
+   "slug": "remove-nth-node-from-end-of-list",
+   "sheetId": "prob-6-3-9-remove-nth-node-from-the-",
+   "note": "sheet title is 'Remove Nth node from the back of the LL'"
+  },
+  {
+   "slug": "remove-outermost-parentheses",
+   "sheetId": "prob-5-1-1-remove-outermost-parenthe",
+   "note": "difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "reverse-a-linked-list",
+   "sheetId": "prob-6-3-2-reverse-a-linkedlist-iter",
+   "note": "sheet has both an iterative (6.3.2) and a recursive (6.3.3) entry; ours is representation-agnostic and mapped to the iterative one; difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "reverse-words-in-a-string",
+   "sheetId": "prob-5-1-2-reverse-words-in-a-given-",
+   "note": "sheet title is 'Reverse words in a given string / Palindrome Check'; the sheet also has a near-duplicate at prob-5-2-8"
+  },
+  {
+   "slug": "rod-cutting",
+   "sheetId": "prob-16-4-11-rod-cutting-problem-dp-24",
+   "note": "sheet title is 'Rod Cutting Problem | (DP - 24)'; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "roman-to-integer",
+   "sheetId": "prob-5-2-3-roman-to-integer",
+   "note": "difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "rotting-oranges",
+   "sheetId": "prob-15-2-3-rotten-oranges",
+   "note": "sheet title is 'Rotten Oranges'"
+  },
+  {
+   "slug": "same-tree",
+   "sheetId": "prob-13-2-5-check-if-two-trees-are-id",
+   "note": "sheet title is 'Check if two trees are identical or not'; difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "search-in-rotated-sorted-array",
+   "sheetId": "prob-4-1-8-search-in-rotated-sorted-",
+   "note": "ours has distinct values, so it is 'Search in rotated sorted array-I' (4.1.8), not the duplicates variant -II"
+  },
+  {
+   "slug": "single-element-in-a-sorted-array",
+   "sheetId": "prob-4-1-12-single-element-in-a-sorte",
+   "note": "sheet title is 'Single element in a Sorted Array'"
+  },
+  {
+   "slug": "single-number",
+   "sheetId": "prob-3-1-12-find-the-number-that-appe",
+   "note": "sheet also has 'Single Number - I' at prob-8-2-2 (bit manipulation); mapped to the arrays step where ours lives; difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "single-number-iii",
+   "sheetId": "prob-8-2-5-single-number-iii",
+   "note": "sheet title is 'Single Number - III'"
+  },
+  {
+   "slug": "sort-an-array-of-0s-1s-and-2s",
+   "sheetId": "prob-3-2-2-sort-an-array-of-0s-1s-an",
+   "note": "sheet title is \"Sort an array of 0's 1's and 2's\""
+  },
+  {
+   "slug": "sort-characters-by-frequency",
+   "sheetId": "prob-5-2-1-sort-characters-by-freque",
+   "note": "difficulty differs: ours Medium, sheet Easy"
+  },
+  {
+   "slug": "spiral-matrix",
+   "sheetId": "prob-3-2-13-print-the-matrix-in-spira",
+   "note": "sheet title is 'Print the matrix in spiral manner'"
+  },
+  {
+   "slug": "stock-span",
+   "sheetId": "prob-9-4-2-stock-span-problem",
+   "note": "sheet entry links to LeetCode 'Online Stock Span'; ours computes the span for the whole array in one go; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "subset-sum-equal-to-target",
+   "sheetId": "prob-16-4-1-subset-sum-equal-to-targe",
+   "note": "sheet title is 'Subset sum equal to target (DP- 14)'; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "subset-sums",
+   "sheetId": "prob-7-2-9-subsets-i",
+   "note": "sheet title is 'Subsets I', but its article is takeuforward's 'Subset Sum: sum of all subsets', which is exactly ours (print all 2^n subset sums)"
+  },
+  {
+   "slug": "subsets",
+   "sheetId": "prob-7-2-3-power-set",
+   "note": "sheet title is 'Power Set'; ours takes distinct integers, so it is Power Set / Subsets I, not the duplicate-handling 'Subsets II' (prob-7-2-10)"
+  },
+  {
+   "slug": "symmetric-tree",
+   "sheetId": "prob-13-2-12-symmetric-binary-tree",
+   "note": "difficulty differs: ours Easy, sheet Medium"
+  },
+  {
+   "slug": "topological-sort",
+   "sheetId": "prob-15-3-1-topo-sort",
+   "note": "sheet has two equivalent entries; mapped to 15.3.1 'Topo Sort' (15.3.2 is the Kahn's-algorithm duplicate). Ours additionally requires the lexicographically smallest order; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "trapping-rain-water",
+   "sheetId": "prob-9-3-5-trapping-rainwater",
+   "note": "sheet title is 'Trapping Rainwater'"
+  },
+  {
+   "slug": "triangle",
+   "sheetId": "prob-16-3-5-triangle",
+   "note": "sheet entry 16.3.5 'Triangle' is DP-11, minimum path sum in a triangular grid - the same as ours"
+  },
+  {
+   "slug": "unique-paths",
+   "sheetId": "prob-16-3-2-grid-unique-paths-dp-on-g",
+   "note": "sheet title is 'Grid Unique Paths : DP on Grids (DP8)'"
+  },
+  {
+   "slug": "valid-anagram",
+   "sheetId": "prob-5-1-7-check-if-two-strings-are-",
+   "note": "sheet title is 'Check if two strings are anagram of each other'"
+  },
+  {
+   "slug": "valid-parentheses",
+   "sheetId": "prob-9-1-7-balanced-paranthesis",
+   "note": "sheet title is 'Balanced Paranthesis'"
+  },
+  {
+   "slug": "valid-parenthesis-string",
+   "sheetId": "prob-12-1-4-valid-paranthesis-checker",
+   "note": "sheet title is 'Valid Paranthesis Checker'; it links to LeetCode 'Valid Parenthesis String', which is ours; difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "validate-binary-search-tree",
+   "sheetId": "prob-14-2-6-check-if-a-tree-is-a-bst-",
+   "note": "sheet title is 'Check if a tree is a BST or not'"
+  },
+  {
+   "slug": "vertical-order-traversal",
+   "sheetId": "prob-13-2-8-vertical-order-traversal",
+   "note": "sheet entry links to LeetCode 987, which matches our value-based tie-breaking; difficulty differs: ours Hard, sheet Medium"
+  },
+  {
+   "slug": "word-ladder",
+   "sheetId": "prob-15-2-10-word-ladder-i",
+   "note": "ours returns the length of the shortest ladder, so it is Word Ladder I (15.2.10), not Word Ladder II"
+  },
+  {
+   "slug": "word-search",
+   "sheetId": "prob-7-3-2-word-search",
+   "note": "difficulty differs: ours Medium, sheet Hard"
+  },
+  {
+   "slug": "xor-of-numbers-in-a-range",
+   "sheetId": "prob-8-2-4-xor-of-numbers-in-a-given",
+   "note": "sheet title is 'XOR of numbers in a given range'"
+  },
+  {
+   "slug": "zero-one-knapsack",
+   "sheetId": "prob-16-4-6-assign-cookies",
+   "note": "Upstream index mislabelled this DP-19 slot as Assign Cookies; corrected in refresh-a2z-index.js overrides."
+  }
+ ]
+}

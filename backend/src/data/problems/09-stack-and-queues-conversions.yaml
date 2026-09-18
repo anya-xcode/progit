@@ -1,0 +1,1090 @@
+section: stack-and-queues
+problems:
+  - sheetId: prob-9-2-1-infix-to-postfix-conversi
+    slug: infix-to-postfix-conversion
+    title: "Infix to Postfix Conversion"
+    difficulty: Medium
+    topic: "Stack"
+    subtopic: "Prefix, Infix, PostFix Conversion Problems"
+    tags: ["stack", "strings", "expression"]
+    sourceUrl: ""
+    statement: |
+      In **infix** notation an operator sits between its two operands (`a+b`), so
+      the reading order depends on precedence and brackets. In **postfix**
+      (reverse Polish) notation an operator comes *after* its two operands
+      (`ab+`), so no brackets are ever needed. Rewrite an infix expression in
+      postfix notation.
+
+      **Notation used everywhere in this sub-step**
+
+      - Every **operand is a single character**: `a`-`z`, `A`-`Z` or `0`-`9`.
+      - The **operators** are `+`, `-`, `*`, `/` and `^`, and every operator is
+        binary (it takes exactly two operands).
+      - **Precedence**, highest first: `^`, then `*` and `/`, then `+` and `-`.
+      - `^` is **right-associative** (`a^b^c` means `a^(b^c)`); `+`, `-`, `*`
+        and `/` are **left-associative** (`a-b-c` means `(a-b)-c`).
+      - The infix input contains **no spaces** and is parenthesised **only where
+        the brackets are needed**, so `a+b*c` never appears as `a+(b*c)`.
+
+      The postfix form of a valid expression is unique, so there is exactly one
+      correct answer. Print it with no spaces and no brackets.
+    inputFormat: |
+      - A single line: the infix expression (no spaces).
+    outputFormat: |
+      Print one line: the same expression in postfix notation, with no spaces
+      and no brackets.
+    constraints:
+      - "1 <= number of operands <= 2000"
+      - "1 <= length of the input line <= 10000"
+      - "Operands are single characters from a-z, A-Z, 0-9"
+      - "Operators are + - * / ^ ; brackets are ( and )"
+      - "The input is a syntactically valid infix expression"
+    examples:
+      - input: |
+          a+b*c
+        output: |
+          abc*+
+        explanation: >-
+          `*` binds tighter than `+`, so the expression is `a+(b*c)`. The inner
+          product becomes `bc*`, and then `a` and that result are joined by `+`
+          to give `abc*+`.
+      - input: |
+          (a+b)*(c-d)
+        output: |
+          ab+cd-*
+        explanation: >-
+          The brackets force both sums to be evaluated first: `a+b` becomes
+          `ab+`, `c-d` becomes `cd-`, and the `*` is appended after both of
+          them.
+    hints:
+      - Operands can be written down immediately; only the operators have to wait until you know what their right-hand operand is. Where can an operator wait?
+      - Keep a stack of pending operators. Before pushing a new operator, pop every operator already on the stack that must be applied first.
+      - "`^` is right-associative: when the operator on top of the stack has the *same* precedence as the new one, pop it for `+ - * /` but not for `^`. A `(` blocks popping until its matching `)` arrives."
+    explanation: |
+      **Brute force — repeatedly bracket the tightest operator, O(n²) time.**
+      Scan the expression for the operator that must be applied first (the
+      highest-precedence one at the shallowest bracket depth, respecting
+      associativity), replace the sub-expression `x op y` with its postfix form
+      `xy op`, and repeat until a single token remains. Each pass costs O(n) and
+      there are O(n) operators, so this is quadratic and fiddly to get right.
+
+      **Shunting-yard with one stack — O(n) time, O(n) space.** Scan the input
+      once, keeping a stack of operators that have not been emitted yet and an
+      output buffer:
+
+      - an operand is appended to the output immediately;
+      - `(` is pushed on the stack as a barrier;
+      - `)` pops and emits operators until the matching `(` is removed;
+      - an operator `op` first pops and emits every stacked operator that must
+        be applied before it — that is, every operator with **higher**
+        precedence, plus every operator with **equal** precedence when `op` is
+        left-associative (so `a-b-c` groups to the left). Because `^` is
+        right-associative, an equal-precedence `^` on the stack is *not* popped.
+        Then `op` is pushed.
+
+      When the scan ends, the remaining operators are emitted top to bottom.
+      Every character is pushed and popped at most once, so the pass is linear;
+      the stack holds at most one entry per operator and bracket.
+
+      **Why it works.** An operator may only be written out once both of its
+      operands are complete. The stack stores exactly the operators still
+      waiting for their right operand, ordered by how tightly they bind, so the
+      popping rule releases them in the order in which they will be evaluated.
+    starterCode:
+      python: |
+        import sys
+
+
+        def infix_to_postfix(expression: str) -> str:
+            # Return the postfix form of the given infix expression.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            expression = sys.stdin.readline().strip()
+            print(infix_to_postfix(expression))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+        PRECEDENCE = {"+": 1, "-": 1, "*": 2, "/": 2, "^": 3}
+
+
+        def infix_to_postfix(expression: str) -> str:
+            output = []
+            stack = []
+            for ch in expression:
+                if ch.isalnum():
+                    output.append(ch)
+                elif ch == "(":
+                    stack.append(ch)
+                elif ch == ")":
+                    while stack and stack[-1] != "(":
+                        output.append(stack.pop())
+                    stack.pop()
+                else:
+                    while stack and stack[-1] != "(" and (
+                        PRECEDENCE[stack[-1]] > PRECEDENCE[ch]
+                        or (PRECEDENCE[stack[-1]] == PRECEDENCE[ch] and ch != "^")
+                    ):
+                        output.append(stack.pop())
+                    stack.append(ch)
+            while stack:
+                output.append(stack.pop())
+            return "".join(output)
+
+
+        # --- Input/output handling ---
+        def main():
+            expression = sys.stdin.readline().strip()
+            print(infix_to_postfix(expression))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          a+b*c
+        expectedOutput: |
+          abc*+
+        hidden: false
+      - input: |
+          (a+b)*(c-d)
+        expectedOutput: |
+          ab+cd-*
+        hidden: false
+      - input: |
+          x
+        expectedOutput: |
+          x
+        hidden: true
+      - input: |
+          a^b^c
+        expectedOutput: |
+          abc^^
+        hidden: true
+      - input: |
+          a-b-c-d
+        expectedOutput: |
+          ab-c-d-
+        hidden: true
+      - input: |
+          a+b*c^d-e/f
+        expectedOutput: |
+          abcd^*+ef/-
+        hidden: true
+      - input: |
+          p^(q+r)*s
+        expectedOutput: |
+          pqr+^s*
+        hidden: true
+      - input: |
+          1+2*3
+        expectedOutput: |
+          123*+
+        hidden: true
+      - input: |
+          a*(b+c*(d-e))/f
+        expectedOutput: |
+          abcde-*+*f/
+        hidden: true
+      - input: |
+          ((((C+(f-I))/Z-z^(c+(M-u/1^m)+H-F*a)^Q)^f)^((u*s^(K+X))^(g/((2+R)/a))*(y/T-O^m/X))/R)^(v*(W/(p-(d+D)))*((G/(A-P))^y-A/n))
+        expectedOutput: |
+          CfI-+Z/zcMu1m^/-+H+Fa*-Q^^-f^usKX+^*g2R+a//^yT/Om^X/-*^R/vWpdD+-/*GAP-/y^An/-*^
+        hidden: true
+
+  - sheetId: prob-9-2-2-prefix-to-infix-conversio
+    slug: prefix-to-infix-conversion
+    title: "Prefix to Infix Conversion"
+    difficulty: Medium
+    topic: "Stack"
+    subtopic: "Prefix, Infix, PostFix Conversion Problems"
+    tags: ["stack", "strings", "expression"]
+    sourceUrl: ""
+    statement: |
+      In **prefix** (Polish) notation an operator is written *before* its two
+      operands (`+ab`), so the expression needs no brackets at all. Rewrite a
+      prefix expression in ordinary **infix** notation.
+
+      **Notation used everywhere in this sub-step**
+
+      - Every **operand is a single character**: `a`-`z`, `A`-`Z` or `0`-`9`.
+      - The **operators** are `+`, `-`, `*`, `/` and `^`, and every operator is
+        binary.
+      - **Precedence**, highest first: `^`, then `*` and `/`, then `+` and `-`;
+        `^` is **right-associative** and the other four are left-associative.
+        (You do not need these rules to read prefix — they only describe what
+        the infix answer must mean.)
+      - There are **no spaces** anywhere in the input or the output.
+
+      **How the infix answer must be bracketed.** So that exactly one answer is
+      accepted, put a pair of brackets around **every single operator
+      application**, including the outermost one. Whenever you join a left part
+      `L` and a right part `R` with operator `op`, write `(L op R)` — never omit
+      the brackets, even when precedence would allow it. A lone operand is
+      printed as itself with no brackets. For example the prefix expression
+      `+a*bc` is printed as `(a+(b*c))`, not as `a+b*c`.
+    inputFormat: |
+      - A single line: the prefix expression (no spaces).
+    outputFormat: |
+      Print one line: the expression in infix notation, fully bracketed as
+      described above, with no spaces.
+    constraints:
+      - "1 <= number of operands <= 2000"
+      - "1 <= length of the input line <= 10000"
+      - "Operands are single characters from a-z, A-Z, 0-9"
+      - "Operators are + - * / ^"
+      - "The input is a syntactically valid prefix expression"
+    examples:
+      - input: |
+          *+ab-cd
+        output: |
+          ((a+b)*(c-d))
+        explanation: >-
+          The leading `*` applies to the two prefix expressions that follow it,
+          `+ab` and `-cd`. Those become `(a+b)` and `(c-d)`, and joining them
+          with `*` adds one more pair of brackets.
+      - input: |
+          +a*bc
+        output: |
+          (a+(b*c))
+        explanation: >-
+          The leading `+` takes `a` as its left operand and `*bc` as its right
+          operand. `*bc` becomes `(b*c)`, and the outer application is bracketed
+          as well.
+    hints:
+      - The last two things you read when scanning from the right are always a complete pair of operands for the operator sitting just before them.
+      - Scan the string from right to left and keep a stack of finished infix strings. An operand is pushed as-is.
+      - "When you meet an operator, the operand written next to it in the prefix string is the *left* one, so pop the top of the stack first to get the left part, then pop again to get the right part."
+    explanation: |
+      **Brute force — recursive descent, O(n) time but O(n) recursion depth.**
+      Keep a cursor into the string. Read one character: if it is an operand,
+      return it; if it is an operator, recursively parse the left sub-expression
+      then the right one and return `"(" + left + op + right + ")"`. This is
+      correct and linear, but a long left-leaning expression makes the recursion
+      as deep as the number of operators, which can overflow the stack.
+
+      **Stack, right to left — O(n) time, O(n) space.** Walk the string
+      backwards with a stack of already-built infix strings:
+
+      - an operand is pushed on its own;
+      - an operator pops **two** entries. Because we are moving right to left,
+        the entry on top of the stack is the one that appeared *first* after the
+        operator, i.e. its **left** operand; the next entry is the **right**
+        operand. Push `"(" + left + op + right + ")"`.
+
+      The stack ends with a single string: the answer. Each character is handled
+      once, so the scan is O(n).
+
+      **A note on cost.** Building the answer by concatenating strings copies
+      each partial result again, which is O(n²) characters in the worst case (a
+      chain such as `---abcd`). With a few thousand operands that is still
+      instant; to make it strictly linear, push *lists of pieces* (or build an
+      expression tree and emit it with an explicit stack) and join once at the
+      end.
+    starterCode:
+      python: |
+        import sys
+
+
+        def prefix_to_infix(expression: str) -> str:
+            # Return the fully bracketed infix form of the prefix expression.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            expression = sys.stdin.readline().strip()
+            print(prefix_to_infix(expression))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def prefix_to_infix(expression: str) -> str:
+            stack = []
+            for ch in reversed(expression):
+                if ch.isalnum():
+                    stack.append(ch)
+                else:
+                    left = stack.pop()
+                    right = stack.pop()
+                    stack.append("(" + left + ch + right + ")")
+            return stack.pop()
+
+
+        # --- Input/output handling ---
+        def main():
+            expression = sys.stdin.readline().strip()
+            print(prefix_to_infix(expression))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          *+ab-cd
+        expectedOutput: |
+          ((a+b)*(c-d))
+        hidden: false
+      - input: |
+          +a*bc
+        expectedOutput: |
+          (a+(b*c))
+        hidden: false
+      - input: |
+          x
+        expectedOutput: |
+          x
+        hidden: true
+      - input: |
+          ^a^bc
+        expectedOutput: |
+          (a^(b^c))
+        hidden: true
+      - input: |
+          ---abcd
+        expectedOutput: |
+          (((a-b)-c)-d)
+        hidden: true
+      - input: |
+          +1*23
+        expectedOutput: |
+          (1+(2*3))
+        hidden: true
+      - input: |
+          -+a*b^cd/ef
+        expectedOutput: |
+          ((a+(b*(c^d)))-(e/f))
+        hidden: true
+      - input: |
+          /*a+b*c-def
+        expectedOutput: |
+          ((a*(b+(c*(d-e))))/f)
+        hidden: true
+      - input: |
+          ^/^^-/+C-fIZ^z^-++c-M/u^1mH*FaQf*^*u^s+KX/g/+2Ra-/yT/^OmXR**v/W-p+dD-^/G-APy/An
+        expectedOutput: |
+          (((((((C+(f-I))/Z)-(z^((((c+(M-(u/(1^m))))+H)-(F*a))^Q)))^f)^(((u*(s^(K+X)))^(g/((2+R)/a)))*((y/T)-((O^m)/X))))/R)^((v*(W/(p-(d+D))))*(((G/(A-P))^y)-(A/n))))
+        hidden: true
+
+  - sheetId: prob-9-2-3-prefix-to-postfix-convers
+    slug: prefix-to-postfix-conversion
+    title: "Prefix to Postfix Conversion"
+    difficulty: Medium
+    topic: "Stack"
+    subtopic: "Prefix, Infix, PostFix Conversion Problems"
+    tags: ["stack", "strings", "expression"]
+    sourceUrl: ""
+    statement: |
+      **Prefix** notation writes an operator *before* its two operands (`+ab`)
+      and **postfix** notation writes it *after* them (`ab+`). Neither form
+      needs brackets. Rewrite a prefix expression in postfix notation.
+
+      **Notation used everywhere in this sub-step**
+
+      - Every **operand is a single character**: `a`-`z`, `A`-`Z` or `0`-`9`.
+      - The **operators** are `+`, `-`, `*`, `/` and `^`, and every operator is
+        binary.
+      - **Precedence**, highest first: `^`, then `*` and `/`, then `+` and `-`;
+        `^` is **right-associative**, the other four are left-associative.
+        Bracket-free notations do not use these rules — the structure of the
+        expression is already fixed by the order of the tokens — they only
+        matter when the same expression is written in infix.
+      - There are **no spaces** and **no brackets** in the input or the output.
+
+      Both notations describe the same expression tree, so the answer is unique.
+    inputFormat: |
+      - A single line: the prefix expression (no spaces).
+    outputFormat: |
+      Print one line: the same expression in postfix notation, with no spaces.
+    constraints:
+      - "1 <= number of operands <= 2000"
+      - "1 <= length of the input line <= 10000"
+      - "Operands are single characters from a-z, A-Z, 0-9"
+      - "Operators are + - * / ^"
+      - "The input is a syntactically valid prefix expression"
+    examples:
+      - input: |
+          *+ab-cd
+        output: |
+          ab+cd-*
+        explanation: >-
+          The top-level operator is `*`, applied to `+ab` and `-cd`. Those become
+          `ab+` and `cd-`, and in postfix the `*` is written last.
+      - input: |
+          ^a^bc
+        output: |
+          abc^^
+        explanation: >-
+          The outer `^` has operands `a` and `^bc`. The inner one becomes `bc^`,
+          so the answer is `a` followed by `bc^` followed by the outer `^`.
+    hints:
+      - Scan from right to left so that the operands of an operator are already finished by the time you reach it.
+      - Keep a stack of completed postfix strings; push single operands unchanged.
+      - "For an operator, the first value popped is its *left* operand (it came right after the operator in the input) and the second is its *right* operand. Push `left + right + op`."
+    explanation: |
+      **Brute force — recursive descent, O(n) time, O(n) recursion depth.**
+      Parse with a moving cursor: an operand returns itself; an operator parses
+      its left sub-expression, then its right one, and returns
+      `left + right + op`. Correct, but the recursion can be thousands of frames
+      deep on a skewed expression.
+
+      **Stack, right to left — O(n) time, O(n) space.** Traverse the string
+      backwards, keeping a stack of postfix strings that are already complete:
+
+      - push an operand as a one-character string;
+      - on an operator, pop two entries. Scanning right to left means the entry
+        on top is the sub-expression that came *immediately after* the operator,
+        so it is the **left** operand; the next pop gives the **right** operand.
+        Push `left + right + op`.
+
+      When the scan finishes, the single remaining entry is the answer. Every
+      character is touched once, so the algorithm is linear in the length of the
+      input.
+
+      **Why the pop order matters.** Getting it backwards produces `right + left
+      + op`, which silently gives a wrong answer for non-commutative operators
+      such as `-`, `/` and `^` while still looking plausible for `+` and `*`.
+      Concatenating strings is O(n²) characters in the worst case; pushing
+      lists of fragments and joining once at the end makes it strictly linear.
+    starterCode:
+      python: |
+        import sys
+
+
+        def prefix_to_postfix(expression: str) -> str:
+            # Return the postfix form of the given prefix expression.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            expression = sys.stdin.readline().strip()
+            print(prefix_to_postfix(expression))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def prefix_to_postfix(expression: str) -> str:
+            stack = []
+            for ch in reversed(expression):
+                if ch.isalnum():
+                    stack.append(ch)
+                else:
+                    left = stack.pop()
+                    right = stack.pop()
+                    stack.append(left + right + ch)
+            return stack.pop()
+
+
+        # --- Input/output handling ---
+        def main():
+            expression = sys.stdin.readline().strip()
+            print(prefix_to_postfix(expression))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          *+ab-cd
+        expectedOutput: |
+          ab+cd-*
+        hidden: false
+      - input: |
+          ^a^bc
+        expectedOutput: |
+          abc^^
+        hidden: false
+      - input: |
+          x
+        expectedOutput: |
+          x
+        hidden: true
+      - input: |
+          ---abcd
+        expectedOutput: |
+          ab-c-d-
+        hidden: true
+      - input: |
+          +a*bc
+        expectedOutput: |
+          abc*+
+        hidden: true
+      - input: |
+          +1*23
+        expectedOutput: |
+          123*+
+        hidden: true
+      - input: |
+          *^p+qrs
+        expectedOutput: |
+          pqr+^s*
+        hidden: true
+      - input: |
+          /*a+b*c-def
+        expectedOutput: |
+          abcde-*+*f/
+        hidden: true
+      - input: |
+          ^/^^-/+C-fIZ^z^-++c-M/u^1mH*FaQf*^*u^s+KX/g/+2Ra-/yT/^OmXR**v/W-p+dD-^/G-APy/An
+        expectedOutput: |
+          CfI-+Z/zcMu1m^/-+H+Fa*-Q^^-f^usKX+^*g2R+a//^yT/Om^X/-*^R/vWpdD+-/*GAP-/y^An/-*^
+        hidden: true
+
+  - sheetId: prob-9-2-4-postfix-to-prefix-convers
+    slug: postfix-to-prefix-conversion
+    title: "Postfix to Prefix Conversion"
+    difficulty: Medium
+    topic: "Stack"
+    subtopic: "Prefix, Infix, PostFix Conversion Problems"
+    tags: ["stack", "strings", "expression"]
+    sourceUrl: ""
+    statement: |
+      **Postfix** notation writes an operator *after* its two operands (`ab+`)
+      and **prefix** notation writes it *before* them (`+ab`). Rewrite a postfix
+      expression in prefix notation.
+
+      **Notation used everywhere in this sub-step**
+
+      - Every **operand is a single character**: `a`-`z`, `A`-`Z` or `0`-`9`.
+      - The **operators** are `+`, `-`, `*`, `/` and `^`, and every operator is
+        binary.
+      - **Precedence**, highest first: `^`, then `*` and `/`, then `+` and `-`;
+        `^` is **right-associative**, the other four are left-associative. These
+        rules are what the infix form of the expression would mean; in postfix
+        and prefix the grouping is already determined by the token order, so no
+        brackets appear.
+      - There are **no spaces** and **no brackets** in the input or the output.
+
+      Both notations describe the same expression tree, so the answer is unique.
+    inputFormat: |
+      - A single line: the postfix expression (no spaces).
+    outputFormat: |
+      Print one line: the same expression in prefix notation, with no spaces.
+    constraints:
+      - "1 <= number of operands <= 2000"
+      - "1 <= length of the input line <= 10000"
+      - "Operands are single characters from a-z, A-Z, 0-9"
+      - "Operators are + - * / ^"
+      - "The input is a syntactically valid postfix expression"
+    examples:
+      - input: |
+          ab+cd-*
+        output: |
+          *+ab-cd
+        explanation: >-
+          Reading left to right, `ab+` completes the sum and `cd-` the
+          difference; the final `*` combines them. Moving each operator in front
+          of its two operands gives `*` `+ab` `-cd`.
+      - input: |
+          abc*+
+        output: |
+          +a*bc
+        explanation: >-
+          `bc*` is finished first and becomes `*bc`. The trailing `+` then
+          applies to `a` and that product, so it moves to the front.
+    hints:
+      - Scan left to right. Every time you meet an operator, its two operands are the two most recently completed sub-expressions.
+      - Keep a stack of finished prefix strings; push operands unchanged.
+      - "Pop order matters: the first pop is the *right* operand (it was completed last) and the second is the *left* one. Push `op + left + right`."
+    explanation: |
+      **Brute force — repeated scanning, O(n²) time.** Find the leftmost
+      operator whose two immediate predecessors are plain operands, replace that
+      triple `x y op` by the single token `op x y`, and repeat until one token
+      remains. Every pass is O(n) and there are O(n) operators.
+
+      **Stack, left to right — O(n) time, O(n) space.** Postfix is exactly the
+      order in which a stack machine evaluates the expression, so run that
+      machine but push *strings* instead of numbers:
+
+      - an operand is pushed as a one-character string;
+      - an operator pops two entries. The top of the stack was completed most
+        recently, so it is the **right** operand and the next pop is the
+        **left** one. Push `op + left + right`.
+
+      A valid postfix expression leaves exactly one string on the stack — the
+      prefix answer. Each character causes O(1) stack work, so the pass is
+      linear.
+
+      **Care with the pop order.** Swapping the two pops produces
+      `op + right + left`, which is wrong for `-`, `/` and `^` but accidentally
+      right for `+` and `*`, so tests built only from commutative operators will
+      not catch the bug. Concatenating strings costs O(n²) characters in the
+      worst case; pushing fragment lists and joining once keeps it linear.
+    starterCode:
+      python: |
+        import sys
+
+
+        def postfix_to_prefix(expression: str) -> str:
+            # Return the prefix form of the given postfix expression.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            expression = sys.stdin.readline().strip()
+            print(postfix_to_prefix(expression))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def postfix_to_prefix(expression: str) -> str:
+            stack = []
+            for ch in expression:
+                if ch.isalnum():
+                    stack.append(ch)
+                else:
+                    right = stack.pop()
+                    left = stack.pop()
+                    stack.append(ch + left + right)
+            return stack.pop()
+
+
+        # --- Input/output handling ---
+        def main():
+            expression = sys.stdin.readline().strip()
+            print(postfix_to_prefix(expression))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          ab+cd-*
+        expectedOutput: |
+          *+ab-cd
+        hidden: false
+      - input: |
+          abc*+
+        expectedOutput: |
+          +a*bc
+        hidden: false
+      - input: |
+          x
+        expectedOutput: |
+          x
+        hidden: true
+      - input: |
+          abc^^
+        expectedOutput: |
+          ^a^bc
+        hidden: true
+      - input: |
+          ab-c-d-
+        expectedOutput: |
+          ---abcd
+        hidden: true
+      - input: |
+          123*+
+        expectedOutput: |
+          +1*23
+        hidden: true
+      - input: |
+          pqr+^s*
+        expectedOutput: |
+          *^p+qrs
+        hidden: true
+      - input: |
+          ab^cd^*e+
+        expectedOutput: |
+          +*^ab^cde
+        hidden: true
+      - input: |
+          CfI-+Z/zcMu1m^/-+H+Fa*-Q^^-f^usKX+^*g2R+a//^yT/Om^X/-*^R/vWpdD+-/*GAP-/y^An/-*^
+        expectedOutput: |
+          ^/^^-/+C-fIZ^z^-++c-M/u^1mH*FaQf*^*u^s+KX/g/+2Ra-/yT/^OmXR**v/W-p+dD-^/G-APy/An
+        hidden: true
+
+  - sheetId: prob-9-2-5-postfix-to-infix-conversi
+    slug: postfix-to-infix-conversion
+    title: "Postfix to Infix Conversion"
+    difficulty: Easy
+    topic: "Stack"
+    subtopic: "Prefix, Infix, PostFix Conversion Problems"
+    tags: ["stack", "strings", "expression"]
+    sourceUrl: ""
+    statement: |
+      In **postfix** (reverse Polish) notation an operator is written *after*
+      its two operands (`ab+`), which is why the form needs no brackets. Rewrite
+      a postfix expression in ordinary **infix** notation.
+
+      **Notation used everywhere in this sub-step**
+
+      - Every **operand is a single character**: `a`-`z`, `A`-`Z` or `0`-`9`.
+      - The **operators** are `+`, `-`, `*`, `/` and `^`, and every operator is
+        binary.
+      - **Precedence**, highest first: `^`, then `*` and `/`, then `+` and `-`;
+        `^` is **right-associative** and the other four are left-associative.
+        (These rules describe what an infix expression means; you do not need
+        them to read postfix.)
+      - There are **no spaces** in the input or the output.
+
+      **How the infix answer must be bracketed.** So that exactly one answer is
+      accepted, put a pair of brackets around **every single operator
+      application**, including the outermost one: joining a left part `L` and a
+      right part `R` with operator `op` is written `(L op R)`, even when
+      precedence would make the brackets unnecessary. A lone operand is printed
+      as itself with no brackets. For instance `abc*+` is printed as
+      `(a+(b*c))`, not as `a+b*c`.
+    inputFormat: |
+      - A single line: the postfix expression (no spaces).
+    outputFormat: |
+      Print one line: the expression in infix notation, fully bracketed as
+      described above, with no spaces.
+    constraints:
+      - "1 <= number of operands <= 2000"
+      - "1 <= length of the input line <= 10000"
+      - "Operands are single characters from a-z, A-Z, 0-9"
+      - "Operators are + - * / ^"
+      - "The input is a syntactically valid postfix expression"
+    examples:
+      - input: |
+          ab+cd-*
+        output: |
+          ((a+b)*(c-d))
+        explanation: >-
+          `ab+` becomes `(a+b)` and `cd-` becomes `(c-d)`. The final `*` joins
+          the two, adding the outermost pair of brackets.
+      - input: |
+          abc*+
+        output: |
+          (a+(b*c))
+        explanation: >-
+          `bc*` is completed first and becomes `(b*c)`; the trailing `+` then
+          combines `a` with it, and that application is bracketed too.
+    hints:
+      - Postfix is what a stack machine consumes. Run the same machine, but push partly built strings instead of numbers.
+      - Push each operand as a one-character string. An operator consumes the two most recent entries.
+      - "The top of the stack was finished last, so it is the *right* operand. Push `\"(\" + left + op + right + \")\"` and never skip the brackets."
+    explanation: |
+      **Brute force — repeated rewriting, O(n²) time.** Scan for the first
+      operator preceded by two plain operands, replace `x y op` by the single
+      token `(x op y)`, and repeat. Each pass is O(n) and there are O(n)
+      operators.
+
+      **Stack, left to right — O(n) time, O(n) space.** Postfix is already in
+      evaluation order, so one pass with a stack of strings is enough:
+
+      - an operand is pushed as-is;
+      - an operator pops two entries — the top is the **right** operand because
+        it was completed most recently, the next pop is the **left** operand —
+        and pushes `"(" + left + op + right + ")"`.
+
+      A valid postfix expression ends with exactly one entry on the stack, which
+      is the answer. Every character does O(1) stack work.
+
+      **Why the brackets are required.** Dropping them would need precedence and
+      associativity analysis (`ab+c*` is `(a+b)*c`, and the brackets there are
+      genuinely needed), and different sensible rules give different strings.
+      Bracketing every application makes the output a unique, unambiguous
+      rendering of the expression tree. The string concatenations are O(n²)
+      characters in the worst case; pushing fragment lists and joining once
+      makes the whole conversion linear.
+    starterCode:
+      python: |
+        import sys
+
+
+        def postfix_to_infix(expression: str) -> str:
+            # Return the fully bracketed infix form of the postfix expression.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            expression = sys.stdin.readline().strip()
+            print(postfix_to_infix(expression))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def postfix_to_infix(expression: str) -> str:
+            stack = []
+            for ch in expression:
+                if ch.isalnum():
+                    stack.append(ch)
+                else:
+                    right = stack.pop()
+                    left = stack.pop()
+                    stack.append("(" + left + ch + right + ")")
+            return stack.pop()
+
+
+        # --- Input/output handling ---
+        def main():
+            expression = sys.stdin.readline().strip()
+            print(postfix_to_infix(expression))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          ab+cd-*
+        expectedOutput: |
+          ((a+b)*(c-d))
+        hidden: false
+      - input: |
+          abc*+
+        expectedOutput: |
+          (a+(b*c))
+        hidden: false
+      - input: |
+          x
+        expectedOutput: |
+          x
+        hidden: true
+      - input: |
+          abc^^
+        expectedOutput: |
+          (a^(b^c))
+        hidden: true
+      - input: |
+          ab-c-d-
+        expectedOutput: |
+          (((a-b)-c)-d)
+        hidden: true
+      - input: |
+          123*+
+        expectedOutput: |
+          (1+(2*3))
+        hidden: true
+      - input: |
+          pqr+^s*
+        expectedOutput: |
+          ((p^(q+r))*s)
+        hidden: true
+      - input: |
+          ab^cd^*e+
+        expectedOutput: |
+          (((a^b)*(c^d))+e)
+        hidden: true
+      - input: |
+          CfI-+Z/zcMu1m^/-+H+Fa*-Q^^-f^usKX+^*g2R+a//^yT/Om^X/-*^R/vWpdD+-/*GAP-/y^An/-*^
+        expectedOutput: |
+          (((((((C+(f-I))/Z)-(z^((((c+(M-(u/(1^m))))+H)-(F*a))^Q)))^f)^(((u*(s^(K+X)))^(g/((2+R)/a)))*((y/T)-((O^m)/X))))/R)^((v*(W/(p-(d+D))))*(((G/(A-P))^y)-(A/n))))
+        hidden: true
+
+  - sheetId: prob-9-2-6-infix-to-prefix-conversio
+    slug: infix-to-prefix-conversion
+    title: "Infix to Prefix Conversion"
+    difficulty: Medium
+    topic: "Stack"
+    subtopic: "Prefix, Infix, PostFix Conversion Problems"
+    tags: ["stack", "strings", "expression"]
+    sourceUrl: ""
+    statement: |
+      In **infix** notation an operator sits between its two operands (`a+b`) and
+      brackets and precedence decide the grouping. In **prefix** (Polish)
+      notation the operator comes *before* its two operands (`+ab`), so no
+      brackets are ever needed. Rewrite an infix expression in prefix notation.
+
+      **Notation used everywhere in this sub-step**
+
+      - Every **operand is a single character**: `a`-`z`, `A`-`Z` or `0`-`9`.
+      - The **operators** are `+`, `-`, `*`, `/` and `^`, and every operator is
+        binary.
+      - **Precedence**, highest first: `^`, then `*` and `/`, then `+` and `-`.
+      - `^` is **right-associative** (`a^b^c` means `a^(b^c)`); `+`, `-`, `*`
+        and `/` are **left-associative** (`a-b-c` means `(a-b)-c`).
+      - The infix input contains **no spaces** and is parenthesised **only where
+        the brackets are needed**, so `a+b*c` never appears as `a+(b*c)`.
+
+      The prefix form of a valid expression is unique. Print it with no spaces
+      and no brackets.
+    inputFormat: |
+      - A single line: the infix expression (no spaces).
+    outputFormat: |
+      Print one line: the same expression in prefix notation, with no spaces and
+      no brackets.
+    constraints:
+      - "1 <= number of operands <= 2000"
+      - "1 <= length of the input line <= 10000"
+      - "Operands are single characters from a-z, A-Z, 0-9"
+      - "Operators are + - * / ^ ; brackets are ( and )"
+      - "The input is a syntactically valid infix expression"
+    examples:
+      - input: |
+          a+b*c
+        output: |
+          +a*bc
+        explanation: >-
+          `*` binds tighter, so the expression is `a+(b*c)`. The product becomes
+          `*bc` and the top-level `+` moves in front of `a` and that product.
+      - input: |
+          (a+b)*(c-d)
+        output: |
+          *+ab-cd
+        explanation: >-
+          The brackets make `a+b` and `c-d` the two operands of `*`, so the
+          answer is `*` followed by `+ab` and `-cd`.
+    hints:
+      - You already know how to turn infix into postfix with one operator stack. Can a mirrored version of the expression reuse that machinery?
+      - Reverse the input and swap every `(` with `)`. Converting the reversed string to postfix and then reversing the result gives the prefix form.
+      - "Reversing flips associativity: in the reversed pass `+ - * /` must behave as right-associative (do not pop an equal-precedence operator) while `^` must behave as left-associative (do pop one). Get this backwards and only chained same-precedence operators will be wrong."
+    explanation: |
+      **Brute force — repeatedly bracket the tightest operator, O(n²) time.**
+      Find the operator that is applied first (highest precedence at the
+      shallowest bracket depth, broken by associativity), replace `x op y` with
+      the token `op x y`, and repeat until one token is left.
+
+      **Two-pass conversion through postfix — O(n) time, O(n) space.** Parse the
+      infix once into an expression tree (or into postfix with the shunting-yard
+      algorithm), then emit the tree in prefix order. Concretely: run
+      infix → postfix, then postfix → prefix with a stack of strings. Two linear
+      passes, easy to trust because both halves are already familiar.
+
+      **Mirrored shunting-yard — one pass, O(n) time, O(n) space.** Prefix read
+      backwards looks like postfix of the mirrored expression, which gives the
+      classic trick:
+
+      1. Reverse the input string and swap `(` with `)`.
+      2. Run the shunting-yard algorithm on that reversed string.
+      3. Reverse the output.
+
+      The one subtlety is associativity. Reversing turns a left-associative
+      chain into a right-associative one and vice versa, so in step 2 the
+      popping rule must be flipped: when the operator on top of the stack has
+      the **same** precedence as the incoming one, pop it only if the incoming
+      operator is `^`, and leave it for `+ - * /`. Higher-precedence operators
+      are always popped, and `(` still acts as a barrier.
+
+      Both linear approaches touch each character O(1) times. The brute force is
+      only worth knowing as a sanity check on small inputs.
+    starterCode:
+      python: |
+        import sys
+
+
+        def infix_to_prefix(expression: str) -> str:
+            # Return the prefix form of the given infix expression.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            expression = sys.stdin.readline().strip()
+            print(infix_to_prefix(expression))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+        PRECEDENCE = {"+": 1, "-": 1, "*": 2, "/": 2, "^": 3}
+
+
+        def infix_to_prefix(expression: str) -> str:
+            mirrored = [")" if ch == "(" else "(" if ch == ")" else ch for ch in reversed(expression)]
+            output = []
+            stack = []
+            for ch in mirrored:
+                if ch.isalnum():
+                    output.append(ch)
+                elif ch == "(":
+                    stack.append(ch)
+                elif ch == ")":
+                    while stack and stack[-1] != "(":
+                        output.append(stack.pop())
+                    stack.pop()
+                else:
+                    while stack and stack[-1] != "(" and (
+                        PRECEDENCE[stack[-1]] > PRECEDENCE[ch]
+                        or (PRECEDENCE[stack[-1]] == PRECEDENCE[ch] and ch == "^")
+                    ):
+                        output.append(stack.pop())
+                    stack.append(ch)
+            while stack:
+                output.append(stack.pop())
+            return "".join(reversed(output))
+
+
+        # --- Input/output handling ---
+        def main():
+            expression = sys.stdin.readline().strip()
+            print(infix_to_prefix(expression))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          a+b*c
+        expectedOutput: |
+          +a*bc
+        hidden: false
+      - input: |
+          (a+b)*(c-d)
+        expectedOutput: |
+          *+ab-cd
+        hidden: false
+      - input: |
+          x
+        expectedOutput: |
+          x
+        hidden: true
+      - input: |
+          a^b^c
+        expectedOutput: |
+          ^a^bc
+        hidden: true
+      - input: |
+          a-b-c-d
+        expectedOutput: |
+          ---abcd
+        hidden: true
+      - input: |
+          a+b*c^d-e/f
+        expectedOutput: |
+          -+a*b^cd/ef
+        hidden: true
+      - input: |
+          p^(q+r)*s
+        expectedOutput: |
+          *^p+qrs
+        hidden: true
+      - input: |
+          a*(b+c*(d-e))/f
+        expectedOutput: |
+          /*a+b*c-def
+        hidden: true
+      - input: |
+          a^b*c^d+e
+        expectedOutput: |
+          +*^ab^cde
+        hidden: true
+      - input: |
+          ((((C+(f-I))/Z-z^(c+(M-u/1^m)+H-F*a)^Q)^f)^((u*s^(K+X))^(g/((2+R)/a))*(y/T-O^m/X))/R)^(v*(W/(p-(d+D)))*((G/(A-P))^y-A/n))
+        expectedOutput: |
+          ^/^^-/+C-fIZ^z^-++c-M/u^1mH*FaQf*^*u^s+KX/g/+2Ra-/yT/^OmXR**v/W-p+dD-^/G-APy/An
+        hidden: true

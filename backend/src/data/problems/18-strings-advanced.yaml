@@ -1,0 +1,1686 @@
+section: strings-advanced
+problems:
+  - sheetId: prob-18-1-1-minimum-number-of-bracket
+    slug: minimum-number-of-bracket-reversals-to-make-an-expression-balanced
+    title: "Minimum number of bracket reversals to make an expression balanced"
+    difficulty: Hard
+    topic: "Strings"
+    subtopic: "Hard Problems"
+    tags: ["string", "stack", "greedy"]
+    sourceUrl: ""
+    statement: |
+      You are given an expression `s` made only of the curly brackets `{` and
+      `}`. The expression is **balanced** when every `{` can be paired with a
+      later `}` so that the pairs are properly nested — equivalently, reading
+      left to right the number of `}` never exceeds the number of `{` seen so
+      far, and both counts are equal at the end. `{{}}` and `{}{}` are balanced;
+      `}{` and `{{}` are not.
+
+      One **reversal** changes a single character into the other one: a `{`
+      becomes a `}`, or a `}` becomes a `{`. You may reverse any characters you
+      like, any number of times.
+
+      Report the **minimum number of reversals** that makes `s` balanced. If no
+      sequence of reversals can balance it, report `-1` instead. (That happens
+      exactly when the length of `s` is odd: a balanced expression always has
+      the same number of opening and closing brackets, and reversals never
+      change the length.)
+    inputFormat: |
+      - A single line: the expression `s`, containing only the characters `{`
+        and `}` and no spaces.
+    outputFormat: |
+      Print one integer: the minimum number of reversals needed, or `-1` if the
+      expression can never be balanced.
+    constraints:
+      - "1 <= length of s <= 100000"
+      - "s contains only the characters { and }"
+    examples:
+      - input: |
+          }{{}}{{{
+        output: |
+          3
+        explanation: >-
+          Positions 1-4 already form the matched block `{{}}`. What cannot be
+          paired is the leading `}` and the last three `{`. Reversing the
+          leading `}` and the last two `{` turns the expression into
+          `{{{}}{}}`, which is balanced. Three is the minimum: a single
+          unmatched `}` costs one reversal and three unmatched `{` cost two
+          more.
+      - input: |
+          {{{
+        output: |
+          -1
+        explanation: >-
+          The length is odd, so the counts of `{` and `}` can never be equal and
+          no number of reversals helps.
+    hints:
+      - >-
+        A `}` can only be matched by a `{` that appears before it. Make one
+        left-to-right pass and cancel every pair that already matches.
+      - >-
+        Whatever survives the cancelling always has the shape
+        `}}}...{{{` — some unmatched closing brackets followed by some unmatched
+        opening brackets. You never need to touch the brackets that cancelled.
+      - >-
+        A run of k unmatched `}` costs ceil(k / 2) reversals on its own, and a
+        run of m unmatched `{` costs ceil(m / 2). Note that k and m are not
+        independent — their sum has the parity of the string length.
+    explanation: |
+      **Brute force — try every subset of positions, O(2^n · n) time.** For each
+      of the `2^n` reversal masks, build the modified string, test whether it is
+      balanced and keep the smallest popcount. Correct, but hopeless beyond
+      about twenty characters.
+
+      **Cancel with a stack — O(n) time, O(n) space.** Push `{` on a stack; on a
+      `}`, pop if the top is a `{` (that pair is already fine), otherwise push
+      the `}` because it will never find a partner. At the end the stack holds
+      some `}` at the bottom and some `{` above them, and nothing else can be
+      cancelled.
+
+      **Cancel with two counters — O(n) time, O(1) space.** The stack only ever
+      needs its two counts, so keep `open_count` (unmatched `{` so far) and
+      `unmatched_close`. A `{` increments `open_count`; a `}` decrements it when
+      it is positive, otherwise increments `unmatched_close`.
+
+      **Turning the leftovers into an answer.** Suppose `k` closing and `m`
+      opening brackets are left, i.e. the reduced string is `}`×k followed by
+      `{`×m. Two adjacent identical brackets can be fixed with a single
+      reversal (`}}` → `{}`, `{{` → `{}`), and an odd leftover bracket needs one
+      reversal of its own, so the cost is `ceil(k/2) + ceil(m/2)`. No cheaper
+      scheme exists: each reversal changes the running balance by 2, and the
+      reduced string already has the largest possible balance violation. If
+      `n` is odd, `k + m` is odd too and the answer is `-1`.
+
+      Both linear versions run in one pass; the counter version uses constant
+      extra memory.
+    starterCode:
+      python: |
+        import sys
+
+
+        def min_bracket_reversals(expression: str) -> int:
+            # Return the fewest reversals that balance the expression, or -1.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            expression = sys.stdin.readline().strip()
+            print(min_bracket_reversals(expression))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def min_bracket_reversals(expression: str) -> int:
+            if len(expression) % 2 == 1:
+                return -1
+            open_count = 0
+            unmatched_close = 0
+            for ch in expression:
+                if ch == "{":
+                    open_count += 1
+                elif open_count > 0:
+                    open_count -= 1
+                else:
+                    unmatched_close += 1
+            return (open_count + 1) // 2 + (unmatched_close + 1) // 2
+
+
+        # --- Input/output handling ---
+        def main():
+            expression = sys.stdin.readline().strip()
+            print(min_bracket_reversals(expression))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          }{{}}{{{
+        expectedOutput: |
+          3
+        hidden: false
+      - input: |
+          {{{
+        expectedOutput: |
+          -1
+        hidden: false
+      - input: |
+          {{}}
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          }}{{
+        expectedOutput: |
+          2
+        hidden: true
+      - input: |
+          {
+        expectedOutput: |
+          -1
+        hidden: true
+      - input: |
+          }}}}
+        expectedOutput: |
+          2
+        hidden: true
+      - input: |
+          {}{}{}{}
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          }}}}}}{{
+        expectedOutput: |
+          4
+        hidden: true
+      - input: |
+          }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
+        expectedOutput: |
+          50
+        hidden: true
+
+  - sheetId: prob-18-1-2-count-and-say
+    slug: count-and-say
+    title: "Count and say"
+    difficulty: Hard
+    topic: "Strings"
+    subtopic: "Hard Problems"
+    tags: ["string", "simulation"]
+    sourceUrl: "https://leetcode.com/problems/count-and-say/"
+    statement: |
+      The **count-and-say** sequence is a sequence of digit strings defined by
+      reading the previous term out loud.
+
+      - The first term is `T(1) = "1"`.
+      - To build `T(k + 1)` from `T(k)`, split `T(k)` into **maximal runs of
+        equal digits** (left to right) and, for each run, write down the length
+        of the run followed by the digit itself. Concatenate those pieces.
+
+      For example `T(4) = "1211"` splits into the runs `1`, `2`, `11`, which are
+      read as "one 1", "one 2", "two 1s", so `T(5) = "11" + "12" + "21" =
+      "111221"`.
+
+      Given `n`, print `T(n)`.
+    inputFormat: |
+      - A single line: the integer `n`.
+    outputFormat: |
+      Print one line: the `n`-th term of the count-and-say sequence, as a string
+      of digits with no spaces.
+    constraints:
+      - "1 <= n <= 30"
+    examples:
+      - input: |
+          1
+        output: |
+          1
+        explanation: The sequence starts at "1" by definition.
+      - input: |
+          5
+        output: |
+          111221
+        explanation: >-
+          The first five terms are "1", "11" (one 1), "21" (two 1s), "1211" (one
+          2, one 1) and "111221" (one 1, one 2, two 1s).
+    hints:
+      - >-
+        There is no closed form here — you simply build the terms one after the
+        other, starting from "1".
+      - >-
+        To read a term, walk it with two indices: keep advancing the second one
+        while it sees the same digit as the first, then emit the run length and
+        the digit and jump the first index forward.
+      - >-
+        Append the pieces to a list and join once per term instead of using
+        `result += piece` in a loop, so building a term stays linear in its
+        length.
+    explanation: |
+      **The only approach is simulation, but the details matter.** The terms
+      grow by a constant factor (roughly 1.3 per step, Conway's constant), so
+      `T(30)` is a few thousand characters and `T(n)` for `n <= 30` is tiny.
+
+      **Straightforward run-length encoding — O(L) per term.** Keep a pointer
+      `i` into the current term. Let `j` run forward while `term[j] == term[i]`;
+      the run has length `j - i`, so append `str(j - i)` and `term[i]` to an
+      output list and set `i = j`. Joining the list once gives the next term.
+      With `L(k)` the length of term `k`, the total work is
+      `O(L(1) + ... + L(n))`, which is `O(L(n))` because the lengths grow
+      geometrically — for `n = 30` that is well under ten thousand characters.
+
+      **Common slip-ups.**
+
+      - Using `result = result + piece` inside the inner loop makes each term
+        quadratic in its own length; collect pieces and `join` instead.
+      - A run longer than nine is possible in principle for arbitrary digit
+        strings, so write the run length with `str(...)`, not as a single
+        character. (In this particular sequence no run ever exceeds three, but
+        the code should not depend on that.)
+      - `n = 1` must return `"1"` without doing any expansion, so run the
+        expansion exactly `n - 1` times.
+
+      An alternative is to memoise the terms in a list and answer many queries
+      at once; for a single query it makes no difference.
+    starterCode:
+      python: |
+        import sys
+
+
+        def count_and_say(n: int) -> str:
+            # Return the n-th term of the count-and-say sequence.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            n = int(sys.stdin.readline())
+            print(count_and_say(n))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def count_and_say(n: int) -> str:
+            term = "1"
+            for _ in range(n - 1):
+                pieces = []
+                i = 0
+                while i < len(term):
+                    j = i
+                    while j < len(term) and term[j] == term[i]:
+                        j += 1
+                    pieces.append(str(j - i))
+                    pieces.append(term[i])
+                    i = j
+                term = "".join(pieces)
+            return term
+
+
+        # --- Input/output handling ---
+        def main():
+            n = int(sys.stdin.readline())
+            print(count_and_say(n))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          1
+        expectedOutput: |
+          1
+        hidden: false
+      - input: |
+          5
+        expectedOutput: |
+          111221
+        hidden: false
+      - input: |
+          2
+        expectedOutput: |
+          11
+        hidden: true
+      - input: |
+          3
+        expectedOutput: |
+          21
+        hidden: true
+      - input: |
+          4
+        expectedOutput: |
+          1211
+        hidden: true
+      - input: |
+          10
+        expectedOutput: |
+          13211311123113112211
+        hidden: true
+      - input: |
+          20
+        expectedOutput: |
+          11131221131211132221232112111312111213111213211231132132211211131221131211221321123113213221123113112221131112311332211211131221131211132211121312211231131112311211232221121321132132211331121321231231121113112221121321133112132112312321123113112221121113122113121113123112112322111213211322211312113211
+        hidden: true
+
+  - sheetId: prob-18-1-3-hashing-in-strings-theory
+    type: reference
+    slug: hashing-in-strings-theory
+    title: "Hashing In Strings | Theory"
+    difficulty: Easy
+    topic: "String Hashing"
+    subtopic: "Hard Problems"
+    tags: ["string", "hashing", "theory"]
+    sourceUrl: ""
+    statement: |
+      Comparing two strings character by character costs `O(len)`. String
+      hashing turns a string into a **single number** so that the comparison
+      becomes `O(1)` — at the price of a small, controllable chance of being
+      wrong. Everything in this sub-step that "searches with hashes" (Rabin-Karp
+      most obviously) rests on the idea below.
+
+      ## The polynomial rolling hash
+
+      Treat the string as the digits of a number written in some base `b`, and
+      take the whole thing modulo `m`:
+
+      ```
+      H(s) = ( s[0]·b^(L-1) + s[1]·b^(L-2) + ... + s[L-1]·b^0 )  mod m
+      ```
+
+      where `s[i]` is the character mapped to a small integer (for lowercase
+      letters, `ord(c) - ord('a') + 1` — start at 1, never 0, or `"a"`, `"aa"`
+      and `"aaa"` all hash to the same value).
+
+      Two properties make this useful:
+
+      1. **Prefix hashes.** Compute `H` of every prefix in one pass with
+         `h[i+1] = (h[i]·b + s[i]) mod m`. Then the hash of any substring
+         `s[l..r)` is `h[r] - h[l]·b^(r-l)` (mod `m`), so **any** substring hash
+         is available in `O(1)` after `O(L)` preprocessing.
+      2. **Rolling.** A window of fixed width `w` can be advanced by one
+         position with `H ← (H - s[i]·b^(w-1))·b + s[i+w]` (mod `m`) — a couple
+         of arithmetic operations instead of re-reading `w` characters. This is
+         exactly what Rabin-Karp does.
+
+      ## Choosing the base and the modulus
+
+      - `b` should be **larger than the alphabet** and behave like a random
+        number: `31`, `131`, `137` and `1_000_003` are common choices. A base
+        smaller than the alphabet makes different strings collide immediately.
+      - `m` should be a **large prime**: `10^9 + 7`, `10^9 + 9`, or the Mersenne
+        prime `2^61 - 1` when you want a very wide range. A prime modulus keeps
+        the arithmetic well behaved and lets you divide (via modular inverse) if
+        you ever need to.
+      - Avoid powers of two for `m`: they throw away the high bits and there are
+        well known inputs ("Thue-Morse" style strings) that make such hashes
+        collide by construction.
+
+      ## Collisions, and how much they matter
+
+      Different strings can share a hash. For a modulus of size `m` and `q`
+      hash comparisons, the chance that *some* pair collides is roughly
+      `q^2 / (2m)` — the birthday bound. With `m ≈ 10^9` and `q = 10^5`
+      comparisons that is about a 0.5% chance, which is not negligible.
+
+      Three standard defences:
+
+      1. **Verify on a hit.** When two hashes match, compare the actual
+         characters. Wrong matches are rare, so the expected cost stays low
+         while the answer becomes exact. This is what a correct Rabin-Karp
+         implementation does.
+      2. **Double hashing.** Carry two independent hashes (different base *and*
+         modulus) as a pair. The effective modulus becomes `m1·m2 ≈ 10^18`, and
+         the collision probability drops to the point where it can be ignored.
+      3. **Randomise the base** at run time. A fixed base can be attacked by an
+         adversary who constructs colliding inputs; a base picked randomly per
+         run cannot.
+
+      ## When string hashing is the right tool
+
+      - Comparing arbitrary substrings of one or several strings in `O(1)`:
+        "are `s[l1..r1)` and `s[l2..r2)` equal?", longest common prefix by
+        binary search, checking whether a substring is a palindrome (hash the
+        reversed string too).
+      - Counting **distinct substrings** of a given length, or deduplicating
+        many strings, by putting their hashes in a set.
+      - Pattern search when the pattern length changes between queries, or when
+        you want the simplicity of Rabin-Karp over the bookkeeping of KMP.
+
+      ## When to reach for something else
+
+      - If you need a **worst-case guarantee** rather than an expected one,
+        prefer KMP or the Z-function: both are `O(n + m)` with no probability
+        attached, and they also expose the border structure of the pattern
+        (which hashing does not).
+      - If you need to answer "does any of these thousands of patterns occur",
+        Aho-Corasick beats running a hash search per pattern.
+      - Suffix automata and suffix arrays give exact answers to substring
+        counting problems where hashing would only give an estimate you still
+        have to verify.
+    explanation: |
+      ## Things worth memorising
+
+      - `h[i+1] = (h[i]·b + value(s[i])) mod m` builds all prefix hashes in one
+        pass; precompute `b^k mod m` in the same loop.
+      - Substring hash: `(h[r] - h[l]·pow_b[r-l]) mod m`. In Python the `%`
+        operator already returns a non-negative result, so no manual fix-up is
+        needed; in C++/Java add `m` before taking the modulus.
+      - Map characters to **1-based** values so that leading `a`s are not
+        invisible.
+      - A hash match is *evidence*, not proof. Either verify the characters, or
+        use two moduli and accept an astronomically small error.
+      - Complexity to quote: `O(n)` preprocessing, `O(1)` per substring
+        comparison; Rabin-Karp search is `O(n + m)` expected and `O(n·m)` in the
+        adversarial worst case, which is exactly why the verification step and a
+        randomised base exist.
+
+  - sheetId: prob-18-1-4-rabin-karp-algorithm
+    slug: rabin-karp-algorithm
+    title: "Rabin Karp Algorithm"
+    difficulty: Hard
+    topic: "String Hashing"
+    subtopic: "Hard Problems"
+    tags: ["string", "hashing", "pattern-matching"]
+    sourceUrl: ""
+    statement: |
+      You are given a `text` and a `pattern`, both made of lowercase English
+      letters. Find **every** position at which `pattern` occurs inside `text`.
+
+      Occurrences may **overlap**: in `aaaa` the pattern `aa` occurs at
+      positions `0`, `1` and `2`.
+
+      This is the problem the **Rabin-Karp** algorithm was designed for: slide a
+      window of length `|pattern|` across the text, keep a rolling hash of that
+      window, and compare it with the hash of the pattern, checking the actual
+      characters only when the two hashes agree.
+    inputFormat: |
+      - Line 1: the string `text`.
+      - Line 2: the string `pattern`.
+    outputFormat: |
+      Print all 0-indexed starting positions of `pattern` in `text`, in
+      **increasing order**, separated by single spaces on one line.
+
+      If `pattern` does not occur in `text` at all, print `-1`.
+    constraints:
+      - "1 <= length of text <= 100000"
+      - "1 <= length of pattern <= 100000"
+      - "Both strings contain only lowercase English letters ('a'-'z')"
+      - "The pattern may be longer than the text, in which case there is no occurrence"
+    examples:
+      - input: |
+          abracadabra
+          abra
+        output: |
+          0 7
+        explanation: >-
+          `text[0..4) = "abra"` and `text[7..11) = "abra"`. No other window of
+          length 4 matches, so the answer lists 0 and 7.
+      - input: |
+          aaaa
+          aa
+        output: |
+          0 1 2
+        explanation: >-
+          The three windows `text[0..2)`, `text[1..3)` and `text[2..4)` all equal
+          `"aa"`. Overlapping occurrences are reported separately.
+    hints:
+      - >-
+        The naive scan re-reads the whole pattern at every position. What stays
+        almost the same when the window slides one step to the right?
+      - >-
+        Read the window as a number in base b modulo a large prime. Removing the
+        leading character, shifting by one digit and adding the new trailing
+        character updates the value in O(1).
+      - >-
+        Equal hashes do not prove equal strings. Compare the characters whenever
+        the hashes agree, so the answer is exact even though the hash is
+        probabilistic; handle the case where the pattern is longer than the text
+        before you start.
+    explanation: |
+      Let `n = |text|` and `m = |pattern|`.
+
+      **Brute force — O(n · m) time, O(1) space.** For every start `i` from `0`
+      to `n - m`, compare `text[i..i+m)` with the pattern character by
+      character. Simple and often fast in practice, but `text = "aaaa...a"`,
+      `pattern = "aaa...ab"` forces every comparison to run the full length of
+      the pattern.
+
+      **Rabin-Karp — O(n + m) expected time, O(1) extra space.** Give each
+      character a small integer value and read a window of length `m` as a
+      number in base `b` modulo a large prime `M`:
+
+      1. Compute the hash of the pattern and of `text[0..m)` in `O(m)`.
+      2. Slide the window. Moving from start `i` to `i + 1` means removing the
+         contribution of `text[i]`, which is `text[i] · b^(m-1)`, multiplying by
+         `b`, and adding `text[i + m]` — all modulo `M`, and all in `O(1)` once
+         `b^(m-1) mod M` has been precomputed.
+      3. When the window hash equals the pattern hash, compare the actual
+         characters and record `i` if they really match.
+
+      Step 3 is what makes the output exact. With a good prime (here `2^61 - 1`)
+      a spurious hash match is very unlikely, so the total verification cost is
+      `O(m)` in expectation and the whole search is linear. An adversary who
+      knows the base can still force `O(n · m)`; randomising the base at run
+      time, or carrying two independent moduli, removes that risk.
+
+      **Deterministic alternatives.** KMP and the Z-function solve the same
+      problem in `O(n + m)` worst case with no probability involved. Rabin-Karp
+      earns its place when the pattern length varies between queries, or when
+      you want `O(1)` comparison of arbitrary substrings rather than a single
+      fixed pattern.
+
+      **Edge cases to watch.** `m > n` means no occurrence at all; a
+      single-character pattern makes the rolling step degenerate but still
+      correct; and the answer line must be `-1`, not empty, when nothing
+      matches.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def find_occurrences(text: str, pattern: str) -> List[int]:
+            # Return every 0-indexed start position of pattern inside text.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            text = sys.stdin.readline().strip()
+            pattern = sys.stdin.readline().strip()
+            positions = find_occurrences(text, pattern)
+            print(" ".join(str(p) for p in positions) if positions else -1)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+        BASE = 257
+        MOD = (1 << 61) - 1
+
+
+        def find_occurrences(text: str, pattern: str) -> List[int]:
+            n, m = len(text), len(pattern)
+            if m > n:
+                return []
+            top_power = pow(BASE, m - 1, MOD)
+            target = 0
+            window = 0
+            for i in range(m):
+                target = (target * BASE + ord(pattern[i])) % MOD
+                window = (window * BASE + ord(text[i])) % MOD
+            positions = []
+            for start in range(n - m + 1):
+                if window == target and text[start:start + m] == pattern:
+                    positions.append(start)
+                if start + m < n:
+                    window = ((window - ord(text[start]) * top_power) * BASE + ord(text[start + m])) % MOD
+            return positions
+
+
+        # --- Input/output handling ---
+        def main():
+            text = sys.stdin.readline().strip()
+            pattern = sys.stdin.readline().strip()
+            positions = find_occurrences(text, pattern)
+            print(" ".join(str(p) for p in positions) if positions else -1)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          abracadabra
+          abra
+        expectedOutput: |
+          0 7
+        hidden: false
+      - input: |
+          aaaa
+          aa
+        expectedOutput: |
+          0 1 2
+        hidden: false
+      - input: |
+          abcdef
+          gh
+        expectedOutput: |
+          -1
+        hidden: true
+      - input: |
+          ab
+          abc
+        expectedOutput: |
+          -1
+        hidden: true
+      - input: |
+          mississippi
+          issi
+        expectedOutput: |
+          1 4
+        hidden: true
+      - input: |
+          zzzzzzzzzz
+          z
+        expectedOutput: |
+          0 1 2 3 4 5 6 7 8 9
+        hidden: true
+      - input: |
+          a
+          a
+        expectedOutput: |
+          0
+        hidden: true
+      - input: |
+          ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababcabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+          bcab
+        expectedOutput: |
+          399
+        hidden: true
+
+  - sheetId: prob-18-1-5-z-function
+    slug: z-function
+    title: "Z function"
+    difficulty: Hard
+    topic: "Pattern Matching"
+    subtopic: "Hard Problems"
+    tags: ["string", "z-function", "pattern-matching"]
+    sourceUrl: ""
+    statement: |
+      For a string `s` of length `L`, the **Z-array** is defined by
+
+      ```
+      z[i] = length of the longest common prefix of s and s[i:]
+      ```
+
+      that is, the largest `k` such that `s[0..k) == s[i..i+k)`. Position `0` is
+      a special case: by the convention used here, `z[0] = L` (the whole string
+      is a prefix of itself).
+
+      For example, for `s = "aabxaayaab"`:
+
+      - `z[1] = 1` because `s[1:] = "abxaayaab"` shares only `"a"` with `s`;
+      - `z[4] = 2` because `s[4:] = "aayaab"` starts with `"aa"` but then
+        differs;
+      - `z[7] = 3` because `s[7:] = "aab"` matches the first three characters.
+
+      Given `s`, print its whole Z-array.
+    inputFormat: |
+      - A single line: the string `s`.
+    outputFormat: |
+      Print one line with `L` integers separated by single spaces: `z[0]`,
+      `z[1]`, ..., `z[L-1]`, where `z[0]` equals `L`.
+    constraints:
+      - "1 <= length of s <= 100000"
+      - "s contains only lowercase English letters ('a'-'z')"
+    examples:
+      - input: |
+          aabxaayaab
+        output: |
+          10 1 0 0 2 1 0 3 1 0
+        explanation: >-
+          `z[0]` is the length 10. Positions 1 and 5 start with a single
+          matching `a`; positions 2, 3, 6 and 9 start with a character that is
+          not `a`; position 4 matches `aa`; position 7 matches `aab`; position 8
+          matches `a`.
+      - input: |
+          abcabcd
+        output: |
+          7 0 0 3 0 0 0
+        explanation: >-
+          Only position 3 starts a copy of the prefix, and that copy is `abc`
+          (three characters) before `d` breaks it.
+    hints:
+      - >-
+        The naive method recomputes matches it has already seen. If you know
+        that s[l..r) equals s[0..r-l), what does that tell you about a position
+        i inside that block?
+      - >-
+        Keep the segment [l, r) with the largest r that is known to match a
+        prefix of s. For i in that segment, z[i] can start from min(r - i,
+        z[i - l]) instead of from 0.
+      - >-
+        Extend the candidate with a plain character-by-character loop, then move
+        [l, r) to [i, i + z[i]) whenever the new match reaches further right.
+        The right end r only ever increases, which is why the whole thing is
+        linear.
+    explanation: |
+      Let `L = |s|`.
+
+      **Brute force — O(L²) time, O(L) space.** For every `i`, walk forward
+      comparing `s[k]` with `s[i + k]` until they differ. On a string like
+      `"aaaa...a"` each position matches almost to the end, so the work is
+      quadratic.
+
+      **Z-algorithm — O(L) time, O(L) space.** The insight is to reuse matches
+      already discovered. Maintain the **Z-box** `[l, r)`: the interval with the
+      largest right end `r` found so far for which `s[l..r) == s[0..r-l)`.
+
+      For the current index `i`:
+
+      - if `i < r`, then `s[i..r)` is a copy of `s[i-l..r-l)`, a block whose
+        Z-value we already know. So `z[i]` is at least `min(r - i, z[i - l])` —
+        the `min` is essential because knowledge stops at `r`;
+      - from that starting point, extend naively while
+        `s[z[i]] == s[i + z[i]]`;
+      - if `i + z[i] > r`, the match reaches further right than anything before,
+        so set `l = i` and `r = i + z[i]`.
+
+      **Why it is linear.** Every naive comparison that *succeeds* pushes `r`
+      one step to the right, and `r` never decreases and never exceeds `L`, so
+      successful comparisons total at most `L` over the whole run. Each index
+      contributes at most one *failing* comparison. Hence `O(L)` overall.
+
+      **What it is used for.** Concatenating `pattern + separator + text` and
+      reading off positions where `z[i] == |pattern|` gives linear pattern
+      matching; the same trick answers "longest prefix of `s` that is also a
+      suffix starting here", which is the basis of the shortest-palindrome
+      problem in this sub-step.
+
+      **Edge cases.** A single character gives `[1]`. A string of identical
+      characters gives the decreasing run `L, L-1, ..., 1`. Do not let the loop
+      start at `i = 0`, or the Z-box would swallow the whole string and every
+      later value would be wrong.
+    starterCode:
+      python: |
+        import sys
+        from typing import List
+
+
+        def z_function(s: str) -> List[int]:
+            # Return the Z-array of s, with z[0] = len(s).
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(" ".join(str(value) for value in z_function(s)))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def z_function(s: str) -> List[int]:
+            n = len(s)
+            z = [0] * n
+            z[0] = n
+            left = right = 0
+            for i in range(1, n):
+                if i < right:
+                    z[i] = min(right - i, z[i - left])
+                while i + z[i] < n and s[z[i]] == s[i + z[i]]:
+                    z[i] += 1
+                if i + z[i] > right:
+                    left, right = i, i + z[i]
+            return z
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(" ".join(str(value) for value in z_function(s)))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          aabxaayaab
+        expectedOutput: |
+          10 1 0 0 2 1 0 3 1 0
+        hidden: false
+      - input: |
+          abcabcd
+        expectedOutput: |
+          7 0 0 3 0 0 0
+        hidden: false
+      - input: |
+          a
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          aaaaa
+        expectedOutput: |
+          5 4 3 2 1
+        hidden: true
+      - input: |
+          abcde
+        expectedOutput: |
+          5 0 0 0 0
+        hidden: true
+      - input: |
+          aaabaaab
+        expectedOutput: |
+          8 2 1 0 4 2 1 0
+        hidden: true
+      - input: |
+          aabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaab
+        expectedOutput: |
+          180 1 0 177 1 0 174 1 0 171 1 0 168 1 0 165 1 0 162 1 0 159 1 0 156 1 0 153 1 0 150 1 0 147 1 0 144 1 0 141 1 0 138 1 0 135 1 0 132 1 0 129 1 0 126 1 0 123 1 0 120 1 0 117 1 0 114 1 0 111 1 0 108 1 0 105 1 0 102 1 0 99 1 0 96 1 0 93 1 0 90 1 0 87 1 0 84 1 0 81 1 0 78 1 0 75 1 0 72 1 0 69 1 0 66 1 0 63 1 0 60 1 0 57 1 0 54 1 0 51 1 0 48 1 0 45 1 0 42 1 0 39 1 0 36 1 0 33 1 0 30 1 0 27 1 0 24 1 0 21 1 0 18 1 0 15 1 0 12 1 0 9 1 0 6 1 0 3 1 0
+        hidden: true
+
+  - sheetId: prob-18-1-6-kmp-algorithm-or-lps-arra
+    slug: kmp-algorithm-or-lps-array
+    title: "KMP Algorithm or LPS array"
+    difficulty: Hard
+    topic: "Pattern Matching"
+    subtopic: "Hard Problems"
+    tags: ["string", "kmp", "pattern-matching"]
+    sourceUrl: ""
+    statement: |
+      The **LPS array** (longest proper prefix which is also a suffix, also
+      called the failure function) of a string `p` of length `m` is defined by
+
+      ```
+      lps[i] = length of the longest proper prefix of p[0..i] that is also a
+               suffix of p[0..i]
+      ```
+
+      "Proper" means the whole prefix `p[0..i]` itself does not count, so
+      `0 <= lps[i] <= i`. For `p = "ababd"` the array is `0 0 1 2 0`: after
+      `"aba"` the prefix `"a"` is also a suffix, after `"abab"` the prefix
+      `"ab"` is also a suffix, and after `"ababd"` nothing matches.
+
+      This array is exactly what the **Knuth-Morris-Pratt** algorithm uses to
+      search without ever moving backwards in the text: on a mismatch it slides
+      the pattern forward by as much as the LPS array allows.
+
+      Given a `text` and a `pattern`, print the LPS array of the **pattern**,
+      and then every position at which the pattern occurs in the text.
+      Occurrences may **overlap**.
+    inputFormat: |
+      - Line 1: the string `text`.
+      - Line 2: the string `pattern`.
+    outputFormat: |
+      Print two lines.
+
+      - Line 1: the LPS array of `pattern` — `m` integers separated by single
+        spaces.
+      - Line 2: all 0-indexed starting positions of `pattern` in `text`, in
+        increasing order, separated by single spaces; print `-1` on this line if
+        there is no occurrence.
+    constraints:
+      - "1 <= length of text <= 100000"
+      - "1 <= length of pattern <= 100000"
+      - "Both strings contain only lowercase English letters ('a'-'z')"
+      - "The pattern may be longer than the text, in which case there is no occurrence"
+    examples:
+      - input: |
+          ababcabcabababd
+          ababd
+        output: |
+          0 0 1 2 0
+          10
+        explanation: >-
+          The LPS array of `ababd` is `0 0 1 2 0`. Scanning the text, the
+          pattern matches only once, starting at index 10 (`text[10..15) =
+          "ababd"`).
+      - input: |
+          aaaaa
+          aa
+        output: |
+          0 1
+          0 1 2 3
+        explanation: >-
+          For `aa` the prefix `a` is also a suffix, so the LPS array is `0 1`.
+          The pattern matches at four overlapping positions; after each match
+          the search resumes from `lps[m-1] = 1`, which is what lets overlaps be
+          found.
+    hints:
+      - >-
+        Build the LPS array by matching the pattern against itself. Keep a
+        length k of the border found so far; when p[i] equals p[k] the border
+        grows by one.
+      - >-
+        On a mismatch do not reset k to 0 — fall back to lps[k - 1], which is
+        the next shorter border, and try again. Repeat until it matches or k
+        reaches 0.
+      - >-
+        Searching uses the same loop with the text on one side and the pattern
+        on the other. When k reaches m you have found an occurrence ending at i,
+        so record i - m + 1 and set k = lps[m - 1] to allow overlaps.
+    explanation: |
+      Let `n = |text|` and `m = |pattern|`.
+
+      **Brute force — O(n · m) time.** Try every start and compare characters.
+      The failure mode is a text and pattern that agree on a long prefix at
+      every position, such as `"aaaa...a"` against `"aaa...b"`.
+
+      **Building the LPS array — O(m) time, O(m) space.** Compare the pattern
+      with itself. Keep `k`, the length of the longest border of the prefix
+      processed so far, and scan `i` from `1` to `m - 1`:
+
+      - while `k > 0` and `p[i] != p[k]`, set `k = lps[k - 1]`. Falling back to
+        `lps[k - 1]` jumps to the next shorter border, which is the only other
+        candidate that can still work;
+      - if `p[i] == p[k]`, increment `k`;
+      - store `lps[i] = k`.
+
+      `k` increases at most once per step and never goes below zero, so the
+      total number of fall-backs is bounded by the number of increments:
+      amortised `O(m)`.
+
+      **Searching — O(n) time.** Run the same loop with `text[i]` against
+      `pattern[k]`. Whenever `k` reaches `m`, the pattern ends at `i`, so record
+      the start `i - m + 1` and set `k = lps[m - 1]` instead of `0`. Resetting
+      to the border rather than to zero is precisely what allows overlapping
+      matches to be reported, and it is why the text pointer never moves
+      backwards.
+
+      Total cost `O(n + m)` time and `O(m)` space, worst case — no probability
+      involved, unlike Rabin-Karp.
+
+      **Edge cases.** A pattern longer than the text yields an LPS array but no
+      occurrence, so line 2 must be `-1`. A one-character pattern has
+      `lps = [0]`. A pattern of identical characters gives `0 1 2 ... m-1`, the
+      case where the fall-back chain is longest.
+    starterCode:
+      python: |
+        import sys
+        from typing import List, Tuple
+
+
+        def kmp_search(text: str, pattern: str) -> Tuple[List[int], List[int]]:
+            # Return (lps array of pattern, sorted start positions in text).
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            text = sys.stdin.readline().strip()
+            pattern = sys.stdin.readline().strip()
+            lps, positions = kmp_search(text, pattern)
+            print(" ".join(str(value) for value in lps))
+            print(" ".join(str(p) for p in positions) if positions else -1)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List, Tuple
+
+
+        def build_lps(pattern: str) -> List[int]:
+            lps = [0] * len(pattern)
+            k = 0
+            for i in range(1, len(pattern)):
+                while k > 0 and pattern[i] != pattern[k]:
+                    k = lps[k - 1]
+                if pattern[i] == pattern[k]:
+                    k += 1
+                lps[i] = k
+            return lps
+
+
+        def kmp_search(text: str, pattern: str) -> Tuple[List[int], List[int]]:
+            m = len(pattern)
+            lps = build_lps(pattern)
+            positions = []
+            k = 0
+            for i, ch in enumerate(text):
+                while k > 0 and ch != pattern[k]:
+                    k = lps[k - 1]
+                if ch == pattern[k]:
+                    k += 1
+                if k == m:
+                    positions.append(i - m + 1)
+                    k = lps[k - 1]
+            return lps, positions
+
+
+        # --- Input/output handling ---
+        def main():
+            text = sys.stdin.readline().strip()
+            pattern = sys.stdin.readline().strip()
+            lps, positions = kmp_search(text, pattern)
+            print(" ".join(str(value) for value in lps))
+            print(" ".join(str(p) for p in positions) if positions else -1)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          ababcabcabababd
+          ababd
+        expectedOutput: |
+          0 0 1 2 0
+          10
+        hidden: false
+      - input: |
+          aaaaa
+          aa
+        expectedOutput: |
+          0 1
+          0 1 2 3
+        hidden: false
+      - input: |
+          abc
+          d
+        expectedOutput: |
+          0
+          -1
+        hidden: true
+      - input: |
+          abcabcabc
+          abcabc
+        expectedOutput: |
+          0 0 0 1 2 3
+          0 3
+        hidden: true
+      - input: |
+          x
+          x
+        expectedOutput: |
+          0
+          0
+        hidden: true
+      - input: |
+          aaaaaaaa
+          aaa
+        expectedOutput: |
+          0 1 2
+          0 1 2 3 4 5
+        hidden: true
+      - input: |
+          ab
+          abc
+        expectedOutput: |
+          0 0 0
+          -1
+        hidden: true
+      - input: |
+          aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab
+          aaab
+        expectedOutput: |
+          0 1 2 0
+          197
+        hidden: true
+
+  - sheetId: prob-18-1-7-shortest-palindrome
+    slug: shortest-palindrome
+    title: "Shortest Palindrome"
+    difficulty: Hard
+    topic: "Pattern Matching"
+    subtopic: "Hard Problems"
+    tags: ["string", "z-function", "kmp", "palindrome"]
+    sourceUrl: ""
+    statement: |
+      You are given a string `s` of lowercase English letters. You may insert
+      any number of characters **in front of** `s` (never inside it and never
+      after it).
+
+      Produce the **shortest palindrome** that can be obtained this way.
+
+      Because the characters you add must be exactly the reverse of some suffix
+      of `s` — everything that is not covered by a palindromic prefix of `s` —
+      the shortest such palindrome is unique, so there is only one correct
+      answer.
+    inputFormat: |
+      - A single line: the string `s`.
+    outputFormat: |
+      Print one line: the shortest palindrome that has `s` as a suffix.
+    constraints:
+      - "1 <= length of s <= 100000"
+      - "s contains only lowercase English letters ('a'-'z')"
+    examples:
+      - input: |
+          aacecaaa
+        output: |
+          aaacecaaa
+        explanation: >-
+          The longest palindromic prefix of `aacecaaa` is `aacecaa` (7
+          characters). Only the final `a` is left over, so reversing it and
+          putting it in front gives `a` + `aacecaaa` = `aaacecaaa`, a palindrome
+          of length 9.
+      - input: |
+          abcd
+        output: |
+          dcbabcd
+        explanation: >-
+          The only palindromic prefix of `abcd` is the single letter `a`, so
+          `bcd` must be mirrored in front: `dcb` + `abcd` = `dcbabcd`.
+    hints:
+      - >-
+        Whatever you prepend is the reverse of a suffix of s. Minimising what
+        you prepend is the same as maximising the length of a prefix of s that
+        is already a palindrome.
+      - >-
+        Checking every prefix for being a palindrome costs O(n^2). Rewrite the
+        question as a prefix-suffix problem: a prefix of s is a palindrome
+        exactly when it is also a prefix of reverse(s) of the same length
+        ending at the string's end.
+      - >-
+        Build t = s + '#' + reverse(s) with a separator that appears in neither
+        half, and run the Z-algorithm (or the KMP failure function) on it. The
+        largest value that reaches the end of t is the length of the longest
+        palindromic prefix.
+    explanation: |
+      Let `n = |s|`.
+
+      **Brute force — O(n²) time.** Try prefix lengths `k = n, n-1, ..., 1`,
+      stop at the first `k` for which `s[0..k)` is a palindrome, and answer
+      `reverse(s[k..n)) + s`. Each palindrome test is `O(n)`, so the total is
+      quadratic — fine for a few thousand characters, too slow at `10^5`,
+      especially on `"aaaa...a"`-like inputs.
+
+      **Reformulate.** The characters we prepend are the reverse of the suffix
+      that is *not* covered by a palindromic prefix, so the whole problem is:
+      **find the longest prefix of `s` that is a palindrome**. Everything else
+      follows.
+
+      **Linear solution with the Z-algorithm — O(n) time, O(n) space.** Build
+
+      ```
+      t = s + '#' + reverse(s)
+      ```
+
+      where `#` occurs in neither part (so no match can straddle it). Compute
+      the Z-array of `t`. For an index `i` in the `reverse(s)` half, `z[i]` is
+      the length of the longest common prefix of `s` and the tail of `t`
+      starting at `i`. When `z[i] == len(t) - i`, that tail — a *prefix of
+      `reverse(s)` read to its end*, i.e. a reversed suffix… which for the tail
+      reaching the end means a reversed **prefix** of `s` — matches a prefix of
+      `s` exactly. So the prefix of `s` of that length equals its own reverse:
+      it is a palindrome. Take the largest such `z[i]`, call it `k`, and print
+
+      ```
+      reverse(s[k..n)) + s
+      ```
+
+      **KMP variant.** The same value is `lps[len(t) - 1]` of the failure
+      function of `t`, because the longest border of `s + '#' + reverse(s)` is
+      precisely the longest prefix of `s` that is also a suffix of `reverse(s)`
+      — again the longest palindromic prefix. Either tool is `O(n)`; pick the
+      one you find easier to remember.
+
+      **Edge cases.** A string that is already a palindrome (`racecar`, `aaaa`)
+      needs zero additions and must be printed unchanged. A single character is
+      its own answer. The separator must not be a lowercase letter, or a match
+      could cross it and overstate `k`.
+    starterCode:
+      python: |
+        import sys
+
+
+        def shortest_palindrome(s: str) -> str:
+            # Return the shortest palindrome that ends with s.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(shortest_palindrome(s))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+        from typing import List
+
+
+        def z_function(s: str) -> List[int]:
+            n = len(s)
+            z = [0] * n
+            z[0] = n
+            left = right = 0
+            for i in range(1, n):
+                if i < right:
+                    z[i] = min(right - i, z[i - left])
+                while i + z[i] < n and s[z[i]] == s[i + z[i]]:
+                    z[i] += 1
+                if i + z[i] > right:
+                    left, right = i, i + z[i]
+            return z
+
+
+        def shortest_palindrome(s: str) -> str:
+            n = len(s)
+            combined = s + "#" + s[::-1]
+            z = z_function(combined)
+            best = 0
+            for i in range(n + 1, len(combined)):
+                if z[i] == len(combined) - i and z[i] > best:
+                    best = z[i]
+            return s[best:][::-1] + s
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(shortest_palindrome(s))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          aacecaaa
+        expectedOutput: |
+          aaacecaaa
+        hidden: false
+      - input: |
+          abcd
+        expectedOutput: |
+          dcbabcd
+        hidden: false
+      - input: |
+          a
+        expectedOutput: |
+          a
+        hidden: true
+      - input: |
+          aaaa
+        expectedOutput: |
+          aaaa
+        hidden: true
+      - input: |
+          abb
+        expectedOutput: |
+          bbabb
+        hidden: true
+      - input: |
+          abab
+        expectedOutput: |
+          babab
+        hidden: true
+      - input: |
+          racecar
+        expectedOutput: |
+          racecar
+        hidden: true
+      - input: |
+          ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababa
+        expectedOutput: |
+          ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababa
+        hidden: true
+      - input: |
+          baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        expectedOutput: |
+          aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        hidden: true
+
+  - sheetId: prob-18-1-8-longest-happy-prefix
+    slug: longest-happy-prefix
+    title: "Longest happy prefix"
+    difficulty: Hard
+    topic: "Pattern Matching"
+    subtopic: "Hard Problems"
+    tags: ["string", "kmp", "z-function"]
+    sourceUrl: "https://leetcode.com/problems/longest-happy-prefix/"
+    statement: |
+      A **happy prefix** of a string `s` is a non-empty prefix of `s` that is
+      also a suffix of `s` and is **strictly shorter** than `s` itself. (Such a
+      prefix is usually called a *border* of `s`; the whole string does not
+      count.)
+
+      For `s = "ababab"` the happy prefixes are `"ab"` and `"abab"`, so the
+      longest one is `"abab"`. For `s = "abcd"` there is none.
+
+      Print the **longest happy prefix** of `s`.
+    inputFormat: |
+      - A single line: the string `s`.
+    outputFormat: |
+      Print one line: the longest happy prefix of `s`. If `s` has no happy
+      prefix at all, print `-1` instead.
+    constraints:
+      - "1 <= length of s <= 100000"
+      - "s contains only lowercase English letters ('a'-'z')"
+      - "The answer is never the whole string, so a string of length 1 has no happy prefix"
+    examples:
+      - input: |
+          ababab
+        output: |
+          abab
+        explanation: >-
+          `"abab"` is the first four characters and also the last four, and it is
+          shorter than `"ababab"`. No longer border exists, because a border of
+          length 5 would force `s[0] == s[1]`.
+      - input: |
+          abcd
+        output: |
+          -1
+        explanation: >-
+          The prefixes `a`, `ab`, `abc` are not suffixes (`d`, `cd`, `bcd`), so
+          there is no happy prefix and the answer line is `-1`.
+    hints:
+      - >-
+        Comparing every prefix with the matching suffix is O(n^2). This is
+        exactly the quantity the KMP preprocessing step computes for each
+        position.
+      - >-
+        Build the LPS (failure) array of s. lps[i] is the longest border of the
+        prefix ending at i, so the answer length sits in the very last entry.
+      - >-
+        Alternatively compute the Z-array: the answer is the largest i with
+        z[i] == n - i, since that says the suffix starting at i equals a prefix
+        of the same length.
+    explanation: |
+      Let `n = |s|`.
+
+      **Brute force — O(n²) time.** For `k = n - 1` down to `1`, test whether
+      `s[0..k) == s[n-k..n)` and return the first success. Each test is `O(n)`,
+      and a string like `"aaaa...a"` needs no early exit, so the worst case is
+      quadratic.
+
+      **Hashing — O(n) expected time.** Precompute prefix hashes and compare the
+      hash of `s[0..k)` with the hash of `s[n-k..n)` in `O(1)` per `k`, from the
+      largest `k` down. Linear and easy, but the answer is only probabilistically
+      correct unless you verify the characters on a hit.
+
+      **KMP failure function — O(n) time, O(n) space, exact.** Build the LPS
+      array, where `lps[i]` is the length of the longest proper border of the
+      prefix `s[0..i]`. The value we want is the longest proper border of the
+      *whole* string, which is exactly `lps[n - 1]`. Print `s[:lps[n-1]]`, or
+      `-1` when that value is `0`.
+
+      Building the array is the standard self-matching loop: keep a running
+      border length `k`, fall back to `lps[k - 1]` on a mismatch, increment on a
+      match. The fall-backs are amortised `O(1)` each because `k` grows at most
+      once per position.
+
+      **Z-array variant.** The answer is the largest index `i >= 1` with
+      `z[i] == n - i`: the suffix beginning at `i` then matches a prefix of the
+      same length. Scanning `i` upwards and taking the first hit gives the
+      longest such border directly.
+
+      **Why `lps[n-1]` is the longest border and not just *a* border.** The
+      construction never skips a candidate: when the running border cannot be
+      extended it moves to `lps[k-1]`, the next longest border of the same
+      prefix, and the borders of a string form exactly that chain. So the value
+      stored is maximal at every position.
+
+      **Edge cases.** `n = 1` has no proper non-empty border, so the answer is
+      `-1`. A string of identical characters gives the border of length `n - 1`.
+      Overlapping borders are allowed — for `"aaaa"` the answer `"aaa"` overlaps
+      itself, which is fine.
+    starterCode:
+      python: |
+        import sys
+
+
+        def longest_happy_prefix(s: str) -> str:
+            # Return the longest non-empty proper border of s, or "-1".
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(longest_happy_prefix(s))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+
+        def longest_happy_prefix(s: str) -> str:
+            n = len(s)
+            lps = [0] * n
+            k = 0
+            for i in range(1, n):
+                while k > 0 and s[i] != s[k]:
+                    k = lps[k - 1]
+                if s[i] == s[k]:
+                    k += 1
+                lps[i] = k
+            border = lps[n - 1]
+            return s[:border] if border > 0 else "-1"
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(longest_happy_prefix(s))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          ababab
+        expectedOutput: |
+          abab
+        hidden: false
+      - input: |
+          abcd
+        expectedOutput: |
+          -1
+        hidden: false
+      - input: |
+          level
+        expectedOutput: |
+          l
+        hidden: true
+      - input: |
+          a
+        expectedOutput: |
+          -1
+        hidden: true
+      - input: |
+          aaaaa
+        expectedOutput: |
+          aaaa
+        hidden: true
+      - input: |
+          ababcabab
+        expectedOutput: |
+          abab
+        hidden: true
+      - input: |
+          abcabcabc
+        expectedOutput: |
+          abcabc
+        hidden: true
+      - input: |
+          abcababcababcababcababcababcababcababcababcababcababcababcababcababcababcababcababcababcababcababcab
+        expectedOutput: |
+          abcababcababcababcababcababcababcababcababcababcababcababcababcababcababcababcababcababcababcab
+        hidden: true
+
+  - sheetId: prob-18-1-9-count-palindromic-subsequ
+    slug: count-palindromic-subsequences
+    title: "Count Palindromic Subsequences"
+    difficulty: Medium
+    topic: "Dynamic Programming"
+    subtopic: "Hard Problems"
+    tags: ["string", "dynamic-programming", "palindrome"]
+    sourceUrl: ""
+    statement: |
+      You are given a string `s` of lowercase English letters. Count its
+      **palindromic subsequences**.
+
+      A *subsequence* is obtained by deleting zero or more characters without
+      changing the order of the rest. Two rules make the count unambiguous:
+
+      - **The empty subsequence does not count.** Only non-empty subsequences
+        are counted.
+      - **Subsequences are counted by position, not by the text they spell.**
+        Two subsequences are different whenever their sets of chosen indices
+        differ, even if they read the same. For `s = "aaa"` the answer is `7`:
+        three single characters (indices 0, 1, 2), three pairs (0-1, 0-2, 1-2)
+        and one triple — not `3` (`"a"`, `"aa"`, `"aaa"`).
+
+      The count can be enormous, so print it **modulo 10^9 + 7**.
+    inputFormat: |
+      - A single line: the string `s`.
+    outputFormat: |
+      Print one integer: the number of non-empty palindromic subsequences of
+      `s`, counted by position, modulo `10^9 + 7`.
+    constraints:
+      - "1 <= length of s <= 1000"
+      - "s contains only lowercase English letters ('a'-'z')"
+    examples:
+      - input: |
+          aba
+        output: |
+          5
+        explanation: >-
+          The palindromic subsequences are the three single characters (indices
+          0, 1, 2), the pair of `a`s at indices 0 and 2, and the whole string
+          `aba`. That is 5 in total; the pairs `ab` and `ba` are not
+          palindromes.
+      - input: |
+          aaa
+        output: |
+          7
+        explanation: >-
+          Every non-empty subsequence of `aaa` is a palindrome, and there are
+          `2^3 - 1 = 7` of them. They are counted by position, so all three
+          single `a`s and all three pairs count separately.
+    hints:
+      - >-
+        Enumerating all 2^n subsequences is hopeless beyond about 20 characters.
+        Think about an interval DP instead: what is the answer for the substring
+        s[i..j]?
+      - >-
+        Counting the palindromes inside s[i+1..j] plus those inside s[i..j-1]
+        counts everything that lives in both ranges twice, so subtract the count
+        for s[i+1..j-1].
+      - >-
+        When s[i] equals s[j] you may additionally wrap that pair around every
+        palindrome of s[i+1..j-1], and around the empty one — which is where the
+        extra `+ 1` comes from. Take the modulus after every subtraction so the
+        value never goes negative.
+    explanation: |
+      Let `n = |s|`.
+
+      **Brute force — O(2^n · n) time.** Enumerate every subset of positions,
+      build the string it spells and test it for being a palindrome. Correct,
+      and a useful cross-check for `n <= 20`, but exponential.
+
+      **Interval DP — O(n²) time, O(n²) space.** Let `dp[i][j]` be the number of
+      non-empty palindromic subsequences of `s[i..j]` (inclusive), counted by
+      position. Base case `dp[i][i] = 1` (the single character).
+
+      For `i < j`:
+
+      - `dp[i+1][j] + dp[i][j-1]` counts every palindrome that avoids `s[i]`
+        plus every one that avoids `s[j]`, but the palindromes that avoid
+        **both** have been counted twice, so subtract `dp[i+1][j-1]`;
+      - if `s[i] == s[j]`, that pair can also wrap around every palindrome
+        strictly inside — there are `dp[i+1][j-1]` of them — and around nothing
+        at all, giving the pair `s[i]s[j]` itself. So add
+        `dp[i+1][j-1] + 1`.
+
+      Putting the two together:
+
+      ```
+      s[i] != s[j] :  dp[i][j] = dp[i+1][j] + dp[i][j-1] - dp[i+1][j-1]
+      s[i] == s[j] :  dp[i][j] = dp[i+1][j] + dp[i][j-1] + 1
+      ```
+
+      (the `- dp[i+1][j-1]` and the `+ dp[i+1][j-1]` cancel in the equal case).
+      Fill by increasing interval length; the answer is `dp[0][n-1]`.
+
+      **Working modulo 10^9 + 7.** The subtraction can make an intermediate
+      value negative before the modulus is applied. In Python `%` always returns
+      a non-negative result so a single `% MOD` is enough; in languages where it
+      does not, add `MOD` before reducing.
+
+      **Space.** Only the previous two "diagonals" — or, filling by `i`
+      descending, the previous row — are ever needed, so the table can be
+      reduced to `O(n)` if memory is tight. With `n <= 1000` the full `n × n`
+      table is about a million entries and runs in a fraction of a second.
+
+      **Related but different.** Counting *distinct* palindromic subsequences
+      (by the text they spell) needs a different recurrence with cases for how
+      many times the boundary character appears inside; do not mix the two up.
+    starterCode:
+      python: |
+        import sys
+
+        MOD = 10 ** 9 + 7
+
+
+        def count_palindromic_subsequences(s: str) -> int:
+            # Count non-empty palindromic subsequences by position, modulo MOD.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(count_palindromic_subsequences(s))
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |
+        import sys
+
+        MOD = 10 ** 9 + 7
+
+
+        def count_palindromic_subsequences(s: str) -> int:
+            n = len(s)
+            dp = [[0] * n for _ in range(n)]
+            for i in range(n):
+                dp[i][i] = 1
+            for length in range(2, n + 1):
+                for i in range(n - length + 1):
+                    j = i + length - 1
+                    if s[i] == s[j]:
+                        dp[i][j] = (dp[i + 1][j] + dp[i][j - 1] + 1) % MOD
+                    else:
+                        dp[i][j] = (dp[i + 1][j] + dp[i][j - 1] - dp[i + 1][j - 1]) % MOD
+            return dp[0][n - 1] % MOD
+
+
+        # --- Input/output handling ---
+        def main():
+            s = sys.stdin.readline().strip()
+            print(count_palindromic_subsequences(s))
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |
+          aba
+        expectedOutput: |
+          5
+        hidden: false
+      - input: |
+          aaa
+        expectedOutput: |
+          7
+        hidden: false
+      - input: |
+          a
+        expectedOutput: |
+          1
+        hidden: true
+      - input: |
+          abc
+        expectedOutput: |
+          3
+        hidden: true
+      - input: |
+          aab
+        expectedOutput: |
+          4
+        hidden: true
+      - input: |
+          abccba
+        expectedOutput: |
+          21
+        hidden: true
+      - input: |
+          aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        expectedOutput: |
+          73741816
+        hidden: true
+      - input: |
+          abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc
+        expectedOutput: |
+          499445071
+        hidden: true

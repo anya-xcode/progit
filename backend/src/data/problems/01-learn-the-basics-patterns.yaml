@@ -1,0 +1,3936 @@
+section: learn-the-basics
+problems:
+  - sheetId: prob-1-3-1-pattern-1
+    slug: pattern-1
+    title: "Pattern 1"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, stars]
+    sourceUrl: ""
+    statement: |2
+      Print a filled square made of stars.
+
+      The square has exactly `n` rows and every row is exactly `n` stars written one
+      after another with no spaces between them.
+
+      For `n = 4` the expected picture is
+
+      ```
+      ****
+      ****
+      ****
+      ****
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `n` lines. Line `i` (for every `i` from 1 to `n`) contains `n` `*`
+      characters with nothing between them.
+    constraints:
+      - "1 <= n <= 20"
+      - "n is given as a single integer on one line."
+    examples:
+      - input: |2
+          4
+        output: |2
+          ****
+          ****
+          ****
+          ****
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          *
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "One loop prints the rows; inside it you always print the same text."
+      - "In Python the whole row is just `\"*\" * n`."
+    explanation: |2
+      **Two nested loops — O(n^2) time, O(1) extra space.** The outer loop walks over
+      the `n` rows; the inner loop prints `n` stars and then a newline ends the row.
+
+      Because every row is identical you can skip the inner loop and build the row
+      string once (`"*" * n`), then print it `n` times. Printing a prepared string is
+      also much faster than `n * n` separate writes.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for _ in range(n):
+                print("*" * n)
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+          ****
+          ****
+          ****
+          ****
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          *
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          **
+          **
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+          ***
+          ***
+          ***
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+          ******
+          ******
+          ******
+          ******
+          ******
+          ******
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          *********
+          *********
+          *********
+          *********
+          *********
+          *********
+          *********
+          *********
+          *********
+        hidden: true
+      - input: |2
+          16
+        expectedOutput: |2
+          ****************
+          ****************
+          ****************
+          ****************
+          ****************
+          ****************
+          ****************
+          ****************
+          ****************
+          ****************
+          ****************
+          ****************
+          ****************
+          ****************
+          ****************
+          ****************
+        hidden: true
+  - sheetId: prob-1-3-2-pattern-2
+    slug: pattern-2
+    title: "Pattern 2"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, stars]
+    sourceUrl: ""
+    statement: |2
+      Print a left-aligned right-angled triangle of stars that grows downwards.
+
+      There are `n` rows. Row `i` contains exactly `i` stars written one after another
+      with no spaces between them, and no spaces before the first star, so the
+      vertical side of the triangle is on the left.
+
+      For `n = 4` the expected picture is
+
+      ```
+      *
+      **
+      ***
+      ****
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `n` lines. Line `i` contains `i` `*` characters with nothing between
+      them.
+    constraints:
+      - "1 <= n <= 20"
+      - "n is given as a single integer on one line."
+    examples:
+      - input: |2
+          4
+        output: |2
+          *
+          **
+          ***
+          ****
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          *
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "The number of stars on a row is the row number itself."
+      - "Let the outer loop variable run from 1 to n and reuse it as the star count."
+    explanation: |2
+      **Nested loops — O(n^2) time, O(1) extra space.** Row `i` needs `i` stars, so
+      the inner loop runs `i` times. The total work is `1 + 2 + ... + n = n(n+1)/2`
+      characters, which is `O(n^2)`.
+
+      The idiomatic Python version replaces the inner loop with the repeated string
+      `"*" * row`, which builds the row in one step.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for row in range(1, n + 1):
+                print("*" * row)
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+          *
+          **
+          ***
+          ****
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          *
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          *
+          **
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+          *
+          **
+          ***
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+          *
+          **
+          ***
+          ****
+          *****
+          ******
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          *
+          **
+          ***
+          ****
+          *****
+          ******
+          *******
+          ********
+          *********
+        hidden: true
+      - input: |2
+          16
+        expectedOutput: |2
+          *
+          **
+          ***
+          ****
+          *****
+          ******
+          *******
+          ********
+          *********
+          **********
+          ***********
+          ************
+          *************
+          **************
+          ***************
+          ****************
+        hidden: true
+  - sheetId: prob-1-3-3-pattern-3
+    slug: pattern-3
+    title: "Pattern 3"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, numbers]
+    sourceUrl: ""
+    statement: |2
+      Print a left-aligned right-angled triangle of numbers.
+
+      There are `n` rows. Row `i` lists the numbers `1, 2, ..., i` in increasing
+      order, separated by a single space, with no leading space.
+
+      For `n = 4` the expected picture is
+
+      ```
+      1
+      1 2
+      1 2 3
+      1 2 3 4
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `n` lines. Line `i` contains the `i` integers `1 2 ... i`, separated by a
+      single space.
+    constraints:
+      - "1 <= n <= 20"
+      - "n is given as a single integer on one line."
+    examples:
+      - input: |2
+          4
+        output: |2
+          1
+          1 2
+          1 2 3
+          1 2 3 4
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          1
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "The last number printed on a row equals the row number."
+      - "Restart the counter at 1 on every new row."
+    explanation: |2
+      **Nested loops — O(n^2) time, O(1) extra space.** For each row `i`, run an
+      inner counter `j` from 1 to `i` and print it. The counter always restarts at 1,
+      which is what makes every row begin with `1`.
+
+      Joining the values with `" ".join(...)` keeps the separators uniform: exactly
+      one space between neighbours and none at either end.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for row in range(1, n + 1):
+                print(" ".join(str(value) for value in range(1, row + 1)))
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+          1
+          1 2
+          1 2 3
+          1 2 3 4
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          1
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          1
+          1 2
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+          1
+          1 2
+          1 2 3
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+          1
+          1 2
+          1 2 3
+          1 2 3 4
+          1 2 3 4 5
+          1 2 3 4 5 6
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          1
+          1 2
+          1 2 3
+          1 2 3 4
+          1 2 3 4 5
+          1 2 3 4 5 6
+          1 2 3 4 5 6 7
+          1 2 3 4 5 6 7 8
+          1 2 3 4 5 6 7 8 9
+        hidden: true
+      - input: |2
+          16
+        expectedOutput: |2
+          1
+          1 2
+          1 2 3
+          1 2 3 4
+          1 2 3 4 5
+          1 2 3 4 5 6
+          1 2 3 4 5 6 7
+          1 2 3 4 5 6 7 8
+          1 2 3 4 5 6 7 8 9
+          1 2 3 4 5 6 7 8 9 10
+          1 2 3 4 5 6 7 8 9 10 11
+          1 2 3 4 5 6 7 8 9 10 11 12
+          1 2 3 4 5 6 7 8 9 10 11 12 13
+          1 2 3 4 5 6 7 8 9 10 11 12 13 14
+          1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+          1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+        hidden: true
+  - sheetId: prob-1-3-4-pattern-4
+    slug: pattern-4
+    title: "Pattern 4"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, numbers]
+    sourceUrl: ""
+    statement: |2
+      Print a left-aligned triangle in which every row repeats its own row number.
+
+      There are `n` rows. Row `i` contains the number `i` written `i` times,
+      separated by a single space. So row 1 is a single `1`, row 2 is `2 2`, row 3 is
+      `3 3 3`, and so on.
+
+      For `n = 4` the expected picture is
+
+      ```
+      1
+      2 2
+      3 3 3
+      4 4 4 4
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `n` lines. Line `i` contains the integer `i` repeated `i` times,
+      separated by a single space.
+    constraints:
+      - "1 <= n <= 20"
+      - "n is given as a single integer on one line."
+    examples:
+      - input: |2
+          4
+        output: |2
+          1
+          2 2
+          3 3 3
+          4 4 4 4
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          1
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "Both the value you print and how many times you print it come from the row number."
+      - "Only the outer loop variable is needed inside the inner loop."
+    explanation: |2
+      **Nested loops — O(n^2) time, O(1) extra space.** Row `i` runs an inner loop
+      `i` times, and every iteration prints the same value `i`. The inner loop
+      variable is never used, which is the whole point of the exercise: the value is
+      controlled by the *outer* loop.
+
+      In Python the row is `" ".join([str(row)] * row)`.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for row in range(1, n + 1):
+                print(" ".join([str(row)] * row))
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+          1
+          2 2
+          3 3 3
+          4 4 4 4
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          1
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          1
+          2 2
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+          1
+          2 2
+          3 3 3
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+          1
+          2 2
+          3 3 3
+          4 4 4 4
+          5 5 5 5 5
+          6 6 6 6 6 6
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          1
+          2 2
+          3 3 3
+          4 4 4 4
+          5 5 5 5 5
+          6 6 6 6 6 6
+          7 7 7 7 7 7 7
+          8 8 8 8 8 8 8 8
+          9 9 9 9 9 9 9 9 9
+        hidden: true
+      - input: |2
+          16
+        expectedOutput: |2
+          1
+          2 2
+          3 3 3
+          4 4 4 4
+          5 5 5 5 5
+          6 6 6 6 6 6
+          7 7 7 7 7 7 7
+          8 8 8 8 8 8 8 8
+          9 9 9 9 9 9 9 9 9
+          10 10 10 10 10 10 10 10 10 10
+          11 11 11 11 11 11 11 11 11 11 11
+          12 12 12 12 12 12 12 12 12 12 12 12
+          13 13 13 13 13 13 13 13 13 13 13 13 13
+          14 14 14 14 14 14 14 14 14 14 14 14 14 14
+          15 15 15 15 15 15 15 15 15 15 15 15 15 15 15
+          16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16
+        hidden: true
+  - sheetId: prob-1-3-5-pattern-5
+    slug: pattern-5
+    title: "Pattern 5"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, stars]
+    sourceUrl: ""
+    statement: |2
+      Print a left-aligned right-angled triangle of stars that shrinks downwards.
+
+      There are `n` rows. The first row has `n` stars, and every following row has one
+      star fewer, so row `i` has `n - i + 1` stars. The stars are written one after
+      another with no spaces between them and no spaces before the first star.
+
+      For `n = 4` the expected picture is
+
+      ```
+      ****
+      ***
+      **
+      *
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `n` lines. Line `i` contains `n - i + 1` `*` characters with nothing
+      between them.
+    constraints:
+      - "1 <= n <= 20"
+      - "n is given as a single integer on one line."
+    examples:
+      - input: |2
+          4
+        output: |2
+          ****
+          ***
+          **
+          *
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          *
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "The widest row comes first this time."
+      - "If the row number is i, how many stars are left? Count down from n."
+    explanation: |2
+      **Nested loops — O(n^2) time, O(1) extra space.** The only change from the
+      growing triangle is the star count: row `i` prints `n - i + 1` stars instead of
+      `i`.
+
+      You can also loop the row variable downwards, `for row in range(n, 0, -1)`, and
+      print `row` stars — the same output with no arithmetic.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for row in range(1, n + 1):
+                print("*" * (n - row + 1))
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+          ****
+          ***
+          **
+          *
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          *
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          **
+          *
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+          ***
+          **
+          *
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+          ******
+          *****
+          ****
+          ***
+          **
+          *
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          *********
+          ********
+          *******
+          ******
+          *****
+          ****
+          ***
+          **
+          *
+        hidden: true
+      - input: |2
+          16
+        expectedOutput: |2
+          ****************
+          ***************
+          **************
+          *************
+          ************
+          ***********
+          **********
+          *********
+          ********
+          *******
+          ******
+          *****
+          ****
+          ***
+          **
+          *
+        hidden: true
+  - sheetId: prob-1-3-6-pattern-6
+    slug: pattern-6
+    title: "Pattern 6"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, numbers]
+    sourceUrl: ""
+    statement: |2
+      Print a left-aligned triangle of numbers that shrinks downwards.
+
+      There are `n` rows. Row `i` lists the numbers `1, 2, ..., n - i + 1` in
+      increasing order, separated by a single space. The first row therefore counts
+      all the way up to `n` and the last row is a single `1`.
+
+      For `n = 4` the expected picture is
+
+      ```
+      1 2 3 4
+      1 2 3
+      1 2
+      1
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `n` lines. Line `i` contains the `n - i + 1` integers
+      `1 2 ... (n - i + 1)`, separated by a single space.
+    constraints:
+      - "1 <= n <= 20"
+      - "n is given as a single integer on one line."
+    examples:
+      - input: |2
+          4
+        output: |2
+          1 2 3 4
+          1 2 3
+          1 2
+          1
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          1
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "Every row still starts at 1; only the stopping value changes."
+      - "Row i stops at n - i + 1."
+    explanation: |2
+      **Nested loops — O(n^2) time, O(1) extra space.** Row `i` counts from 1 up to
+      `n - i + 1`. As `i` grows the upper limit drops by one each time, which
+      produces the shrinking shape.
+
+      A neat variant: loop `length` from `n` down to 1 and print `1..length`.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for row in range(1, n + 1):
+                print(" ".join(str(value) for value in range(1, n - row + 2)))
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+          1 2 3 4
+          1 2 3
+          1 2
+          1
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          1
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          1 2
+          1
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+          1 2 3
+          1 2
+          1
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+          1 2 3 4 5 6
+          1 2 3 4 5
+          1 2 3 4
+          1 2 3
+          1 2
+          1
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          1 2 3 4 5 6 7 8 9
+          1 2 3 4 5 6 7 8
+          1 2 3 4 5 6 7
+          1 2 3 4 5 6
+          1 2 3 4 5
+          1 2 3 4
+          1 2 3
+          1 2
+          1
+        hidden: true
+      - input: |2
+          16
+        expectedOutput: |2
+          1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+          1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+          1 2 3 4 5 6 7 8 9 10 11 12 13 14
+          1 2 3 4 5 6 7 8 9 10 11 12 13
+          1 2 3 4 5 6 7 8 9 10 11 12
+          1 2 3 4 5 6 7 8 9 10 11
+          1 2 3 4 5 6 7 8 9 10
+          1 2 3 4 5 6 7 8 9
+          1 2 3 4 5 6 7 8
+          1 2 3 4 5 6 7
+          1 2 3 4 5 6
+          1 2 3 4 5
+          1 2 3 4
+          1 2 3
+          1 2
+          1
+        hidden: true
+  - sheetId: prob-1-3-7-pattern-7
+    slug: pattern-7
+    title: "Pattern 7"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, stars]
+    sourceUrl: ""
+    statement: |2
+      Print a centred pyramid of stars.
+
+      There are `n` rows, each exactly `2n - 1` characters wide. Row `i` is built from
+      three parts, in this order:
+
+      1. `n - i` spaces,
+      2. `2i - 1` stars written one after another with no spaces between them,
+      3. nothing else (do not pad the end of the line).
+
+      So the top row is a single star and the bottom row is a solid block of
+      `2n - 1` stars.
+
+      For `n = 4` the expected picture is
+
+      ```
+         *
+        ***
+       *****
+      *******
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `n` lines. Line `i` is `n - i` spaces followed by `2i - 1` `*`
+      characters.
+
+      The leading spaces are what centres the pyramid; the judge trims leading and
+      trailing spaces and collapses runs of spaces inside a line, so what it really
+      checks is the number of stars on each row.
+    constraints:
+      - "1 <= n <= 20"
+      - "n is given as a single integer on one line."
+    examples:
+      - input: |2
+          4
+        output: |2
+             *
+            ***
+           *****
+          *******
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          *
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "Count the spaces and the stars separately: they follow two different formulas."
+      - "Row i has an odd number of stars: 1, 3, 5, ... which is 2i - 1."
+    explanation: |2
+      **Nested loops — O(n^2) time, O(1) extra space.** Each row is printed in two
+      stages: first the `n - i` spaces that push the block to the right place, then
+      the `2i - 1` stars.
+
+      The two formulas are worth memorising because almost every centred pattern
+      reuses them: the space count shrinks by one per row while the star count grows
+      by two, which keeps the total width fixed at `2n - 1`.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for row in range(1, n + 1):
+                print(" " * (n - row) + "*" * (2 * row - 1))
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+             *
+            ***
+           *****
+          *******
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          *
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+           *
+          ***
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+            *
+           ***
+          *****
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+               *
+              ***
+             *****
+            *******
+           *********
+          ***********
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+                  *
+                 ***
+                *****
+               *******
+              *********
+             ***********
+            *************
+           ***************
+          *****************
+        hidden: true
+      - input: |2
+          16
+        expectedOutput: |2
+                         *
+                        ***
+                       *****
+                      *******
+                     *********
+                    ***********
+                   *************
+                  ***************
+                 *****************
+                *******************
+               *********************
+              ***********************
+             *************************
+            ***************************
+           *****************************
+          *******************************
+        hidden: true
+  - sheetId: prob-1-3-8-pattern-8
+    slug: pattern-8
+    title: "Pattern 8"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, stars]
+    sourceUrl: ""
+    statement: |2
+      Print an upside-down centred pyramid of stars.
+
+      There are `n` rows, each at most `2n - 1` characters wide. Row `i` is built from
+      two parts, in this order:
+
+      1. `i - 1` spaces,
+      2. `2(n - i) + 1` stars written one after another with no spaces between them.
+
+      The first row is a solid block of `2n - 1` stars and the last row is a single
+      star.
+
+      For `n = 4` the expected picture is
+
+      ```
+      *******
+       *****
+        ***
+         *
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `n` lines. Line `i` is `i - 1` spaces followed by `2(n - i) + 1` `*`
+      characters.
+
+      The leading spaces keep the pyramid centred; the judge trims leading and
+      trailing spaces and collapses runs of spaces inside a line, so what it really
+      checks is the number of stars on each row.
+    constraints:
+      - "1 <= n <= 20"
+      - "n is given as a single integer on one line."
+    examples:
+      - input: |2
+          4
+        output: |2
+          *******
+           *****
+            ***
+             *
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          *
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "This is the centred pyramid printed bottom row first."
+      - "The space count now grows while the star count shrinks by two each row."
+    explanation: |2
+      **Nested loops — O(n^2) time, O(1) extra space.** Compared with the upright
+      pyramid the two formulas swap direction: the leading spaces grow (`i - 1`) and
+      the stars shrink (`2(n - i) + 1`), so the widest row is printed first.
+
+      Another way to see it: run the upright pyramid's loop with `row` going from `n`
+      down to 1 and you get exactly these rows.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for row in range(1, n + 1):
+                print(" " * (row - 1) + "*" * (2 * (n - row) + 1))
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+          *******
+           *****
+            ***
+             *
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          *
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          ***
+           *
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+          *****
+           ***
+            *
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+          ***********
+           *********
+            *******
+             *****
+              ***
+               *
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          *****************
+           ***************
+            *************
+             ***********
+              *********
+               *******
+                *****
+                 ***
+                  *
+        hidden: true
+      - input: |2
+          16
+        expectedOutput: |2
+          *******************************
+           *****************************
+            ***************************
+             *************************
+              ***********************
+               *********************
+                *******************
+                 *****************
+                  ***************
+                   *************
+                    ***********
+                     *********
+                      *******
+                       *****
+                        ***
+                         *
+        hidden: true
+  - sheetId: prob-1-3-9-pattern-9
+    slug: pattern-9
+    title: "Pattern 9"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, stars]
+    sourceUrl: ""
+    statement: |2
+      Print a diamond made of two pyramids that touch along their widest rows.
+
+      The output has `2n` rows.
+
+      - Rows 1 to `n` form an upright centred pyramid: row `i` is `n - i` spaces
+        followed by `2i - 1` stars.
+      - Rows `n + 1` to `2n` repeat those same rows in reverse order, so row `n + 1`
+        is identical to row `n`, row `n + 2` is identical to row `n - 1`, and the last
+        row is a single star.
+
+      Stars inside a row are written one after another with no spaces between them,
+      and there is no blank line between the two halves.
+
+      For `n = 4` the expected picture is
+
+      ```
+         *
+        ***
+       *****
+      *******
+      *******
+       *****
+        ***
+         *
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `2n` lines forming the diamond described above. The `k`-th line from the
+      top and the `k`-th line from the bottom are identical.
+
+      The leading spaces centre the shape; the judge trims leading and trailing
+      spaces and collapses runs of spaces inside a line, so what it really checks is
+      the number of stars on each of the `2n` rows.
+    constraints:
+      - "1 <= n <= 20"
+      - "n is given as a single integer on one line."
+    examples:
+      - input: |2
+          4
+        output: |2
+             *
+            ***
+           *****
+          *******
+          *******
+           *****
+            ***
+             *
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          *
+          *
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "Write the upright pyramid first, then print the same rows again in reverse."
+      - "The two widest rows are next to each other, so no row is skipped in the middle."
+    explanation: |2
+      **Two loops — O(n^2) time, O(1) extra space.** Run the centred-pyramid loop
+      once with `row` going up from 1 to `n`, then again with `row` going down from
+      `n` to 1. Both loops print `n - row` spaces and `2 * row - 1` stars, so the
+      shape is automatically symmetric.
+
+      You can also build the `n` row strings once, store them in a list, print the
+      list and then print it reversed — the same `O(n^2)` characters, with the row
+      formula written only once.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for row in range(1, n + 1):
+                print(" " * (n - row) + "*" * (2 * row - 1))
+            for row in range(n, 0, -1):
+                print(" " * (n - row) + "*" * (2 * row - 1))
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+             *
+            ***
+           *****
+          *******
+          *******
+           *****
+            ***
+             *
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          *
+          *
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+           *
+          ***
+          ***
+           *
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+            *
+           ***
+          *****
+          *****
+           ***
+            *
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+               *
+              ***
+             *****
+            *******
+           *********
+          ***********
+          ***********
+           *********
+            *******
+             *****
+              ***
+               *
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+                  *
+                 ***
+                *****
+               *******
+              *********
+             ***********
+            *************
+           ***************
+          *****************
+          *****************
+           ***************
+            *************
+             ***********
+              *********
+               *******
+                *****
+                 ***
+                  *
+        hidden: true
+      - input: |2
+          14
+        expectedOutput: |2
+                       *
+                      ***
+                     *****
+                    *******
+                   *********
+                  ***********
+                 *************
+                ***************
+               *****************
+              *******************
+             *********************
+            ***********************
+           *************************
+          ***************************
+          ***************************
+           *************************
+            ***********************
+             *********************
+              *******************
+               *****************
+                ***************
+                 *************
+                  ***********
+                   *********
+                    *******
+                     *****
+                      ***
+                       *
+        hidden: true
+  - sheetId: prob-1-3-10-pattern-10
+    slug: pattern-10
+    title: "Pattern 10"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, stars]
+    sourceUrl: ""
+    statement: |2
+      Print a left-aligned shape that first grows and then shrinks.
+
+      The output has `2n - 1` rows and no row is indented.
+
+      - Rows 1 to `n` contain 1, 2, ..., `n` stars.
+      - Rows `n + 1` to `2n - 1` contain `n - 1`, `n - 2`, ..., 1 stars.
+
+      The widest row, with `n` stars, is printed exactly once. Stars are written one
+      after another with no spaces between them.
+
+      For `n = 4` the expected picture is
+
+      ```
+      *
+      **
+      ***
+      ****
+      ***
+      **
+      *
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `2n - 1` lines of `*` characters: the counts are
+      `1, 2, ..., n - 1, n, n - 1, ..., 2, 1`, one count per line.
+    constraints:
+      - "1 <= n <= 20"
+      - "n is given as a single integer on one line."
+    examples:
+      - input: |2
+          4
+        output: |2
+          *
+          **
+          ***
+          ****
+          ***
+          **
+          *
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          *
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "Two loops in a row: one counting up, one counting down."
+      - "Be careful not to print the widest row twice — the second loop starts at n - 1."
+    explanation: |2
+      **Two loops — O(n^2) time, O(1) extra space.** The first loop prints rows of
+      `1..n` stars; the second continues with `n-1..1`. Starting the second loop at
+      `n - 1` instead of `n` is the only subtle point — otherwise the widest row
+      appears twice and the shape has a flat middle.
+
+      Total output is `n^2` stars, so the running time is `O(n^2)` and unavoidable.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for stars in range(1, n + 1):
+                print("*" * stars)
+            for stars in range(n - 1, 0, -1):
+                print("*" * stars)
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+          *
+          **
+          ***
+          ****
+          ***
+          **
+          *
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          *
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          *
+          **
+          *
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+          *
+          **
+          ***
+          **
+          *
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+          *
+          **
+          ***
+          ****
+          *****
+          ******
+          *****
+          ****
+          ***
+          **
+          *
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          *
+          **
+          ***
+          ****
+          *****
+          ******
+          *******
+          ********
+          *********
+          ********
+          *******
+          ******
+          *****
+          ****
+          ***
+          **
+          *
+        hidden: true
+      - input: |2
+          16
+        expectedOutput: |2
+          *
+          **
+          ***
+          ****
+          *****
+          ******
+          *******
+          ********
+          *********
+          **********
+          ***********
+          ************
+          *************
+          **************
+          ***************
+          ****************
+          ***************
+          **************
+          *************
+          ************
+          ***********
+          **********
+          *********
+          ********
+          *******
+          ******
+          *****
+          ****
+          ***
+          **
+          *
+        hidden: true
+  - sheetId: prob-1-3-11-pattern-11
+    slug: pattern-11
+    title: "Pattern 11"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, numbers]
+    sourceUrl: ""
+    statement: |2
+      Print a left-aligned triangle of alternating `1`s and `0`s.
+
+      There are `n` rows and row `i` contains exactly `i` values separated by a single
+      space. Within a row the values alternate between `1` and `0`. The first value of
+      a row is `1` when the row number is odd and `0` when the row number is even, so
+      the first column reads `1, 0, 1, 0, ...` downwards.
+
+      For example row 1 is `1`, row 2 is `0 1`, row 3 is `1 0 1` and row 4 is
+      `0 1 0 1`.
+
+      For `n = 4` the expected picture is
+
+      ```
+      1
+      0 1
+      1 0 1
+      0 1 0 1
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `n` lines. Line `i` contains `i` values, each `0` or `1`, separated by a
+      single space, alternating and starting with `1` for odd `i` and `0` for even
+      `i`.
+    constraints:
+      - "1 <= n <= 20"
+      - "n is given as a single integer on one line."
+    examples:
+      - input: |2
+          4
+        output: |2
+          1
+          0 1
+          1 0 1
+          0 1 0 1
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          1
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "Decide the first value of the row from the parity of the row number."
+      - "Inside the row, flip a 0/1 variable after printing it."
+    explanation: |2
+      **Nested loops with a toggle — O(n^2) time, O(1) extra space.** Set
+      `value = 1` if the row index is odd and `0` if it is even, print it, then flip
+      it with `value = 1 - value` after each position.
+
+      An equivalent closed form avoids the toggle: the entry at row `i`, position `j`
+      (both 1-based) is `(i + j) % 2`, which is exactly the chessboard colouring of
+      the triangle.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for row in range(1, n + 1):
+                start = 1 if row % 2 == 1 else 0
+                values = [str((start + index) % 2) for index in range(row)]
+                print(" ".join(values))
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+          1
+          0 1
+          1 0 1
+          0 1 0 1
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          1
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          1
+          0 1
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+          1
+          0 1
+          1 0 1
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+          1
+          0 1
+          1 0 1
+          0 1 0 1
+          1 0 1 0 1
+          0 1 0 1 0 1
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          1
+          0 1
+          1 0 1
+          0 1 0 1
+          1 0 1 0 1
+          0 1 0 1 0 1
+          1 0 1 0 1 0 1
+          0 1 0 1 0 1 0 1
+          1 0 1 0 1 0 1 0 1
+        hidden: true
+      - input: |2
+          16
+        expectedOutput: |2
+          1
+          0 1
+          1 0 1
+          0 1 0 1
+          1 0 1 0 1
+          0 1 0 1 0 1
+          1 0 1 0 1 0 1
+          0 1 0 1 0 1 0 1
+          1 0 1 0 1 0 1 0 1
+          0 1 0 1 0 1 0 1 0 1
+          1 0 1 0 1 0 1 0 1 0 1
+          0 1 0 1 0 1 0 1 0 1 0 1
+          1 0 1 0 1 0 1 0 1 0 1 0 1
+          0 1 0 1 0 1 0 1 0 1 0 1 0 1
+          1 0 1 0 1 0 1 0 1 0 1 0 1 0 1
+          0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1
+        hidden: true
+  - sheetId: prob-1-3-12-pattern-12
+    slug: pattern-12
+    title: "Pattern 12"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, numbers]
+    sourceUrl: ""
+    statement: |2
+      Print a symmetric triangle of digits with a gap that closes as you go down.
+
+      There are `n` rows, each exactly `2n` characters wide. Row `i` is built from
+      three parts, in this order:
+
+      1. the digits `1` to `i` in increasing order, written one after another with no
+         spaces between them,
+      2. `2(n - i)` spaces,
+      3. the digits `i` down to `1` in decreasing order, again with no spaces between
+         them.
+
+      The first row is `1`, a wide gap, then `1`. On the last row the gap disappears
+      and the two halves meet.
+
+      For `n = 4` the expected picture is
+
+      ```
+      1      1
+      12    21
+      123  321
+      12344321
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `n` lines. Line `i` is `12...i`, then `2(n - i)` spaces, then `i...21`.
+
+      The judge collapses the run of spaces in the middle to a single space, so what
+      it checks is the two digit blocks and the fact that a gap exists at all.
+    constraints:
+      - "1 <= n <= 9"
+      - "n is a single digit, so every value printed is one character wide."
+    examples:
+      - input: |2
+          4
+        output: |2
+          1      1
+          12    21
+          123  321
+          12344321
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          11
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "Each row has three pieces: numbers up, spaces, numbers down."
+      - "The width is always 2n, so the gap must be 2n - 2i spaces on row i."
+    explanation: |2
+      **Three inner loops — O(n^2) time, O(1) extra space.** For row `i`, print
+      `1..i`, then `2(n - i)` spaces, then `i..1`. Counting characters confirms the
+      width: `i + (2n - 2i) + i = 2n`.
+
+      Keeping `n <= 9` means every number is a single digit, so the columns line up
+      and the picture is unambiguous.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for row in range(1, n + 1):
+                left = "".join(str(value) for value in range(1, row + 1))
+                right = "".join(str(value) for value in range(row, 0, -1))
+                print(left + " " * (2 * (n - row)) + right)
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+          1      1
+          12    21
+          123  321
+          12344321
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          11
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          1  1
+          1221
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+          1    1
+          12  21
+          123321
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+          1          1
+          12        21
+          123      321
+          1234    4321
+          12345  54321
+          123456654321
+        hidden: true
+      - input: |2
+          8
+        expectedOutput: |2
+          1              1
+          12            21
+          123          321
+          1234        4321
+          12345      54321
+          123456    654321
+          1234567  7654321
+          1234567887654321
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          1                1
+          12              21
+          123            321
+          1234          4321
+          12345        54321
+          123456      654321
+          1234567    7654321
+          12345678  87654321
+          123456789987654321
+        hidden: true
+  - sheetId: prob-1-3-13-pattern-13
+    slug: pattern-13
+    title: "Pattern 13"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, numbers]
+    sourceUrl: ""
+    statement: |2
+      Print a left-aligned triangle whose numbers keep counting across rows.
+
+      There are `n` rows and row `i` contains exactly `i` numbers separated by a
+      single space. The counting starts at `1` on the first row and never restarts:
+      each new number is one more than the previous one, wherever it appears.
+
+      So the rows read `1`, then `2 3`, then `4 5 6`, then `7 8 9 10`, and so on.
+
+      For `n = 4` the expected picture is
+
+      ```
+      1
+      2 3
+      4 5 6
+      7 8 9 10
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `n` lines. Line `i` contains `i` consecutive integers separated by a
+      single space, continuing the sequence from the previous line. The last number
+      printed is `n(n + 1) / 2`.
+    constraints:
+      - "1 <= n <= 20"
+      - "n is given as a single integer on one line."
+    examples:
+      - input: |2
+          4
+        output: |2
+          1
+          2 3
+          4 5 6
+          7 8 9 10
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          1
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "Keep the counter outside both loops so it survives from row to row."
+      - "The first number of row i is 1 + (i - 1)i/2, but a running counter is simpler."
+    explanation: |2
+      **Nested loops with a running counter — O(n^2) time, O(1) extra space.**
+      Declare `value = 1` before the row loop and increment it after every number you
+      print. Because it is never reset, the numbers flow continuously from one row to
+      the next.
+
+      The last value printed is the triangular number `n(n + 1) / 2`, which is also
+      the exact number of values in the output.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            value = 1
+            for row in range(1, n + 1):
+                values = []
+                for _ in range(row):
+                    values.append(str(value))
+                    value += 1
+                print(" ".join(values))
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+          1
+          2 3
+          4 5 6
+          7 8 9 10
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          1
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          1
+          2 3
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+          1
+          2 3
+          4 5 6
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+          1
+          2 3
+          4 5 6
+          7 8 9 10
+          11 12 13 14 15
+          16 17 18 19 20 21
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          1
+          2 3
+          4 5 6
+          7 8 9 10
+          11 12 13 14 15
+          16 17 18 19 20 21
+          22 23 24 25 26 27 28
+          29 30 31 32 33 34 35 36
+          37 38 39 40 41 42 43 44 45
+        hidden: true
+      - input: |2
+          16
+        expectedOutput: |2
+          1
+          2 3
+          4 5 6
+          7 8 9 10
+          11 12 13 14 15
+          16 17 18 19 20 21
+          22 23 24 25 26 27 28
+          29 30 31 32 33 34 35 36
+          37 38 39 40 41 42 43 44 45
+          46 47 48 49 50 51 52 53 54 55
+          56 57 58 59 60 61 62 63 64 65 66
+          67 68 69 70 71 72 73 74 75 76 77 78
+          79 80 81 82 83 84 85 86 87 88 89 90 91
+          92 93 94 95 96 97 98 99 100 101 102 103 104 105
+          106 107 108 109 110 111 112 113 114 115 116 117 118 119 120
+          121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136
+        hidden: true
+  - sheetId: prob-1-3-14-pattern-14
+    slug: pattern-14
+    title: "Pattern 14"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, strings]
+    sourceUrl: ""
+    statement: |2
+      Print a left-aligned triangle of uppercase letters.
+
+      There are `n` rows. Row `i` lists the first `i` letters of the alphabet,
+      `A`, `B`, ..., starting from `A` every time, separated by a single space.
+
+      So row 1 is `A`, row 2 is `A B`, row 3 is `A B C`, and so on.
+
+      For `n = 4` the expected picture is
+
+      ```
+      A
+      A B
+      A B C
+      A B C D
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `n` lines. Line `i` contains the first `i` uppercase letters of the
+      alphabet in order, separated by a single space.
+    constraints:
+      - "1 <= n <= 20"
+      - "n never exceeds 26, so the letters stay within A..Z."
+    examples:
+      - input: |2
+          4
+        output: |2
+          A
+          A B
+          A B C
+          A B C D
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          A
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "Every row starts again at 'A'."
+      - "The i-th letter is chr(ord('A') + i - 1)."
+    explanation: |2
+      **Nested loops — O(n^2) time, O(1) extra space.** Row `i` runs an inner index
+      from 0 to `i - 1` and prints `chr(ord('A') + index)`. Restarting the index at 0
+      on every row is what makes each row begin with `A`.
+
+      Languages without character arithmetic can index into the constant string
+      `"ABCDEFGHIJKLMNOPQRSTUVWXYZ"` instead.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for row in range(1, n + 1):
+                print(" ".join(chr(ord("A") + index) for index in range(row)))
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+          A
+          A B
+          A B C
+          A B C D
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          A
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          A
+          A B
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+          A
+          A B
+          A B C
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+          A
+          A B
+          A B C
+          A B C D
+          A B C D E
+          A B C D E F
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          A
+          A B
+          A B C
+          A B C D
+          A B C D E
+          A B C D E F
+          A B C D E F G
+          A B C D E F G H
+          A B C D E F G H I
+        hidden: true
+      - input: |2
+          16
+        expectedOutput: |2
+          A
+          A B
+          A B C
+          A B C D
+          A B C D E
+          A B C D E F
+          A B C D E F G
+          A B C D E F G H
+          A B C D E F G H I
+          A B C D E F G H I J
+          A B C D E F G H I J K
+          A B C D E F G H I J K L
+          A B C D E F G H I J K L M
+          A B C D E F G H I J K L M N
+          A B C D E F G H I J K L M N O
+          A B C D E F G H I J K L M N O P
+        hidden: true
+  - sheetId: prob-1-3-15-pattern-15
+    slug: pattern-15
+    title: "Pattern 15"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, strings]
+    sourceUrl: ""
+    statement: |2
+      Print a left-aligned triangle of uppercase letters that shrinks downwards.
+
+      There are `n` rows. Row `i` lists the first `n - i + 1` letters of the alphabet
+      starting from `A`, separated by a single space. The first row therefore runs all
+      the way to the `n`-th letter and the last row is a single `A`.
+
+      For `n = 4` the expected picture is
+
+      ```
+      A B C D
+      A B C
+      A B
+      A
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `n` lines. Line `i` contains the first `n - i + 1` uppercase letters of
+      the alphabet in order, separated by a single space.
+    constraints:
+      - "1 <= n <= 20"
+      - "n never exceeds 26, so the letters stay within A..Z."
+    examples:
+      - input: |2
+          4
+        output: |2
+          A B C D
+          A B C
+          A B
+          A
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          A
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "Every row still starts at 'A'; only the length changes."
+      - "Row i has n - i + 1 letters."
+    explanation: |2
+      **Nested loops — O(n^2) time, O(1) extra space.** The row always starts at `A`;
+      the inner loop just stops earlier each time, after `n - i + 1` letters.
+
+      Equivalently, loop `length` from `n` down to 1 and print the first `length`
+      letters.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for row in range(1, n + 1):
+                print(" ".join(chr(ord("A") + index) for index in range(n - row + 1)))
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+          A B C D
+          A B C
+          A B
+          A
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          A
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          A B
+          A
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+          A B C
+          A B
+          A
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+          A B C D E F
+          A B C D E
+          A B C D
+          A B C
+          A B
+          A
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          A B C D E F G H I
+          A B C D E F G H
+          A B C D E F G
+          A B C D E F
+          A B C D E
+          A B C D
+          A B C
+          A B
+          A
+        hidden: true
+      - input: |2
+          16
+        expectedOutput: |2
+          A B C D E F G H I J K L M N O P
+          A B C D E F G H I J K L M N O
+          A B C D E F G H I J K L M N
+          A B C D E F G H I J K L M
+          A B C D E F G H I J K L
+          A B C D E F G H I J K
+          A B C D E F G H I J
+          A B C D E F G H I
+          A B C D E F G H
+          A B C D E F G
+          A B C D E F
+          A B C D E
+          A B C D
+          A B C
+          A B
+          A
+        hidden: true
+  - sheetId: prob-1-3-16-pattern-16
+    slug: pattern-16
+    title: "Pattern 16"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, strings]
+    sourceUrl: ""
+    statement: |2
+      Print a left-aligned triangle in which every row repeats a single letter.
+
+      There are `n` rows. Row `i` uses the `i`-th letter of the alphabet (`A` for row
+      1, `B` for row 2, ...) and prints it `i` times, separated by a single space.
+
+      So row 1 is `A`, row 2 is `B B`, row 3 is `C C C`, and so on.
+
+      For `n = 4` the expected picture is
+
+      ```
+      A
+      B B
+      C C C
+      D D D D
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `n` lines. Line `i` contains the `i`-th uppercase letter of the alphabet
+      repeated `i` times, separated by a single space.
+    constraints:
+      - "1 <= n <= 20"
+      - "n never exceeds 26, so the letters stay within A..Z."
+    examples:
+      - input: |2
+          4
+        output: |2
+          A
+          B B
+          C C C
+          D D D D
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          A
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "Both the letter and the repetition count come from the row number."
+      - "Compute the letter once per row, before the inner loop."
+    explanation: |2
+      **Nested loops — O(n^2) time, O(1) extra space.** Compute
+      `letter = chr(ord('A') + row - 1)` once per row, then print it `row` times. The
+      inner loop variable is never used, exactly as in the repeated-number triangle.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for row in range(1, n + 1):
+                letter = chr(ord("A") + row - 1)
+                print(" ".join([letter] * row))
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+          A
+          B B
+          C C C
+          D D D D
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          A
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          A
+          B B
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+          A
+          B B
+          C C C
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+          A
+          B B
+          C C C
+          D D D D
+          E E E E E
+          F F F F F F
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          A
+          B B
+          C C C
+          D D D D
+          E E E E E
+          F F F F F F
+          G G G G G G G
+          H H H H H H H H
+          I I I I I I I I I
+        hidden: true
+      - input: |2
+          16
+        expectedOutput: |2
+          A
+          B B
+          C C C
+          D D D D
+          E E E E E
+          F F F F F F
+          G G G G G G G
+          H H H H H H H H
+          I I I I I I I I I
+          J J J J J J J J J J
+          K K K K K K K K K K K
+          L L L L L L L L L L L L
+          M M M M M M M M M M M M M
+          N N N N N N N N N N N N N N
+          O O O O O O O O O O O O O O O
+          P P P P P P P P P P P P P P P P
+        hidden: true
+  - sheetId: prob-1-3-17-pattern-17
+    slug: pattern-17
+    title: "Pattern 17"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, strings]
+    sourceUrl: ""
+    statement: |2
+      Print a centred pyramid of letters that climbs up and comes back down.
+
+      There are `n` rows. Row `i` is built from two parts, in this order:
+
+      1. `n - i` spaces,
+      2. `2i - 1` letters separated by a single space: the alphabet climbs from `A` up
+         to the `i`-th letter and then walks back down to `A`.
+
+      So row 1 is `A`, row 2 is `A B A`, row 3 is `A B C B A`, and so on. The middle
+      letter of row `i` is the `i`-th letter of the alphabet and the row reads the
+      same forwards and backwards.
+
+      For `n = 4` the expected picture is
+
+      ```
+         A
+        A B A
+       A B C B A
+      A B C D C B A
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `n` lines. Line `i` is `n - i` spaces followed by the `2i - 1` letters
+      `A ... (i-th letter) ... A`, separated by a single space.
+
+      The leading spaces centre the pyramid; the judge trims leading and trailing
+      spaces and collapses runs of spaces inside a line, so what it really checks is
+      the sequence of letters on each row.
+    constraints:
+      - "1 <= n <= 20"
+      - "n never exceeds 26, so the letters stay within A..Z."
+    examples:
+      - input: |2
+          4
+        output: |2
+             A
+            A B A
+           A B C B A
+          A B C D C B A
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          A
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "Print the increasing half up to the i-th letter, then the decreasing half back to A."
+      - "Do not print the middle letter twice — the second half starts one step below it."
+    explanation: |2
+      **Nested loops — O(n^2) time, O(1) extra space.** After the `n - i` spaces,
+      print `A` up to the `i`-th letter, then continue downwards from the
+      `(i-1)`-th letter back to `A`. That gives `i + (i - 1) = 2i - 1` letters, the
+      same odd widths as the star pyramid.
+
+      A shortcut: build the increasing half as a list, then append a reversed copy of
+      it without its last element.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for row in range(1, n + 1):
+                letters = [chr(ord("A") + index) for index in range(row)]
+                letters += letters[-2::-1]
+                print(" " * (n - row) + " ".join(letters))
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+             A
+            A B A
+           A B C B A
+          A B C D C B A
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          A
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+           A
+          A B A
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+            A
+           A B A
+          A B C B A
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+               A
+              A B A
+             A B C B A
+            A B C D C B A
+           A B C D E D C B A
+          A B C D E F E D C B A
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+                  A
+                 A B A
+                A B C B A
+               A B C D C B A
+              A B C D E D C B A
+             A B C D E F E D C B A
+            A B C D E F G F E D C B A
+           A B C D E F G H G F E D C B A
+          A B C D E F G H I H G F E D C B A
+        hidden: true
+      - input: |2
+          14
+        expectedOutput: |2
+                       A
+                      A B A
+                     A B C B A
+                    A B C D C B A
+                   A B C D E D C B A
+                  A B C D E F E D C B A
+                 A B C D E F G F E D C B A
+                A B C D E F G H G F E D C B A
+               A B C D E F G H I H G F E D C B A
+              A B C D E F G H I J I H G F E D C B A
+             A B C D E F G H I J K J I H G F E D C B A
+            A B C D E F G H I J K L K J I H G F E D C B A
+           A B C D E F G H I J K L M L K J I H G F E D C B A
+          A B C D E F G H I J K L M N M L K J I H G F E D C B A
+        hidden: true
+  - sheetId: prob-1-3-18-pattern-18
+    slug: pattern-18
+    title: "Pattern 18"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, strings]
+    sourceUrl: ""
+    statement: |2
+      Print a left-aligned triangle of letters that ends at the same letter on every
+      row.
+
+      Let `L` be the `n`-th letter of the alphabet (`E` when `n = 5`). There are `n`
+      rows, and row `i` contains the last `i` letters of the block `A..L`, printed in
+      increasing alphabetical order and separated by a single space.
+
+      So for `n = 5` the rows are `E`, then `D E`, then `C D E`, then `B C D E`, then
+      `A B C D E`. Every row ends with `L`, and each new row starts one letter
+      earlier.
+
+      For `n = 4` the expected picture is
+
+      ```
+      D
+      C D
+      B C D
+      A B C D
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `n` lines. Line `i` contains `i` letters in increasing alphabetical
+      order, separated by a single space, ending with the `n`-th letter of the
+      alphabet and starting with the `(n - i + 1)`-th.
+    constraints:
+      - "1 <= n <= 20"
+      - "n never exceeds 26, so the letters stay within A..Z."
+    examples:
+      - input: |2
+          5
+        output: |2
+          E
+          D E
+          C D E
+          B C D E
+          A B C D E
+        explanation: "The rules above applied with n = 5."
+      - input: |2
+          1
+        output: |2
+          A
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "Every row finishes on the same letter; only the starting letter moves."
+      - "Row i starts at the (n - i + 1)-th letter of the alphabet."
+    explanation: |2
+      **Nested loops — O(n^2) time, O(1) extra space.** For row `i`, start the inner
+      index at `n - i` (0-based) and run it up to `n - 1`, printing
+      `chr(ord('A') + index)`.
+
+      The common mistake is to print the letters in decreasing order; the row must
+      still read alphabetically upwards, it just begins further back each time.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for row in range(1, n + 1):
+                letters = [chr(ord("A") + index) for index in range(n - row, n)]
+                print(" ".join(letters))
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          5
+        expectedOutput: |2
+          E
+          D E
+          C D E
+          B C D E
+          A B C D E
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          A
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          B
+          A B
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+          C
+          B C
+          A B C
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+          F
+          E F
+          D E F
+          C D E F
+          B C D E F
+          A B C D E F
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          I
+          H I
+          G H I
+          F G H I
+          E F G H I
+          D E F G H I
+          C D E F G H I
+          B C D E F G H I
+          A B C D E F G H I
+        hidden: true
+      - input: |2
+          16
+        expectedOutput: |2
+          P
+          O P
+          N O P
+          M N O P
+          L M N O P
+          K L M N O P
+          J K L M N O P
+          I J K L M N O P
+          H I J K L M N O P
+          G H I J K L M N O P
+          F G H I J K L M N O P
+          E F G H I J K L M N O P
+          D E F G H I J K L M N O P
+          C D E F G H I J K L M N O P
+          B C D E F G H I J K L M N O P
+          A B C D E F G H I J K L M N O P
+        hidden: true
+  - sheetId: prob-1-3-19-pattern-19
+    slug: pattern-19
+    title: "Pattern 19"
+    difficulty: Easy
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, stars]
+    sourceUrl: ""
+    statement: |2
+      Print a butterfly: two solid wings that pull apart and then come back
+      together.
+
+      The output has `2n` rows, each exactly `2n` characters wide.
+
+      - For rows 1 to `n`, row `i` is `n - i + 1` stars, then `2(i - 1)` spaces, then
+        `n - i + 1` stars again.
+      - Rows `n + 1` to `2n` repeat those rows in reverse order, so row `n + 1` is
+        identical to row `n` and the last row is identical to the first.
+
+      The first and last rows are solid blocks of `2n` stars; the two rows in the
+      middle are the most open, with a single star on each side.
+
+      For `n = 4` the expected picture is
+
+      ```
+      ********
+      ***  ***
+      **    **
+      *      *
+      *      *
+      **    **
+      ***  ***
+      ********
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `2n` lines as described: on line `i` (for `i <= n`) a block of
+      `n - i + 1` stars, a gap of `2(i - 1)` spaces, and another block of
+      `n - i + 1` stars; lines `n + 1 .. 2n` mirror lines `n .. 1`.
+
+      The judge collapses the run of spaces in the gap to a single space, so what it
+      checks is the two star blocks on every line.
+    constraints:
+      - "1 <= n <= 20"
+      - "n is given as a single integer on one line."
+    examples:
+      - input: |2
+          4
+        output: |2
+          ********
+          ***  ***
+          **    **
+          *      *
+          *      *
+          **    **
+          ***  ***
+          ********
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          **
+          **
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "Each row is three pieces: left wing, gap, right wing."
+      - "The wing width plus half the gap is always n, which keeps the total width at 2n."
+    explanation: |2
+      **Two loops — O(n^2) time, O(1) extra space.** Write one helper that prints a
+      row given its wing width, then call it with widths `n, n-1, ..., 1` and again
+      with `1, 2, ..., n`. Since `wings + gap/2 = n`, every line is exactly `2n`
+      characters wide.
+
+      Unlike the half diamond, the narrowest row *is* printed twice here — that is
+      what makes the middle of the butterfly look open.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for row in range(1, n + 1):
+                stars = n - row + 1
+                print("*" * stars + " " * (2 * (row - 1)) + "*" * stars)
+            for row in range(n, 0, -1):
+                stars = n - row + 1
+                print("*" * stars + " " * (2 * (row - 1)) + "*" * stars)
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+          ********
+          ***  ***
+          **    **
+          *      *
+          *      *
+          **    **
+          ***  ***
+          ********
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          **
+          **
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          ****
+          *  *
+          *  *
+          ****
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+          ******
+          **  **
+          *    *
+          *    *
+          **  **
+          ******
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+          ************
+          *****  *****
+          ****    ****
+          ***      ***
+          **        **
+          *          *
+          *          *
+          **        **
+          ***      ***
+          ****    ****
+          *****  *****
+          ************
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          ******************
+          ********  ********
+          *******    *******
+          ******      ******
+          *****        *****
+          ****          ****
+          ***            ***
+          **              **
+          *                *
+          *                *
+          **              **
+          ***            ***
+          ****          ****
+          *****        *****
+          ******      ******
+          *******    *******
+          ********  ********
+          ******************
+        hidden: true
+      - input: |2
+          14
+        expectedOutput: |2
+          ****************************
+          *************  *************
+          ************    ************
+          ***********      ***********
+          **********        **********
+          *********          *********
+          ********            ********
+          *******              *******
+          ******                ******
+          *****                  *****
+          ****                    ****
+          ***                      ***
+          **                        **
+          *                          *
+          *                          *
+          **                        **
+          ***                      ***
+          ****                    ****
+          *****                  *****
+          ******                ******
+          *******              *******
+          ********            ********
+          *********          *********
+          **********        **********
+          ***********      ***********
+          ************    ************
+          *************  *************
+          ****************************
+        hidden: true
+  - sheetId: prob-1-3-20-pattern-20
+    slug: pattern-20
+    title: "Pattern 20"
+    difficulty: Medium
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, stars]
+    sourceUrl: ""
+    statement: |2
+      Print the upside-down butterfly: two wings that start wide apart, close
+      completely in the middle, and open again.
+
+      The output has `2n - 1` rows, each exactly `2n` characters wide.
+
+      - For rows 1 to `n`, row `i` is `i` stars, then `2(n - i)` spaces, then `i`
+        stars again.
+      - Rows `n + 1` to `2n - 1` repeat rows `n - 1` down to 1, so the shape is
+        symmetric about the middle row.
+
+      The first and last rows are the most open (one star on each side); the single
+      middle row is a solid block of `2n` stars and is printed only once.
+
+      For `n = 4` the expected picture is
+
+      ```
+      *      *
+      **    **
+      ***  ***
+      ********
+      ***  ***
+      **    **
+      *      *
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `2n - 1` lines as described: on line `i` (for `i <= n`) a block of `i`
+      stars, a gap of `2(n - i)` spaces, and another block of `i` stars; lines
+      `n + 1 .. 2n - 1` mirror lines `n - 1 .. 1`.
+
+      The judge collapses the run of spaces in the gap to a single space, so what it
+      checks is the two star blocks on every line.
+    constraints:
+      - "1 <= n <= 20"
+      - "n is given as a single integer on one line."
+    examples:
+      - input: |2
+          4
+        output: |2
+          *      *
+          **    **
+          ***  ***
+          ********
+          ***  ***
+          **    **
+          *      *
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          **
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "Compared with the butterfly, the wings grow instead of shrinking in the first half."
+      - "The solid middle row must appear once, so the second loop starts at n - 1."
+    explanation: |2
+      **Two loops — O(n^2) time, O(1) extra space.** Print wings of width
+      `1, 2, ..., n` with a gap of `2(n - i)` spaces, then continue with widths
+      `n-1, ..., 1`. When `i = n` the gap is zero, which is why the middle row comes
+      out solid.
+
+      Starting the second loop at `n - 1` avoids printing that solid row twice, which
+      is the difference between this shape and the plain butterfly.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for row in range(1, n + 1):
+                print("*" * row + " " * (2 * (n - row)) + "*" * row)
+            for row in range(n - 1, 0, -1):
+                print("*" * row + " " * (2 * (n - row)) + "*" * row)
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+          *      *
+          **    **
+          ***  ***
+          ********
+          ***  ***
+          **    **
+          *      *
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          **
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          *  *
+          ****
+          *  *
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+          *    *
+          **  **
+          ******
+          **  **
+          *    *
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+          *          *
+          **        **
+          ***      ***
+          ****    ****
+          *****  *****
+          ************
+          *****  *****
+          ****    ****
+          ***      ***
+          **        **
+          *          *
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          *                *
+          **              **
+          ***            ***
+          ****          ****
+          *****        *****
+          ******      ******
+          *******    *******
+          ********  ********
+          ******************
+          ********  ********
+          *******    *******
+          ******      ******
+          *****        *****
+          ****          ****
+          ***            ***
+          **              **
+          *                *
+        hidden: true
+      - input: |2
+          14
+        expectedOutput: |2
+          *                          *
+          **                        **
+          ***                      ***
+          ****                    ****
+          *****                  *****
+          ******                ******
+          *******              *******
+          ********            ********
+          *********          *********
+          **********        **********
+          ***********      ***********
+          ************    ************
+          *************  *************
+          ****************************
+          *************  *************
+          ************    ************
+          ***********      ***********
+          **********        **********
+          *********          *********
+          ********            ********
+          *******              *******
+          ******                ******
+          *****                  *****
+          ****                    ****
+          ***                      ***
+          **                        **
+          *                          *
+        hidden: true
+  - sheetId: prob-1-3-21-pattern-21
+    slug: pattern-21
+    title: "Pattern 21"
+    difficulty: Medium
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, stars]
+    sourceUrl: ""
+    statement: |2
+      Print the outline of a square: stars on the border, empty space inside.
+
+      The grid has `n` rows and `n` columns. A cell holds a star when it lies on the
+      first row, the last row, the first column or the last column; every other cell
+      is a space.
+
+      That means the first and last rows are solid blocks of `n` stars, and each row
+      in between is one star, `n - 2` spaces, and one star. When `n = 1` the single
+      row is just `*`, and when `n = 2` both rows are `**`.
+
+      For `n = 4` the expected picture is
+
+      ```
+      ****
+      *  *
+      *  *
+      ****
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `n` lines of `n` characters each, using `*` on the border of the square
+      and a space elsewhere.
+
+      The judge collapses the run of spaces inside a line to a single space, so what
+      it checks is where the stars sit on each row.
+    constraints:
+      - "1 <= n <= 20"
+      - "n is given as a single integer on one line."
+    examples:
+      - input: |2
+          4
+        output: |2
+          ****
+          *  *
+          *  *
+          ****
+        explanation: "The rules above applied with n = 4."
+      - input: |2
+          1
+        output: |2
+          *
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "Decide per cell: is its row or its column on the edge?"
+      - "Handle n = 1 and n = 2 by thinking about what the rule says, not by adding special cases."
+    explanation: |2
+      **Cell-by-cell test — O(n^2) time, O(1) extra space.** Loop over rows and
+      columns and print `*` when `row == 1 or row == n or col == 1 or col == n`, else
+      a space. The rule handles `n = 1` and `n = 2` on its own, because then every
+      cell is on some edge.
+
+      **Row-at-a-time — still O(n^2) output, but only `n` prints.** The first and last
+      rows are `"*" * n`; every other row is `"*" + " " * (n - 2) + "*"`. This is the
+      version worth writing once you trust the rule.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            for row in range(1, n + 1):
+                if row == 1 or row == n:
+                    print("*" * n)
+                else:
+                    print("*" + " " * (n - 2) + "*")
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          4
+        expectedOutput: |2
+          ****
+          *  *
+          *  *
+          ****
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          *
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          **
+          **
+        hidden: true
+      - input: |2
+          3
+        expectedOutput: |2
+          ***
+          * *
+          ***
+        hidden: true
+      - input: |2
+          6
+        expectedOutput: |2
+          ******
+          *    *
+          *    *
+          *    *
+          *    *
+          ******
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          *********
+          *       *
+          *       *
+          *       *
+          *       *
+          *       *
+          *       *
+          *       *
+          *********
+        hidden: true
+      - input: |2
+          16
+        expectedOutput: |2
+          ****************
+          *              *
+          *              *
+          *              *
+          *              *
+          *              *
+          *              *
+          *              *
+          *              *
+          *              *
+          *              *
+          *              *
+          *              *
+          *              *
+          *              *
+          ****************
+        hidden: true
+  - sheetId: prob-1-3-22-pattern-22
+    slug: pattern-22
+    title: "Pattern 22"
+    difficulty: Medium
+    topic: "Patterns"
+    subtopic: "Patterns"
+    tags: [patterns, loops, numbers, matrix]
+    sourceUrl: ""
+    statement: |2
+      Print a square of numbers made of nested rings.
+
+      The grid has `2n - 1` rows and `2n - 1` columns. The value written in a cell is
+      `n` minus its distance to the nearest edge of the grid: cells on the outer
+      border hold `n`, the ring just inside holds `n - 1`, and so on down to the
+      single centre cell, which holds `1`.
+
+      Using 0-based indices `i` and `j` and `size = 2n - 1`, the value at row `i`,
+      column `j` is
+
+      ```
+      n - min(i, j, size - 1 - i, size - 1 - j)
+      ```
+
+      Values in a row are separated by a single space. For `n = 3` the square is
+
+      ```
+      3 3 3 3 3
+      3 2 2 2 3
+      3 2 1 2 3
+      3 2 2 2 3
+      3 3 3 3 3
+      ```
+
+      For `n = 4` the expected picture is
+
+      ```
+      4 4 4 4 4 4 4
+      4 3 3 3 3 3 4
+      4 3 2 2 2 3 4
+      4 3 2 1 2 3 4
+      4 3 2 2 2 3 4
+      4 3 3 3 3 3 4
+      4 4 4 4 4 4 4
+      ```
+    inputFormat: |2
+      - A single line containing one integer `n`.
+    outputFormat: |2
+      Print `2n - 1` lines, each with `2n - 1` integers separated by a single space,
+      where the entry at 0-based row `i` and column `j` is
+      `n - min(i, j, 2n - 2 - i, 2n - 2 - j)`.
+    constraints:
+      - "1 <= n <= 20"
+      - "n is given as a single integer on one line."
+    examples:
+      - input: |2
+          3
+        output: |2
+          3 3 3 3 3
+          3 2 2 2 3
+          3 2 1 2 3
+          3 2 2 2 3
+          3 3 3 3 3
+        explanation: "The rules above applied with n = 3."
+      - input: |2
+          1
+        output: |2
+          1
+        explanation: "The rules above applied with n = 1."
+    hints:
+      - "Ask each cell how far it is from the top, bottom, left and right edge."
+      - "The smallest of those four distances decides which ring the cell belongs to."
+    explanation: |2
+      **Distance to the border — O(n^2) time, O(1) extra space.** For every cell
+      compute the four distances `i`, `j`, `size - 1 - i` and `size - 1 - j`; the
+      smallest one is how deep the cell sits inside the square. Subtracting it from
+      `n` turns the outer ring into `n` and the centre into `1`.
+
+      **Ring filling — same complexity.** You can also allocate a `size x size`
+      matrix and paint ring `k` (value `n - k`) by walking its four sides, then print
+      the matrix. It uses `O(n^2)` memory and is easier to get wrong; the direct
+      formula needs no storage at all.
+    starterCode:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            # Print the pattern described in the statement, one row per line.
+            pass
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    referenceSolution:
+      python: |2
+        import sys
+
+
+        def pattern(n: int) -> None:
+            size = 2 * n - 1
+            for i in range(size):
+                values = []
+                for j in range(size):
+                    values.append(str(n - min(i, j, size - 1 - i, size - 1 - j)))
+                print(" ".join(values))
+
+
+        # --- Input/output handling ---
+        def main():
+            data = sys.stdin.read().split()
+            n = int(data[0])
+            pattern(n)
+
+
+        if __name__ == "__main__":
+            main()
+    testCases:
+      - input: |2
+          3
+        expectedOutput: |2
+          3 3 3 3 3
+          3 2 2 2 3
+          3 2 1 2 3
+          3 2 2 2 3
+          3 3 3 3 3
+        hidden: false
+      - input: |2
+          1
+        expectedOutput: |2
+          1
+        hidden: false
+      - input: |2
+          2
+        expectedOutput: |2
+          2 2 2
+          2 1 2
+          2 2 2
+        hidden: true
+      - input: |2
+          4
+        expectedOutput: |2
+          4 4 4 4 4 4 4
+          4 3 3 3 3 3 4
+          4 3 2 2 2 3 4
+          4 3 2 1 2 3 4
+          4 3 2 2 2 3 4
+          4 3 3 3 3 3 4
+          4 4 4 4 4 4 4
+        hidden: true
+      - input: |2
+          5
+        expectedOutput: |2
+          5 5 5 5 5 5 5 5 5
+          5 4 4 4 4 4 4 4 5
+          5 4 3 3 3 3 3 4 5
+          5 4 3 2 2 2 3 4 5
+          5 4 3 2 1 2 3 4 5
+          5 4 3 2 2 2 3 4 5
+          5 4 3 3 3 3 3 4 5
+          5 4 4 4 4 4 4 4 5
+          5 5 5 5 5 5 5 5 5
+        hidden: true
+      - input: |2
+          9
+        expectedOutput: |2
+          9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9
+          9 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 9
+          9 8 7 7 7 7 7 7 7 7 7 7 7 7 7 8 9
+          9 8 7 6 6 6 6 6 6 6 6 6 6 6 7 8 9
+          9 8 7 6 5 5 5 5 5 5 5 5 5 6 7 8 9
+          9 8 7 6 5 4 4 4 4 4 4 4 5 6 7 8 9
+          9 8 7 6 5 4 3 3 3 3 3 4 5 6 7 8 9
+          9 8 7 6 5 4 3 2 2 2 3 4 5 6 7 8 9
+          9 8 7 6 5 4 3 2 1 2 3 4 5 6 7 8 9
+          9 8 7 6 5 4 3 2 2 2 3 4 5 6 7 8 9
+          9 8 7 6 5 4 3 3 3 3 3 4 5 6 7 8 9
+          9 8 7 6 5 4 4 4 4 4 4 4 5 6 7 8 9
+          9 8 7 6 5 5 5 5 5 5 5 5 5 6 7 8 9
+          9 8 7 6 6 6 6 6 6 6 6 6 6 6 7 8 9
+          9 8 7 7 7 7 7 7 7 7 7 7 7 7 7 8 9
+          9 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 9
+          9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9
+        hidden: true
+      - input: |2
+          15
+        expectedOutput: |2
+          15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15
+          15 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 15
+          15 14 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 14 15
+          15 14 13 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 13 14 15
+          15 14 13 12 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 12 13 14 15
+          15 14 13 12 11 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 11 12 13 14 15
+          15 14 13 12 11 10 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 10 11 12 13 14 15
+          15 14 13 12 11 10 9 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 9 10 11 12 13 14 15
+          15 14 13 12 11 10 9 8 7 7 7 7 7 7 7 7 7 7 7 7 7 8 9 10 11 12 13 14 15
+          15 14 13 12 11 10 9 8 7 6 6 6 6 6 6 6 6 6 6 6 7 8 9 10 11 12 13 14 15
+          15 14 13 12 11 10 9 8 7 6 5 5 5 5 5 5 5 5 5 6 7 8 9 10 11 12 13 14 15
+          15 14 13 12 11 10 9 8 7 6 5 4 4 4 4 4 4 4 5 6 7 8 9 10 11 12 13 14 15
+          15 14 13 12 11 10 9 8 7 6 5 4 3 3 3 3 3 4 5 6 7 8 9 10 11 12 13 14 15
+          15 14 13 12 11 10 9 8 7 6 5 4 3 2 2 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+          15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+          15 14 13 12 11 10 9 8 7 6 5 4 3 2 2 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+          15 14 13 12 11 10 9 8 7 6 5 4 3 3 3 3 3 4 5 6 7 8 9 10 11 12 13 14 15
+          15 14 13 12 11 10 9 8 7 6 5 4 4 4 4 4 4 4 5 6 7 8 9 10 11 12 13 14 15
+          15 14 13 12 11 10 9 8 7 6 5 5 5 5 5 5 5 5 5 6 7 8 9 10 11 12 13 14 15
+          15 14 13 12 11 10 9 8 7 6 6 6 6 6 6 6 6 6 6 6 7 8 9 10 11 12 13 14 15
+          15 14 13 12 11 10 9 8 7 7 7 7 7 7 7 7 7 7 7 7 7 8 9 10 11 12 13 14 15
+          15 14 13 12 11 10 9 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 9 10 11 12 13 14 15
+          15 14 13 12 11 10 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 10 11 12 13 14 15
+          15 14 13 12 11 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 11 12 13 14 15
+          15 14 13 12 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 12 13 14 15
+          15 14 13 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 13 14 15
+          15 14 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 14 15
+          15 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 15
+          15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15
+        hidden: true
