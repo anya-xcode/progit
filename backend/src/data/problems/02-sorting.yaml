@@ -625,7 +625,7 @@ problems:
 
   - slug: quick-sort
     title: Quick Sort
-    difficulty: Medium
+    difficulty: Easy
     topic: Sorting
     subtopic: Sorting Algorithms
     tags: [sorting, divide-and-conquer, recursion]

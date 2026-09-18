@@ -445,7 +445,7 @@ problems:
         hidden: true
   - slug: first-and-last-occurrence
     title: "First and Last Occurrence"
-    difficulty: Medium
+    difficulty: Easy
     topic: "Binary Search"
     subtopic: "BS on 1D Arrays"
     tags: [array, binary-search]
@@ -775,7 +775,7 @@ problems:
         hidden: true
   - slug: find-minimum-in-rotated-sorted-array
     title: "Find Minimum in Rotated Sorted Array"
-    difficulty: Medium
+    difficulty: Easy
     topic: "Binary Search"
     subtopic: "BS on 1D Arrays"
     tags: [array, binary-search]
@@ -1223,7 +1223,7 @@ problems:
         hidden: true
   - slug: floor-square-root
     title: "Floor Square Root"
-    difficulty: Easy
+    difficulty: Medium
     topic: "Binary Search"
     subtopic: "BS on Answers"
     tags: [math, binary-search]

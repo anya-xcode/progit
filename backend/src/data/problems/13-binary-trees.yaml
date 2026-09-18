@@ -591,7 +591,7 @@ problems:
         hidden: true
   - slug: binary-tree-level-order-traversal
     title: "Level Order Traversal"
-    difficulty: Medium
+    difficulty: Easy
     topic: "Binary Trees"
     subtopic: "Traversals"
     tags: [tree, bfs, queue]
@@ -835,7 +835,7 @@ problems:
         hidden: true
   - slug: maximum-depth-of-binary-tree
     title: "Maximum Depth of a Binary Tree"
-    difficulty: Easy
+    difficulty: Medium
     topic: "Binary Trees"
     subtopic: "Medium Problems"
     tags: [tree, dfs, bfs]
@@ -1018,7 +1018,7 @@ problems:
         hidden: true
   - slug: balanced-binary-tree
     title: "Check Balanced Binary Tree"
-    difficulty: Easy
+    difficulty: Medium
     topic: "Binary Trees"
     subtopic: "Medium Problems"
     tags: [tree, dfs]
@@ -1420,7 +1420,7 @@ problems:
         hidden: true
   - slug: binary-tree-maximum-path-sum
     title: "Maximum Path Sum"
-    difficulty: Hard
+    difficulty: Medium
     topic: "Binary Trees"
     subtopic: "Hard Problems"
     tags: [tree, dfs, dynamic-programming]
@@ -1621,7 +1621,7 @@ problems:
         hidden: true
   - slug: same-tree
     title: "Same Tree"
-    difficulty: Easy
+    difficulty: Medium
     topic: "Binary Trees"
     subtopic: "Medium Problems"
     tags: [tree, dfs]
@@ -2271,7 +2271,7 @@ problems:
         hidden: true
   - slug: vertical-order-traversal
     title: "Vertical Order Traversal"
-    difficulty: Hard
+    difficulty: Medium
     topic: "Binary Trees"
     subtopic: "Hard Problems"
     tags: [tree, bfs, sorting, hashing]
@@ -2521,7 +2521,7 @@ problems:
         hidden: true
   - slug: lowest-common-ancestor-of-a-binary-tree
     title: "Lowest Common Ancestor of a Binary Tree"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Binary Trees"
     subtopic: "Medium Problems"
     tags: [tree, dfs]
@@ -2735,7 +2735,7 @@ problems:
         hidden: true
   - slug: symmetric-tree
     title: "Symmetric Tree"
-    difficulty: Easy
+    difficulty: Medium
     topic: "Binary Trees"
     subtopic: "Medium Problems"
     tags: [tree, dfs, bfs]

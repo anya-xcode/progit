@@ -46,6 +46,25 @@ npm run dev                   # http://localhost:5174
 
 Open http://localhost:5174.
 
+## Tests
+
+```bash
+node scripts/run-all-tests.mjs            # every suite, one summary
+node scripts/run-all-tests.mjs --fast     # skips the slow full-sandbox sweep
+```
+
+| Suite | Command | What it covers |
+| --- | --- | --- |
+| Unit | `cd backend && npm run test:unit` | Verdicts and output comparison, library/sheet integrity, generated GitHub files, git blob hashing |
+| API | `cd backend && npm run test:api` | Every endpoint: filters, search, custom problems, approaches, run/submit verdicts, dashboard, error handling |
+| Problem data | `cd backend && npm run verify:problems` | Each problem's reference solution reproduces every example and test (add `-- --sandbox` for the real judge) |
+| Sandbox | `cd backend && npm run test:sandbox` | Isolation (no network, host files hidden) and the time/memory/output limits |
+| GitHub sync | `cd backend && npm run test:github` | Add, update, rename, delete, retries, auth errors, OAuth — against an in-memory GitHub API |
+| Browser | `cd frontend && npm run test:e2e` | The real UI in Chrome: solving, saving approaches, submitting, comparing, progress, settings |
+
+Every suite uses its own throwaway MongoDB database and its own ports, so none of them
+touch your `dsaforge` data or the servers you have running.
+
 ### Backend scripts
 
 | Script | What it does |

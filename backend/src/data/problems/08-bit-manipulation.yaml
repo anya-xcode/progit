@@ -254,7 +254,7 @@ problems:
         hidden: true
   - slug: count-set-bits
     title: "Count Set Bits"
-    difficulty: Medium
+    difficulty: Easy
     topic: "Bit Manipulation"
     subtopic: "Interview Problems"
     tags: ["bit-manipulation", "math"]
@@ -391,7 +391,7 @@ problems:
         hidden: true
   - slug: minimum-bit-flips-to-convert-number
     title: "Minimum Bit Flips to Convert Number"
-    difficulty: Easy
+    difficulty: Medium
     topic: "Bit Manipulation"
     subtopic: "Interview Problems"
     tags: ["bit-manipulation"]

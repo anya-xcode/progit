@@ -2,7 +2,7 @@ section: dynamic-programming
 problems:
   - slug: climbing-stairs
     title: "Climbing Stairs"
-    difficulty: Easy
+    difficulty: Medium
     topic: Dynamic Programming
     subtopic: "1D DP"
     tags: [dynamic-programming, math, memoization]
@@ -133,7 +133,7 @@ problems:
         hidden: true
   - slug: frog-jump
     title: "Frog Jump"
-    difficulty: Easy
+    difficulty: Medium
     topic: Dynamic Programming
     subtopic: "1D DP"
     tags: [dynamic-programming, array]
@@ -2360,7 +2360,7 @@ problems:
         hidden: true
   - slug: cherry-pickup-ii
     title: "Cherry Pickup II"
-    difficulty: Hard
+    difficulty: Medium
     topic: Dynamic Programming
     subtopic: "2D/3D DP and DP on Grids"
     tags: [dynamic-programming, matrix]
@@ -2603,7 +2603,7 @@ problems:
         hidden: true
   - slug: subset-sum-equal-to-target
     title: "Subset Sum Equal to Target"
-    difficulty: Medium
+    difficulty: Hard
     topic: Dynamic Programming
     subtopic: "DP on Subsequences"
     tags: [dynamic-programming, knapsack, array]
@@ -2758,7 +2758,7 @@ problems:
         hidden: true
   - slug: partition-equal-subset-sum
     title: "Partition Equal Subset Sum"
-    difficulty: Medium
+    difficulty: Hard
     topic: Dynamic Programming
     subtopic: "DP on Subsequences"
     tags: [dynamic-programming, knapsack, array]
@@ -2915,7 +2915,7 @@ problems:
         hidden: true
   - slug: zero-one-knapsack
     title: "0/1 Knapsack"
-    difficulty: Medium
+    difficulty: Easy
     topic: Dynamic Programming
     subtopic: "DP on Subsequences"
     tags: [dynamic-programming, knapsack]
@@ -3075,7 +3075,7 @@ problems:
         hidden: true
   - slug: coin-change
     title: "Coin Change"
-    difficulty: Medium
+    difficulty: Hard
     topic: Dynamic Programming
     subtopic: "DP on Subsequences"
     tags: [dynamic-programming, unbounded-knapsack]
@@ -3231,7 +3231,7 @@ problems:
         hidden: true
   - slug: coin-change-ii
     title: "Coin Change II"
-    difficulty: Medium
+    difficulty: Hard
     topic: Dynamic Programming
     subtopic: "DP on Subsequences"
     tags: [dynamic-programming, unbounded-knapsack, counting]
@@ -3387,7 +3387,7 @@ problems:
         hidden: true
   - slug: rod-cutting
     title: "Rod Cutting"
-    difficulty: Medium
+    difficulty: Hard
     topic: Dynamic Programming
     subtopic: "DP on Subsequences"
     tags: [dynamic-programming, unbounded-knapsack]
@@ -3535,7 +3535,7 @@ problems:
         hidden: true
   - slug: longest-common-subsequence
     title: "Longest Common Subsequence"
-    difficulty: Medium
+    difficulty: Hard
     topic: Dynamic Programming
     subtopic: "DP on Strings"
     tags: [dynamic-programming, string]
@@ -3684,7 +3684,7 @@ problems:
         hidden: true
   - slug: longest-palindromic-subsequence
     title: "Longest Palindromic Subsequence"
-    difficulty: Medium
+    difficulty: Hard
     topic: Dynamic Programming
     subtopic: "DP on Strings"
     tags: [dynamic-programming, string]
@@ -4950,7 +4950,7 @@ problems:
         hidden: true
   - slug: count-square-submatrices-with-all-ones
     title: "Count Square Submatrices with All Ones"
-    difficulty: Medium
+    difficulty: Easy
     topic: Dynamic Programming
     subtopic: "DP on Squares"
     tags: [dynamic-programming, matrix]

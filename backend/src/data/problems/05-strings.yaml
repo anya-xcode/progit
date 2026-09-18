@@ -2,7 +2,7 @@ section: strings
 problems:
   - slug: remove-outermost-parentheses
     title: Remove Outermost Parentheses
-    difficulty: Easy
+    difficulty: Medium
     topic: Strings
     subtopic: Easy Problems
     tags: [string, stack, parentheses]
@@ -1008,7 +1008,7 @@ problems:
 
   - slug: sort-characters-by-frequency
     title: Sort Characters by Frequency
-    difficulty: Medium
+    difficulty: Easy
     topic: Strings
     subtopic: Medium Problems
     tags: [string, hashing, sorting]
@@ -1140,7 +1140,7 @@ problems:
 
   - slug: maximum-nesting-depth-of-parentheses
     title: Maximum Nesting Depth of Parentheses
-    difficulty: Easy
+    difficulty: Medium
     topic: Strings
     subtopic: Medium Problems
     tags: [string, stack, parentheses]
@@ -1270,7 +1270,7 @@ problems:
 
   - slug: roman-to-integer
     title: Roman to Integer
-    difficulty: Easy
+    difficulty: Medium
     topic: Strings
     subtopic: Medium Problems
     tags: [string, hashing, math]

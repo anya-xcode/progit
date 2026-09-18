@@ -1133,7 +1133,7 @@ problems:
         hidden: true
   - slug: single-number
     title: "Single Number"
-    difficulty: Easy
+    difficulty: Medium
     topic: "Arrays"
     subtopic: "Easy Problems"
     tags: [array, bit-manipulation]
@@ -1981,7 +1981,7 @@ problems:
         hidden: true
   - slug: best-time-to-buy-and-sell-stock
     title: "Best Time to Buy and Sell Stock"
-    difficulty: Easy
+    difficulty: Medium
     topic: "Arrays"
     subtopic: "Medium Problems"
     tags: [array, greedy]
@@ -2434,7 +2434,7 @@ problems:
         hidden: true
   - slug: leaders-in-an-array
     title: "Leaders in an Array"
-    difficulty: Easy
+    difficulty: Medium
     topic: "Arrays"
     subtopic: "Medium Problems"
     tags: [array]

@@ -148,7 +148,7 @@ problems:
         hidden: true
   - slug: check-if-array-represents-min-heap
     title: "Check if an Array Represents a Min-Heap"
-    difficulty: Easy
+    difficulty: Medium
     topic: "Heaps"
     subtopic: "Learning"
     tags: [array, heap]
@@ -291,7 +291,7 @@ problems:
         hidden: true
   - slug: merge-k-sorted-arrays
     title: "Merge K Sorted Arrays"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Heaps"
     subtopic: "Medium Problems"
     tags: [array, heap, merge]

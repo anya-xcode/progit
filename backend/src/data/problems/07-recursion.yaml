@@ -2,7 +2,7 @@ section: recursion
 problems:
   - slug: power-with-modulo
     title: "Power with Modulo"
-    difficulty: Medium
+    difficulty: Easy
     topic: "Recursion"
     subtopic: "Get a Strong Hold"
     tags: ["recursion", "math", "divide-and-conquer"]
@@ -3824,7 +3824,7 @@ problems:
         hidden: true
   - slug: word-search
     title: "Word Search"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Recursion"
     subtopic: "Hard Problems"
     tags: ["recursion", "backtracking", "matrix"]

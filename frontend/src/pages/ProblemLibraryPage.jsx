@@ -54,7 +54,7 @@ export default function ProblemLibraryPage() {
 
   const isFiltering = FILTER_KEYS.some((key) => filters[key]);
   const solved = (data?.problems ?? []).filter((problem) => problem.status === "solved").length;
-  const ready = (data?.problems ?? []).filter((problem) => problem.contentStatus !== "placeholder").length;
+  const ready = (data?.problems ?? []).filter((problem) => problem.contentStatus === "ready").length;
 
   return (
     <Page>

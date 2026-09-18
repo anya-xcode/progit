@@ -139,7 +139,7 @@ problems:
         hidden: true
   - slug: min-stack
     title: "Min Stack"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Stack and Queue"
     subtopic: "Implementation"
     tags: ["stack", "design"]
@@ -3479,7 +3479,7 @@ problems:
         hidden: true
   - slug: stock-span
     title: "Stock Span"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Stack and Queue"
     subtopic: "Monotonic Stack"
     tags: ["stack", "monotonic-stack", "array"]
@@ -4280,7 +4280,7 @@ problems:
         hidden: true
   - slug: lru-cache
     title: "LRU Cache"
-    difficulty: Hard
+    difficulty: Medium
     topic: "Stack and Queue"
     subtopic: "Implementation"
     tags: ["design", "hashing", "linked-list"]

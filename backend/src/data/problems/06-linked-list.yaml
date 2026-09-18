@@ -196,7 +196,7 @@ problems:
         hidden: true
   - slug: reverse-a-linked-list
     title: "Reverse a Linked List"
-    difficulty: Easy
+    difficulty: Medium
     topic: "Linked List"
     subtopic: "1D Linked List"
     tags: ["linked-list", "recursion"]
@@ -381,7 +381,7 @@ problems:
         hidden: true
   - slug: detect-a-cycle-in-linked-list
     title: "Detect a Cycle in a Linked List"
-    difficulty: Easy
+    difficulty: Medium
     topic: "Linked List"
     subtopic: "Medium Problems"
     tags: ["linked-list", "two-pointers", "hashing"]

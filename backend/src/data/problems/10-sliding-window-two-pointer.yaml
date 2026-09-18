@@ -436,7 +436,7 @@ problems:
         hidden: true
   - slug: longest-repeating-character-replacement
     title: "Longest Repeating Character Replacement"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Sliding Window"
     subtopic: "Medium Problems"
     tags: [string, sliding-window]
@@ -585,7 +585,7 @@ problems:
         hidden: true
   - slug: binary-subarrays-with-sum
     title: "Binary Subarrays With Sum"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Sliding Window"
     subtopic: "Hard Problems"
     tags: [array, sliding-window, prefix-sum, hashing]
@@ -741,7 +741,7 @@ problems:
         hidden: true
   - slug: count-number-of-nice-subarrays
     title: "Count Number of Nice Subarrays"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Sliding Window"
     subtopic: "Hard Problems"
     tags: [array, sliding-window, prefix-sum]
@@ -896,7 +896,7 @@ problems:
         hidden: true
   - slug: number-of-substrings-containing-all-three-characters
     title: "Number of Substrings Containing All Three Characters"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Sliding Window"
     subtopic: "Hard Problems"
     tags: [string, sliding-window]

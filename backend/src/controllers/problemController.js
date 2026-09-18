@@ -59,7 +59,9 @@ export async function listProblems(req, res) {
     solutionCount: maps.solutionCounts.get(String(problem._id)) ?? 0,
   }));
   if (STATUSES.includes(status)) rows = rows.filter((row) => row.status === status);
-  if (req.query.ready === "true") rows = rows.filter((row) => row.contentStatus !== "placeholder");
+  // "Solvable here" means it can actually be run and submitted, so reference
+  // entries (theory, ticked off by hand) are excluded too.
+  if (req.query.ready === "true") rows = rows.filter((row) => row.contentStatus === "ready");
 
   res.json({ problems: rows, total: rows.length });
 }

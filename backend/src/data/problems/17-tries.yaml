@@ -2,7 +2,7 @@ section: tries
 problems:
   - slug: implement-trie
     title: "Implement Trie (Prefix Tree)"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Tries"
     subtopic: "Theory"
     tags: [trie, design, string]
@@ -2060,7 +2060,7 @@ problems:
         hidden: true
   - slug: implement-trie-ii
     title: "Implement Trie II"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Tries"
     subtopic: "Medium Problems"
     tags: [trie, design, string]
@@ -3899,7 +3899,7 @@ problems:
         hidden: true
   - slug: maximum-xor-of-two-numbers-in-an-array
     title: "Maximum XOR of Two Numbers in an Array"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Tries"
     subtopic: "Hard Problems"
     tags: [trie, bit-manipulation, array]

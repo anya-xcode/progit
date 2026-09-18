@@ -24,6 +24,9 @@ async function readRequest(body = {}) {
   if (problem.contentStatus === "placeholder") {
     throw badRequest("This problem has no statement or test cases in DSAForge yet, so it cannot be run or submitted.");
   }
+  if (problem.contentStatus === "reference") {
+    throw badRequest("This is a reference entry: it is read and marked as done, not run or submitted.");
+  }
   return { problem, code, language };
 }
 

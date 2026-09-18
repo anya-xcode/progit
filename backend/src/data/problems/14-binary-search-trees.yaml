@@ -229,7 +229,7 @@ problems:
         hidden: true
   - slug: floor-and-ceil-in-a-bst
     title: "Floor and Ceil in a BST"
-    difficulty: Medium
+    difficulty: Easy
     topic: "Binary Search Trees"
     subtopic: "Concepts"
     tags: [bst, tree, binary-search]

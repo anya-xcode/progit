@@ -317,7 +317,7 @@ problems:
         hidden: true
   - slug: jump-game
     title: "Jump Game"
-    difficulty: Medium
+    difficulty: Easy
     topic: "Greedy"
     subtopic: "Medium Problems"
     tags: [array, greedy]
@@ -614,7 +614,7 @@ problems:
         hidden: true
   - slug: n-meetings-in-one-room
     title: "N Meetings in One Room"
-    difficulty: Easy
+    difficulty: Medium
     topic: "Greedy"
     subtopic: "Easy Problems"
     tags: [array, greedy, sorting, intervals]
@@ -2010,7 +2010,7 @@ problems:
         hidden: true
   - slug: valid-parenthesis-string
     title: "Valid Parenthesis String"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Greedy"
     subtopic: "Medium Problems"
     tags: [string, greedy, dynamic-programming]

@@ -530,7 +530,7 @@ problems:
         hidden: true
   - slug: flood-fill
     title: "Flood Fill"
-    difficulty: Easy
+    difficulty: Medium
     topic: "Graphs"
     subtopic: "BFS/DFS"
     tags: [graph, dfs, bfs, matrix]
@@ -1115,7 +1115,7 @@ problems:
         hidden: true
   - slug: detect-cycle-in-an-undirected-graph
     title: "Detect Cycle in an Undirected Graph"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Graphs"
     subtopic: "BFS/DFS"
     tags: [graph, dfs, bfs, union-find]
@@ -2426,7 +2426,7 @@ problems:
         hidden: true
   - slug: is-graph-bipartite
     title: "Is Graph Bipartite"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Graphs"
     subtopic: "BFS/DFS"
     tags: [graph, bfs, dfs, graph-coloring]
@@ -3516,7 +3516,7 @@ problems:
         hidden: true
   - slug: detect-cycle-in-a-directed-graph
     title: "Detect Cycle in a Directed Graph"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Graphs"
     subtopic: "Topo Sort"
     tags: [graph, dfs, topological-sort]
@@ -4505,7 +4505,7 @@ problems:
         hidden: true
   - slug: topological-sort
     title: "Topological Sort"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Graphs"
     subtopic: "Topo Sort"
     tags: [graph, topological-sort, heap, bfs]
@@ -5047,7 +5047,7 @@ problems:
         hidden: true
   - slug: course-schedule
     title: "Course Schedule"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Graphs"
     subtopic: "Topo Sort"
     tags: [graph, topological-sort, bfs, dfs]
@@ -5718,7 +5718,7 @@ problems:
         hidden: true
   - slug: dijkstras-shortest-path
     title: "Dijkstra's Shortest Path"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Graphs"
     subtopic: "Shortest Path"
     tags: [graph, shortest-path, dijkstra, heap]
@@ -6575,7 +6575,7 @@ problems:
         hidden: true
   - slug: bellman-ford-algorithm
     title: "Bellman-Ford Algorithm"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Graphs"
     subtopic: "Shortest Path"
     tags: [graph, shortest-path, bellman-ford]
@@ -7456,7 +7456,7 @@ problems:
         hidden: true
   - slug: floyd-warshall-algorithm
     title: "Floyd-Warshall Algorithm"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Graphs"
     subtopic: "Shortest Path"
     tags: [graph, shortest-path, floyd-warshall, dynamic-programming]
@@ -7957,7 +7957,7 @@ problems:
         hidden: true
   - slug: minimum-spanning-tree-weight
     title: "Minimum Spanning Tree Weight"
-    difficulty: Medium
+    difficulty: Hard
     topic: "Graphs"
     subtopic: "MST/Disjoint Set"
     tags: [graph, mst, kruskal, prim, union-find]
