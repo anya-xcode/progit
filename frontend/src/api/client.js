@@ -4,7 +4,15 @@ import { readStorage, removeStorage, writeStorage } from "../utils/storage.js";
 // By default requests go to /api on the same origin: Vite proxies that in
 // development, and a Vercel function answers it in production. Set
 // VITE_API_BASE_URL when the API lives somewhere else (e.g. Render).
-const baseURL = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") || "/api";
+// Accepts either "https://host" or "https://host/api" — the /api suffix is
+// added when it is missing.
+function resolveBaseUrl(configured) {
+  if (!configured) return "/api";
+  const trimmed = configured.trim().replace(/\/+$/, "");
+  return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
+}
+
+const baseURL = resolveBaseUrl(import.meta.env.VITE_API_BASE_URL);
 const client = axios.create({ baseURL, timeout: 180_000 });
 
 // Deployed instances can require a shared access key (APP_ACCESS_KEY).
