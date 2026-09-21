@@ -14,6 +14,6 @@
     "test:fast": "node scripts/run-all-tests.mjs --fast"
   },
   "engines": {
-    "node": ">=20"
+    "node": "22.x"
   }
 }
