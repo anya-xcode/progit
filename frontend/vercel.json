@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "//": "Used when the Vercel project's Root Directory is set to 'frontend'. The repo-root vercel.json covers the other case, where the API also deploys as a function.",
+  "outputDirectory": "dist",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
