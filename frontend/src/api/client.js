@@ -1,9 +1,11 @@
 import axios from "axios";
 import { readStorage, removeStorage, writeStorage } from "../utils/storage.js";
 
-// All requests go to /api, which Vite proxies to the Express server in
-// development and hits the serverless function in production.
-const client = axios.create({ baseURL: "/api", timeout: 180_000 });
+// By default requests go to /api on the same origin: Vite proxies that in
+// development, and a Vercel function answers it in production. Set
+// VITE_API_BASE_URL when the API lives somewhere else (e.g. Render).
+const baseURL = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") || "/api";
+const client = axios.create({ baseURL, timeout: 180_000 });
 
 // Deployed instances can require a shared access key (APP_ACCESS_KEY).
 export const accessKey = {

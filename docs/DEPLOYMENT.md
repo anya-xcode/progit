@@ -1,150 +1,144 @@
-# Deploying DSAForge to Vercel
+# Deploying DSAForge
 
-Local DSAForge runs everything on your machine. Deployed, three pieces move:
+Running it on your machine needs nothing extra. Deployed, three pieces move:
 
 | Piece | Local | Deployed |
 | --- | --- | --- |
-| Frontend (React) | Vite dev server | Vercel static build |
-| API (Express) | `node src/server.js` | Vercel serverless function (`api/index.js`) |
-| Database | MongoDB on localhost | MongoDB Atlas |
-| **Code execution** | **WSL/Docker sandbox on your machine** | **a Judge0 server you point at** |
+| Frontend (React) | Vite dev server | Vercel (free) |
+| API (Express) | `node src/server.js` | Render (free) or Vercel |
+| Database | MongoDB on localhost | MongoDB Atlas M0 (free) |
+| Code execution | WSL/Docker sandbox | the same sandbox on Render, or a remote judge |
 
-**Why code execution moves:** Vercel functions cannot create Linux namespaces or run
-Docker, so the sandbox that judges your code cannot run there. Everything else — the
-library, saving approaches, the dashboard, GitHub sync — works on Vercel unchanged.
+**The one real constraint:** Vercel's serverless functions cannot create Linux
+namespaces or run Docker, so the sandbox that judges your code cannot run there.
+Either host the API where containers get a real kernel (Render, Fly.io, Railway,
+a VPS — the sandbox works unchanged), or keep the API on Vercel and point it at a
+remote judge.
 
-> The public Piston API is whitelist-only since February 2026, so it is not a
-> drop-in option. Use Judge0 (hosted or self-hosted), or keep the API on a host
-> that allows Docker (see "Option C" at the end).
+The public Piston API is whitelist-only since February 2026, so it is not an option.
 
 ---
 
-## Step 1 — MongoDB Atlas (free)
+# Option 1 — All free: Vercel + Render + Atlas (recommended)
 
-1. Create an account at <https://www.mongodb.com/cloud/atlas>, then a **free M0 cluster**.
-2. **Database Access** → add a user (username + password). Copy them.
-3. **Network Access** → add `0.0.0.0/0` (Vercel's function IPs are not fixed).
-4. **Connect → Drivers** → copy the connection string, and add the database name:
+Your own sandbox, no third-party judge, no credit card.
 
-```
-mongodb+srv://USER:PASSWORD@cluster0.xxxxx.mongodb.net/dsaforge?retryWrites=true&w=majority
-```
+## Step 1 — MongoDB Atlas (free M0)
 
-## Step 2 — Load the 474 problems into Atlas
+1. <https://cloud.mongodb.com> → create a free **M0** cluster.
+2. **Database Access** → add a user, password letters and numbers only.
+3. **Network Access** → allow `0.0.0.0/0` (hosted apps have no fixed IP).
+4. **Clusters → Connect → Drivers** → copy the string and add the database name:
+   `mongodb+srv://USER:PASSWORD@cluster0.xxxxx.mongodb.net/dsaforge?retryWrites=true&w=majority`
 
-From your machine, once (the deployed app does not seed on boot):
+## Step 2 — Load the 474 problems (once, from your machine)
 
 ```bash
 cd backend
-MONGODB_URI="mongodb+srv://…/dsaforge" npm run seed
-# Windows PowerShell:
-#   $env:MONGODB_URI="mongodb+srv://…/dsaforge"; npm run seed
+$env:MONGODB_URI="mongodb+srv://…/dsaforge"; npm run seed   # PowerShell
+# MONGODB_URI="mongodb+srv://…/dsaforge" npm run seed        # bash
 ```
 
-Re-run this whenever the problem library changes.
+Re-run whenever the problem library changes.
 
-## Step 3 — A Judge0 server for running code
+## Step 3 — API on Render (free)
 
-**Option A — self-host (free-ish, full control).** On any VPS with Docker
-(Hetzner, DigitalOcean, Oracle free tier):
+1. <https://render.com> → sign up with GitHub.
+2. **New → Blueprint** → pick `anya-xcode/progit`. Render reads `render.yaml`
+   and creates a Docker web service on the **free** instance type.
+3. Fill in the four secrets it asks for:
+
+| Variable | Value |
+| --- | --- |
+| `MONGODB_URI` | the Atlas string from step 1 |
+| `APP_ACCESS_KEY` | a long random password (the app will ask for it) |
+| `GITHUB_TOKEN` | your fine-grained token (Contents: read and write) |
+| `CLIENT_URL` | `https://your-app.vercel.app` — fill in after step 4, then redeploy |
+
+4. Wait for the first build, then check the sandbox actually works there:
 
 ```bash
-wget https://github.com/judge0/judge0/releases/download/v1.13.1/judge0-v1.13.1.zip
-unzip judge0-v1.13.1.zip && cd judge0-v1.13.1
-# set REDIS_PASSWORD and POSTGRES_PASSWORD in judge0.conf, and an AUTHN_TOKEN
-docker compose up -d db redis && sleep 10 && docker compose up -d
-curl http://localhost:2358/languages   # check it answers
+curl https://dsaforge-api.onrender.com/api/health
+curl -X POST https://dsaforge-api.onrender.com/api/code/health -H "x-dsaforge-key: YOUR_KEY"
+# {"ok":true,...} means code execution works on Render
 ```
 
-Judge0 needs **cgroup v1** and privileged containers. On a modern distro add
-`systemd.unified_cgroup_hierarchy=0` to the kernel command line and reboot.
-Put it behind HTTPS (Caddy or a Cloudflare tunnel) — Vercel functions should not
-call a plain-HTTP host.
+If `ok` is false or the call errors, Render is blocking namespaces on that
+instance — jump to Option 2 and use a remote judge instead.
 
-**Option B — managed.** Judge0 CE on RapidAPI gives you a URL and a key with a small
-free quota; fine for personal use, and you can swap to self-hosted later without code
-changes. Set `JUDGE0_TOKEN` to the RapidAPI key — the app sends the RapidAPI headers
-automatically when the URL contains `rapidapi`.
-
-Then confirm which language id is Python on your instance:
-
-```bash
-curl -s "$JUDGE0_URL/languages" | grep -i python
-# 71 is Python 3.8 on Judge0 CE 1.13; newer builds may use a different id
-```
-
-## Step 4 — Deploy on Vercel
+## Step 4 — Frontend on Vercel (free)
 
 1. <https://vercel.com/new> → import `anya-xcode/progit`.
-2. Leave the build settings alone — `vercel.json` already sets the build command
-   (`npm run build`), the output directory (`frontend/dist`), the function
-   (`api/index.js`, 60s max duration, problem data bundled) and the SPA rewrites.
-3. Add the environment variables (Settings → Environment Variables), for **all**
-   environments:
+2. Settings → Environment Variables → add
+   `VITE_API_BASE_URL = https://dsaforge-api.onrender.com/api`
+3. Deploy. Then go back to Render and set `CLIENT_URL` to the Vercel URL
+   (this is what allows the browser to call the API) and redeploy the service.
 
-| Variable | Value | Why |
-| --- | --- | --- |
-| `MONGODB_URI` | your Atlas string | database |
-| `SKIP_LIBRARY_SYNC` | `true` | you seeded in step 2; skipping keeps cold starts fast |
-| `EXECUTION_PROVIDER` | `judge0` | run code on Judge0 |
-| `JUDGE0_URL` | `https://judge0.example.com` | your Judge0 |
-| `JUDGE0_TOKEN` | token / RapidAPI key | if your instance needs one |
-| `JUDGE0_LANGUAGE_ID` | `71` | Python id from step 3 |
-| `APP_ACCESS_KEY` | a long random string | the password the app asks for |
-| `GITHUB_TOKEN` | your fine-grained token | commits your solutions |
-| `CLIENT_URL` | `https://your-app.vercel.app` | CORS + OAuth redirect |
+## Step 5 — Check
 
-4. **Deploy**, then open the URL. The app asks for the access key once per browser.
+Open the Vercel URL → enter your access key → open a problem → **Run** → **Submit**.
+On Accepted, the commit appears in `anya-xcode/AtoZ`.
 
-## Step 5 — Check it works
+## What the free tiers mean in practice
 
-```bash
-curl https://your-app.vercel.app/api/health
-# {"status":"ok","database":"connected","accessKeyRequired":true,...}
-```
-
-In the app: open a problem → **Run** (proves Judge0 works) → **Submit** → on Accepted,
-check the commit appears in `anya-xcode/AtoZ`.
-
-## Step 6 — GitHub in production
-
-The token in `GITHUB_TOKEN` is enough. If you prefer the OAuth button, create a second
-OAuth App whose callback is `https://your-app.vercel.app/api/github/oauth/callback` and
-set `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` on Vercel.
+- **Render free services sleep after ~15 minutes idle**, so the first request after
+  a pause takes 30–60 seconds. Everything is normal speed afterwards.
+- Free instances have 512 MB RAM; `EXECUTION_MAX_CONCURRENT=1` keeps runs within it.
+- Atlas M0 is 512 MB of storage — the library uses about 30 MB.
+- Vercel Hobby is free for personal projects.
 
 ---
 
-## What to expect
+# Option 2 — All on Vercel + a remote judge
 
-- **Submissions are slower.** Every test is a call to Judge0, and GitHub sync now
-  finishes *before* the response (serverless functions freeze after responding), so an
-  accepted submit can take several seconds.
-- **Function limit is 60s.** A problem with many tests plus a slow judge can hit it.
-  Lower `EXECUTION_TIME_LIMIT_MS` or use a judge close to your Vercel region.
-- **Cold starts** add a second or two after idle periods.
-- **The judge is a dependency.** If it is down, Run/Submit fail with a clear message;
-  the rest of the app keeps working.
-- **Anyone with the URL and the key can use it**, including committing to your repo.
-  Use a long `APP_ACCESS_KEY`, and rotate it by changing the variable and redeploying.
-- **Atlas free tier** is 512 MB — the library is ~30 MB, so there is plenty of room.
+Use this if you would rather not run a container host, or if Render blocks the sandbox.
 
-## Option C — keep the real sandbox instead
+1. Steps 1 and 2 above (Atlas + seed).
+2. Get a Judge0:
+   - **Self-hosted** on any VPS with Docker (free tiers: Oracle Cloud Always Free,
+     Google Cloud e2-micro):
+     ```bash
+     wget https://github.com/judge0/judge0/releases/download/v1.13.1/judge0-v1.13.1.zip
+     unzip judge0-v1.13.1.zip && cd judge0-v1.13.1
+     # set passwords and AUTHN_TOKEN in judge0.conf
+     docker compose up -d db redis && sleep 10 && docker compose up -d
+     ```
+     Judge0 needs cgroup v1 (`systemd.unified_cgroup_hierarchy=0`) and privileged
+     containers; put it behind HTTPS (Caddy or a free Cloudflare Tunnel).
+   - **Managed:** Judge0 CE on RapidAPI — quickest, but the free quota is small and
+     each submission spends several requests.
+3. Check which id is Python: `curl $JUDGE0_URL/languages | grep -i python` (71 on CE 1.13).
+4. Import the repo on Vercel (`vercel.json` already configures the build, the
+   `api/index.js` function, 60s limit and SPA rewrites) and set:
 
-If you would rather not run a judge, put the **API on a host that allows Docker or
-gives you a VM** (Fly.io, Railway, Render) with `EXECUTION_PROVIDER=docker` (build
-`sandbox/python`) or `namespace`, keep the frontend on Vercel, and point the frontend
-at the API by adding a Vercel rewrite:
+| Variable | Value |
+| --- | --- |
+| `MONGODB_URI` | Atlas string |
+| `SKIP_LIBRARY_SYNC` | `true` |
+| `EXECUTION_PROVIDER` | `judge0` |
+| `JUDGE0_URL` / `JUDGE0_TOKEN` / `JUDGE0_LANGUAGE_ID` | your judge, token, `71` |
+| `APP_ACCESS_KEY` | a long random password |
+| `GITHUB_TOKEN` | your fine-grained token |
+| `CLIENT_URL` | `https://your-app.vercel.app` |
 
-```json
-{ "rewrites": [{ "source": "/api/(.*)", "destination": "https://your-api-host/api/$1" }] }
-```
+Leave `VITE_API_BASE_URL` unset here — the frontend and API share an origin.
 
-This keeps the exact sandbox used locally — no third-party judge, same verdicts,
-same limits.
+**Expect:** submissions are slower (a call per test, plus GitHub sync finishing
+before the response, since serverless functions freeze once they reply), a 60s
+function ceiling, and cold starts.
 
-## Updating a deployed instance
+---
+
+## Security
+
+The app has no accounts and the server holds your GitHub token, so **set
+`APP_ACCESS_KEY` on anything reachable from the internet**. Anyone with the URL and
+the key can run code and commit to your repository. Rotate it by changing the
+variable and redeploying.
+
+## Updating a deployment
 
 ```bash
-git push                      # Vercel redeploys automatically
-MONGODB_URI="…" npm run seed  # only when the problem library changed
+git push                        # Render and Vercel redeploy automatically
+MONGODB_URI="…" npm run seed    # only when the problem library changed
 ```
