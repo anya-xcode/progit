@@ -5,10 +5,19 @@ function toInt(value, fallback) {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
+// Browsers compare the Origin header exactly, so a trailing slash or stray
+// whitespace in CLIENT_URL would block every request. Several origins can be
+// listed, separated by commas.
+const clientUrls = (process.env.CLIENT_URL || "http://localhost:5174")
+  .split(",")
+  .map((url) => url.trim().replace(/\/+$/, ""))
+  .filter(Boolean);
+
 export const env = {
   port: toInt(process.env.PORT, 5050),
   mongoUri: process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/dsaforge",
-  clientUrl: process.env.CLIENT_URL || "http://localhost:5174",
+  clientUrl: clientUrls[0],
+  clientUrls,
 
   execution: {
     // "namespace": Linux namespace jail (runs through WSL on Windows)

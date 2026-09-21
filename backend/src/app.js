@@ -17,7 +17,7 @@ export function createApp() {
 
   // Same-origin in production; the dev server proxies /api, so CORS only
   // matters when the frontend runs on a different host.
-  app.use(cors({ origin: env.clientUrl, credentials: true }));
+  app.use(cors({ origin: env.clientUrls, credentials: true }));
   app.use(express.json({ limit: "1mb" }));
   app.use("/api", requireAccessKey);
 
