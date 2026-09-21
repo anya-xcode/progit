@@ -26,9 +26,11 @@ const queue = createQueue(1);
 let runningJobs = 0;
 const MAX_SOLUTIONS_PER_COMMIT = 50;
 
+// Returns the queued job so serverless callers can await it: those functions
+// are frozen once they respond, so "fire and forget" would never finish.
 function enqueue(job) {
   runningJobs++;
-  queue
+  return queue
     .run(job)
     .catch((error) => console.error("[github] sync job crashed:", error))
     .finally(() => runningJobs--);
@@ -117,7 +119,8 @@ export async function queueSolutionSync(solutionIds, { requireAccepted = true } 
       }))
     );
     allRecords.push(...records);
-    enqueue(() => runUpsert(ids, records.map((r) => r._id)));
+    const job = enqueue(() => runUpsert(ids, records.map((r) => r._id)));
+    if (env.serverless) await job;
   }
   return allRecords;
 }
@@ -275,7 +278,8 @@ export async function queueSolutionRemoval(deleted, { problemDeleted = false } =
     filePath: synced.map((s) => s.githubPath).join(", "),
     syncStatus: "pending",
   });
-  enqueue(() => runRemoval(synced, record._id, { problemDeleted }));
+  const job = enqueue(() => runRemoval(synced, record._id, { problemDeleted }));
+  if (env.serverless) await job;
   return record;
 }
 

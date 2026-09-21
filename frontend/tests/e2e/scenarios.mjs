@@ -749,6 +749,9 @@ export const scenarios = [
       assertEqual(hiddenFlags.join(","), "false,true", "visible / hidden flags of the two test cases");
 
       await page.getByRole("button", { name: "Add problem" }).click();
+      // The form has its own Monaco (the starter-code field), so wait for the
+      // route to change before looking at the URL.
+      await page.waitForURL((url) => !url.pathname.endsWith("/problems/new"), { timeout: 60_000 });
       await page.locator(".monaco-editor .view-lines").first().waitFor({ state: "visible", timeout: 60_000 });
 
       const slug = new URL(page.url()).pathname.replace("/problems/", "");

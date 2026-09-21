@@ -2,6 +2,7 @@ import { env } from "../../config/env.js";
 import { isLanguageEnabled } from "../../config/languages.js";
 import { badRequest } from "../../utils/httpError.js";
 import { dockerProvider } from "./providers/dockerProvider.js";
+import { httpJudgeProviders } from "./providers/httpJudgeProvider.js";
 import { namespaceProvider } from "./providers/namespaceProvider.js";
 import { createQueue } from "./queue.js";
 import { ExecutionUnavailableError } from "./spawnSandbox.js";
@@ -9,6 +10,7 @@ import { ExecutionUnavailableError } from "./spawnSandbox.js";
 const PROVIDERS = {
   namespace: namespaceProvider,
   docker: dockerProvider,
+  ...httpJudgeProviders,
 };
 
 const queue = createQueue(Math.max(1, env.execution.maxConcurrentRuns));

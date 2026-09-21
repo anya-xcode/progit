@@ -143,7 +143,18 @@ npm run seed                              # or just restart the backend
 You can also add your own problems from the UI (**Problem Library → Add custom problem**);
 they behave exactly like sheet problems, including GitHub sync.
 
+## Deploying
+
+DSAForge runs fine on Vercel (frontend + API) with MongoDB Atlas, but Vercel cannot run
+the code sandbox, so code execution moves to a Judge0 server you point at — see
+[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the full walkthrough, including the option
+of keeping the real sandbox by hosting the API on a Docker-capable host instead.
+
+Set `APP_ACCESS_KEY` on any internet-facing deployment: the app has no accounts, and the
+server holds your GitHub token.
+
 ## Docs
 
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md): deploying to Vercel (Atlas, Judge0, env vars, checks)
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): architecture, folder structure, schemas, API and execution design
 - [docs/PROBLEM_FORMAT.md](docs/PROBLEM_FORMAT.md): problem data format and conventions

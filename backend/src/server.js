@@ -8,22 +8,26 @@ import { syncProblemLibrary } from "./services/librarySync.js";
 async function start() {
   await connectDB(env.mongoUri);
 
-  try {
-    const { total, created, ready, removed } = await syncProblemLibrary();
-    console.log(
-      `Problem library synced: ${total} sheet problems, ${ready} ready to solve, ${total - ready} awaiting content` +
-        ` (${created} new${removed ? `, ${removed} removed` : ""})`
-    );
-  } catch (error) {
-    // Invalid YAML should not take the whole app down; run `npm run verify:problems`.
-    console.error(`Problem library sync failed:\n${error.message}`);
+  if (env.skipLibrarySync) {
+    console.log("Problem library sync skipped (SKIP_LIBRARY_SYNC=true) — run `npm run seed` when the data changes");
+  } else {
+    try {
+      const { total, created, ready, removed } = await syncProblemLibrary();
+      console.log(
+        `Problem library synced: ${total} sheet problems, ${ready} ready to solve, ${total - ready} awaiting content` +
+          ` (${created} new${removed ? `, ${removed} removed` : ""})`
+      );
+    } catch (error) {
+      // Invalid YAML should not take the whole app down; run `npm run verify:problems`.
+      console.error(`Problem library sync failed:\n${error.message}`);
+    }
   }
 
   const interrupted = await recoverInterruptedSyncs();
   if (interrupted > 0) console.log(`GitHub: ${interrupted} interrupted sync(s) marked as failed (retry from the app)`);
 
-  const execution = getExecutionInfo();
-  console.log(`Code execution: ${execution.description}`);
+  console.log(`Code execution: ${getExecutionInfo().description}`);
+  if (env.accessKey) console.log("Access key required for /api requests (APP_ACCESS_KEY is set)");
 
   createApp().listen(env.port, () => {
     console.log(`DSAForge API running on http://localhost:${env.port}`);
