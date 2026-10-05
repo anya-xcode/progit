@@ -6,6 +6,10 @@
 #
 # The sandbox runs user code in Linux namespaces, so the image needs python3
 # and util-linux (unshare). Nothing here is privileged.
+#
+# Hosts that deny mount(2) inside containers (Render, most Kubernetes
+# platforms) cannot build the full jail; DSAFORGE_SANDBOX_ALLOW_REDUCED lets
+# sandbox.sh fall back to namespaces without a private filesystem there.
 FROM node:22-slim
 
 # python3 runs the submissions; util-linux provides unshare; procps is used by
@@ -29,12 +33,15 @@ COPY sandbox ./sandbox
 ENV NODE_ENV=production \
     PORT=5050 \
     EXECUTION_PROVIDER=namespace \
-    EXECUTION_MAX_CONCURRENT=1
+    EXECUTION_MAX_CONCURRENT=1 \
+    DSAFORGE_SANDBOX_ALLOW_REDUCED=1
 
 EXPOSE 5050
 
 # A non-root user is enough: the sandbox uses unprivileged user namespaces.
-RUN useradd --create-home --shell /bin/bash dsaforge && chown -R dsaforge /app
+# /app stays owned by root, so submissions (which share this uid in reduced
+# mode) can read the app's files but never change them.
+RUN useradd --create-home --shell /bin/bash dsaforge
 USER dsaforge
 
 CMD ["node", "backend/src/server.js"]

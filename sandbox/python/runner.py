@@ -15,6 +15,7 @@ import json
 import math
 import os
 import resource
+import shutil
 import signal
 import subprocess
 import sys
@@ -167,16 +168,21 @@ def main():
         return
 
     workdir = tempfile.mkdtemp(prefix="run-", dir="/tmp")
-    solution_path = os.path.join(workdir, "solution.py")
-    with open(solution_path, "w", encoding="utf-8") as handle:
-        handle.write(code)
+    try:
+        solution_path = os.path.join(workdir, "solution.py")
+        with open(solution_path, "w", encoding="utf-8") as handle:
+            handle.write(code)
 
-    results = []
-    for test in payload.get("tests", []):
-        result = run_test(solution_path, workdir, test.get("input", ""), options)
-        results.append(result)
-        if result["timedOut"] and payload.get("stopAfterTimeout", True):
-            break
+        results = []
+        for test in payload.get("tests", []):
+            result = run_test(solution_path, workdir, test.get("input", ""), options)
+            results.append(result)
+            if result["timedOut"] and payload.get("stopAfterTimeout", True):
+                break
+    finally:
+        # /tmp is private to the run in the full jail, but outlives it on hosts
+        # that deny mounts (reduced mode in sandbox.sh).
+        shutil.rmtree(workdir, ignore_errors=True)
 
     emit({
         "compileError": None,

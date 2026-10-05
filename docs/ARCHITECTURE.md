@@ -260,7 +260,9 @@ A wall-clock timer kills the process group if code sleeps or blocks. Execution s
 3. It then mounts empty tmpfs over `/mnt` (Windows drives, including this project's `.env`), `/home`, `/root`, `/run` (the WSL interop socket), `/opt`, `/srv`, `/media`, `/snap`, `/var/tmp`, `/var/log` and `/dev/shm`.
 4. It enters a nested user namespace with no uid mapping, so code runs as `nobody` with no capabilities and every mount above is locked.
 
-`npm run test:sandbox` verifies no network access, no host files, TLE, MLE and runtime/compile errors.
+**Reduced mode (container hosts that deny `mount`):** Render and most Kubernetes platforms let a container create namespaces but block every `mount(2)` call, so steps 2–4 fail with `unshare: cannot change root filesystem propagation: Permission denied`. When `DSAFORGE_SANDBOX_ALLOW_REDUCED=1` (set in the `Dockerfile`), `sandbox.sh` detects this and runs the harness in user, network, PID, IPC and UTS namespaces only. Code still has no network, runs as `nobody` with no capabilities and a cleared environment, and cannot read the API process's memory or environment. What is lost is the private filesystem: code can read the container's files (`/app` is root-owned, so read-only) and write to `/tmp`. The flag is never set on a workstation, where step 3 is what hides your files.
+
+`npm run test:sandbox` verifies no network access, no access to the API's secrets, no host files (full jail only), TLE, MLE and runtime/compile errors.
 
 **Docker provider:** `docker run --rm -i --network none --read-only --tmpfs /tmp:noexec --memory --pids-limit 64 --cpus 1 --cap-drop ALL --security-opt no-new-privileges --user 65534`, then `docker kill` on timeout.
 

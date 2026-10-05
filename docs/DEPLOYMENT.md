@@ -63,8 +63,11 @@ curl -X POST https://dsaforge-api.onrender.com/api/code/health -H "x-dsaforge-ke
 # {"ok":true,...} means code execution works on Render
 ```
 
-If `ok` is false or the call errors, Render is blocking namespaces on that
-instance — jump to Option 2 and use a remote judge instead.
+Render does not allow `mount` inside containers, so the sandbox runs there in its
+reduced mode: no network, no capabilities and no access to the API's secrets, but
+without a private filesystem (see ARCHITECTURE.md, section 5). If `ok` is false or
+the call errors, Render is blocking namespaces altogether on that instance — jump
+to Option 2 and use a remote judge instead.
 
 ## Step 4 — Frontend on Vercel (free)
 
