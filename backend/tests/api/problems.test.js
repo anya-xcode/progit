@@ -81,6 +81,22 @@ describe("GET /api/problems (the library)", () => {
     assert.equal(data.problems[0].statement, undefined);
     assert.equal(data.problems[0].testCases, undefined);
   });
+
+  test("every row lists its similar LeetCode problems (possibly none)", async () => {
+    const { data } = await server.get("/problems");
+    for (const row of data.problems) assert.ok(Array.isArray(row.leetcode), `${row.slug} has no leetcode list`);
+
+    const twoSum = data.problems.find((row) => row.slug === "two-sum");
+    assert.deepEqual(
+      twoSum.leetcode.map((problem) => `${problem.id}. ${problem.title} (${problem.difficulty}) ${problem.url}`),
+      [
+        "1. Two Sum (Easy) https://leetcode.com/problems/two-sum/",
+        "167. Two Sum II - Input Array Is Sorted (Medium) https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
+      ]
+    );
+    const pattern = data.problems.find((row) => row.title === "Pattern 1");
+    assert.deepEqual(pattern.leetcode, [], "a sheet entry with no close LeetCode problem");
+  });
 });
 
 describe("GET /api/problems?ready=true", () => {
@@ -328,6 +344,7 @@ describe("GET /api/problems/:slug", () => {
     assert.ok(data.statement.length > 40);
     assert.ok(data.starterCode.python.includes("# --- Input/output handling ---"));
     assert.ok(data.examples.length >= 1);
+    assert.deepEqual(data.leetcode.map((problem) => problem.slug), ["two-sum", "two-sum-ii-input-array-is-sorted"]);
   });
 
   test("hidden test cases are never exposed — only their count", async () => {

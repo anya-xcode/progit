@@ -1,6 +1,7 @@
 import Problem from "../models/Problem.js";
 import Solution from "../models/Solution.js";
 import Submission from "../models/Submission.js";
+import { similarLeetcode } from "../data/a2z/index.js";
 import { CUSTOM_SECTION, DIFFICULTIES, SECTIONS } from "../data/sections.js";
 import { autoRemoveIfEnabled } from "../services/github/syncService.js";
 import { getProgressMaps, statusOf } from "../services/progressService.js";
@@ -55,6 +56,7 @@ export async function listProblems(req, res) {
 
   let rows = problems.map((problem) => ({
     ...problem,
+    leetcode: similarLeetcode(problem.sheetId),
     status: statusOf(problem._id, maps),
     solutionCount: maps.solutionCounts.get(String(problem._id)) ?? 0,
   }));
@@ -101,6 +103,7 @@ export async function getProblem(req, res) {
 
   res.json({
     ...problem,
+    leetcode: similarLeetcode(problem.sheetId),
     testCases: includeHidden ? problem.testCases : visibleTests,
     hiddenTestCount: problem.testCases.length - visibleTests.length,
     status: statusOf(problem._id, maps),

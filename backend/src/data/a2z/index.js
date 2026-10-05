@@ -54,4 +54,12 @@ export function bestPracticeLink(links = {}) {
   return links.leetcode || links.gfg || links.code360 || links.article || "";
 }
 
+// sheetId → LeetCode problems that are the same task or a close variant,
+// closest first (leetcode.json). Most entries have one, some several, some none.
+const LEETCODE = JSON.parse(fs.readFileSync(path.join(DIR, "leetcode.json"), "utf8")).similar;
+
+export function similarLeetcode(sheetId) {
+  return (LEETCODE[sheetId] ?? []).map((problem) => ({ ...problem, url: `https://leetcode.com/problems/${problem.slug}/` }));
+}
+
 export const STEP_NAMES = STEPS.map((step) => step.shortTitle);

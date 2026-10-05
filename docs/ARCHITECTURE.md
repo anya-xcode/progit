@@ -33,6 +33,7 @@ flowchart LR
 
 - **Single user.** There is no authentication and no `userId` on models.
 - **The library mirrors Striver's A2Z sheet.** `src/data/a2z/sheet.json` indexes all 18 steps, their sub-steps and 474 problems (title, difficulty, practice links); `steps.js` gives each step a short name and `mapping.json` links older DSAForge slugs to sheet entries. Regenerate the index with `node scripts/refresh-a2z-index.js`. The structure comes from the MIT-licensed [striver-a2z-sheet](https://github.com/anishmusician/striver-a2z-sheet) index; every statement, test case and starter in DSAForge is written from scratch.
+- **Similar LeetCode problems.** `src/data/a2z/leetcode.json` lists, per sheet entry, the LeetCode problems that are the same task or a close variant (closest first; number, slug, title, difficulty, premium flag). It is hand-curated on top of the sheet's own LeetCode links, and entries without a close match are left out. The API attaches the list as `leetcode` (with a `url`) whenever problems are read, so editing the file needs a deploy but no reseed.
 - **Problem content as data.** Problems live in versioned YAML files, one per step, each tied to a sheet entry by `sheetId`, and are upserted by `sheetId` on startup, so problem `_id`s (and the solutions that reference them) are stable. An entry is one of three kinds: **ready** (454 — solvable, with tests and a reference solution), **reference** (20 — theory items ticked off with "Mark as done"), or **placeholder** (a sheet entry whose content is not written; it still appears in the library and the counts, but cannot be run). `npm run missing` lists placeholders.
 - **Language-agnostic judging.** Programs read stdin and write stdout, and the judge compares normalized lines. JavaScript, C++ and Java can be added later by adding a runner in `sandbox/<language>/` and enabling the language in `config/languages.js`.
 - **Separation of concerns.** The sandbox only runs code and reports raw results. The Node judge owns expected outputs and verdicts.
@@ -345,6 +346,7 @@ the reference printed".
 - **Save** updates the open approach, or asks for details (name, type, complexities, explanation) to create a new one.
 - **Submit** on a saved approach stores the code and verdict on it. Unsaved code that is **Accepted** is saved by itself as an approach named "Solution" ("Solution 2", …), so it reaches GitHub without another click; rename it or add details later with **Edit details**. Other verdicts offer "Save as draft approach".
 - **Push** saves the editor's code (as a new "Solution" approach when none is open) and commits it to GitHub with `problem.md`, `test_cases.txt` and the READMEs, without judging it. With no repository selected it only says what to set up.
+- **LeetCode** on a library row opens the similar LeetCode problem in a new tab, or a list of them when there are several; the problem page lists them all under "Similar on LeetCode". Entries without a close match show nothing.
 - Shortcuts: `Ctrl+Enter` run, `Ctrl+Shift+Enter` submit, `Ctrl+S` save, `Shift+Alt+F` format.
 
 ## 9. Local setup commands

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { problemsApi } from "../../api/index.js";
 import { useToast } from "../../context/ToastContext.jsx";
+import { LeetCodeLinks } from "../problems/LeetCodeButton.jsx";
 import Badge from "../ui/Badge.jsx";
 import Button from "../ui/Button.jsx";
 import Card from "../ui/Card.jsx";
@@ -88,6 +89,7 @@ export default function ReferenceProblem({ problem, onChanged }) {
             </ul>
           </div>
         )}
+        <LeetCodeLinks links={problem.leetcode} className="mt-4 border-t border-border pt-4" />
       </Card>
     </Page>
   );

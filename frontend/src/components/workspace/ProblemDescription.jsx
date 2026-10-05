@@ -1,6 +1,7 @@
 import { ChevronRight, ExternalLink, EyeOff, Lightbulb, Lock, Pencil } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
+import { LeetCodeLinks } from "../problems/LeetCodeButton.jsx";
 import Badge, { DifficultyBadge } from "../ui/Badge.jsx";
 import Markdown from "../ui/Markdown.jsx";
 import CodeBlock from "./CodeBlock.jsx";
@@ -70,6 +71,7 @@ export default function ProblemDescription({ problem }) {
             </Link>
           )}
         </div>
+        <LeetCodeLinks links={problem.leetcode} />
       </header>
 
       <Markdown>{problem.statement}</Markdown>

@@ -256,6 +256,42 @@ export const scenarios = [
     },
   },
   {
+    name: "Problem Library: the LeetCode button lists similar problems and opens them",
+    async fn({ page, context, api }) {
+      // Never load the real site from a test.
+      await context.route("https://leetcode.com/**", (route) => route.fulfill({ contentType: "text/html", body: "<title>LeetCode</title>" }));
+
+      // Several matches: the button opens a list of all of them.
+      const twoSum = page.locator('a[href="/problems/two-sum"]').first();
+      await twoSum.getByRole("button", { name: /LeetCode/ }).click();
+      const items = page.getByRole("menu", { name: "Similar problems on LeetCode" }).getByRole("menuitem");
+      await items.first().waitFor({ timeout: 15_000 });
+      const listed = await items.evaluateAll((els) => els.map((el) => `${el.querySelector("span").textContent} -> ${el.href}`));
+      assertEqual(
+        listed.join(" | "),
+        "1. Two Sum -> https://leetcode.com/problems/two-sum/ | 167. Two Sum II - Input Array Is Sorted -> https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
+        "LeetCode problems listed for Two Sum"
+      );
+      const [fromList] = await Promise.all([context.waitForEvent("page"), items.first().click()]);
+      assertEqual(fromList.url(), "https://leetcode.com/problems/two-sum/", "tab opened from the list");
+      await fromList.close();
+      await page.getByRole("menu").waitFor({ state: "detached", timeout: 15_000 });
+
+      // One match: the button opens it directly.
+      const { problems } = await api("/problems?search=Two%20Sum");
+      const single = problems.find((problem) => problem.leetcode.length === 1);
+      assert(single, 'the "Two Sum" search should include a problem with exactly one LeetCode match');
+      const [direct] = await Promise.all([
+        context.waitForEvent("page"),
+        page.locator(`a[href="/problems/${single.slug}"]`).first().getByRole("button", { name: /LeetCode/ }).click(),
+      ]);
+      assertEqual(direct.url(), single.leetcode[0].url, `tab opened for "${single.title}"`);
+      await direct.close();
+
+      assertIncludes(page.url(), "/problems?", "neither click leaves the library");
+    },
+  },
+  {
     name: "Problem Library: a nonsense search shows the empty state",
     async fn({ page }) {
       await withProblemsResponse(page, (params) => params.get("search") === "zzqqxx nothing", async () => {
@@ -359,6 +395,11 @@ export const scenarios = [
       state.twoSumId = problem._id;
       assertEqual(problem.testCases.length, 2, "visible test cases of Two Sum");
       assertEqual(problem.hiddenTestCount, 4, "hidden test cases of Two Sum");
+      assertEqual(
+        await page.getByRole("link", { name: /^1\. Two Sum/ }).getAttribute("href"),
+        "https://leetcode.com/problems/two-sum/",
+        "LeetCode link in the problem description"
+      );
 
       await pasteIntoEditor(page, SOLUTIONS.hashMap, { marker: "# approach: hash map" });
       await runCode(page);

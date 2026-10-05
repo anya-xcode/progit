@@ -1,6 +1,7 @@
 import { BookOpen, Code2, ExternalLink, FileQuestion } from "lucide-react";
 import { Link } from "react-router";
 import { DifficultyBadge, StatusIcon } from "../ui/Badge.jsx";
+import LeetCodeButton from "./LeetCodeButton.jsx";
 
 // One problem line inside a sub-step.
 export default function ProblemRow({ problem }) {
@@ -12,7 +13,7 @@ export default function ProblemRow({ problem }) {
     <li>
       <Link
         to={`/problems/${problem.slug}`}
-        className={`grid grid-cols-[1.25rem_1fr_auto] items-center gap-3 px-4 py-2.5 transition-colors hover:bg-surface-2/60 sm:grid-cols-[1.25rem_3rem_1fr_8rem_4rem_4.5rem] ${
+        className={`grid grid-cols-[1.25rem_1fr_auto] items-center gap-3 px-4 py-2.5 transition-colors hover:bg-surface-2/60 sm:grid-cols-[1.25rem_3rem_1fr_6.5rem_8rem_4rem_4.5rem] ${
           placeholder ? "opacity-60" : ""
         }`}
       >
@@ -21,6 +22,9 @@ export default function ProblemRow({ problem }) {
         <span className="min-w-0">
           <span className="block truncate text-sm font-medium">{problem.title}</span>
           <span className="block truncate text-xs text-muted sm:hidden">{problem.topic}</span>
+        </span>
+        <span className="hidden sm:block">
+          <LeetCodeButton links={problem.leetcode} />
         </span>
         <span className="hidden truncate text-xs text-muted sm:block">
           {placeholder ? (
