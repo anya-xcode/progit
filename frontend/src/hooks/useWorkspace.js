@@ -120,10 +120,17 @@ export function useWorkspace(problem, { initialSolutionId, onActivity }) {
       setSubmissionsVersion((v) => v + 1);
       onActivity?.();
       if (response.verdict === VERDICTS.ACCEPTED) {
-        const syncing = ["pending", "syncing"].includes(response.solution?.githubStatus);
+        // Accepted code that is not an approach yet is saved as one, so it is
+        // kept and (with auto-sync on) committed to GitHub without another click.
+        let solution = response.solution;
+        if (!solution) {
+          setBusy("save");
+          solution = await saveAccepted(response);
+        }
+        const syncing = ["pending", "syncing"].includes(solution?.githubStatus);
         toast.success(
-          response.solution
-            ? `Accepted! "${response.solution.title}" is updated${syncing ? " and syncing to GitHub…" : "."}`
+          solution
+            ? `Accepted! "${solution.title}" is ${response.solution ? "updated" : "saved"}${syncing ? " and syncing to GitHub…" : "."}`
             : "Accepted! Save it as an approach to keep it."
         );
       }
@@ -155,17 +162,31 @@ export function useWorkspace(problem, { initialSolutionId, onActivity }) {
   };
 
   // Throws on failure so the details modal can show the error.
-  const createApproach = async (details) => {
+  const createApproach = async (details, { submission = result, announce = true } = {}) => {
     // If this exact code was just submitted, the server links that submission
     // and copies its verdict onto the new approach.
-    const submissionId = result?.mode === "submit" && !activeId ? result.submissionId : undefined;
+    const submissionId = submission?.mode === "submit" && !activeId ? submission.submissionId : undefined;
     const saved = await solutionsApi.create({ problemId, code, language: "python", submissionId, ...details });
     setSolutions((current) => [...current, saved]);
     removeStorage(draftKey(null));
     setActiveId(saved._id);
     onActivity?.();
-    toast.success(`Saved new approach "${saved.title}"`);
+    if (announce) toast.success(`Saved new approach "${saved.title}"`);
     return saved;
+  };
+
+  // Saves just-accepted code under the first free default name. Returns null
+  // on failure; "Save as approach" in the result panel is still there then.
+  const saveAccepted = async (submission) => {
+    const taken = new Set(solutions.map((s) => s.slug));
+    let title = "Solution";
+    for (let n = 2; taken.has(title.toLowerCase().replace(" ", "-")); n++) title = `Solution ${n}`;
+    try {
+      return await createApproach({ title }, { submission, announce: false });
+    } catch (error) {
+      toast.error(`Accepted, but the approach was not saved: ${error.message}`);
+      return null;
+    }
   };
 
   // Manual sync / retry of one approach.

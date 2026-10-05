@@ -768,13 +768,19 @@ export const scenarios = [
   },
   {
     name: "Custom problem: it can be solved and submitted",
-    async fn({ page }) {
+    async fn({ page, api, state }) {
       await pasteIntoEditor(page, SOLUTIONS.customSum, { marker: "# approach: e2e custom sum" });
       await submitCode(page);
       const result = await resultSummary(page);
       assertEqual(result.verdict, "Accepted", "verdict for the custom problem");
       assertIncludes(result.summary, "2 / 2 test cases passed", "custom problem summary line");
       assertEqual(result.cases.join(" | "), "Case 1 | Hidden case 2", "cases of the custom problem");
+
+      // Accepted code that was never saved becomes an approach by itself.
+      await page.getByText('Accepted! "Solution" is saved').waitFor({ timeout: 20_000 });
+      const saved = await solutionsOf(api, state.customId);
+      assertEqual(saved.map((s) => `${s.title}: ${s.verdict}`).join(" | "), "Solution: Accepted", "approach saved by the accepted submit");
+      assertEqual(await page.locator('select[aria-label="Approach"]').inputValue(), saved[0]._id, "the saved approach is the open one");
     },
   },
   {

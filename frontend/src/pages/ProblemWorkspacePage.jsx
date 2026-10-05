@@ -192,7 +192,7 @@ function Workspace({ problem, onActivity }) {
           busy={workspace.busy}
           result={workspace.result}
           error={workspace.resultError}
-          onSaveAsApproach={activeId ? null : () => setApproachModal({ mode: "create" })}
+          onSaveAsApproach={activeId || workspace.busy ? null : () => setApproachModal({ mode: "create" })}
         />
       </section>
 

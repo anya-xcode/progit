@@ -284,7 +284,7 @@ The overall verdict is the first failing test's verdict. Runtime and memory are 
 
 **Triggers:**
 - An accepted submit on a saved approach.
-- Saving an approach with a just-accepted submission.
+- Saving an approach with a just-accepted submission. The workspace does this by itself when unsaved code is accepted.
 - Editing the details of an accepted approach.
 - Deleting an approach, or deleting a custom problem (removes files).
 - Manual **Sync** or **Retry**, and **Sync all**.
@@ -341,7 +341,7 @@ the reference printed".
 - The approach selector switches between saved approaches and a "New approach (unsaved)" buffer.
 - Unsaved edits are kept as local drafts per problem and approach, so navigating away never loses code.
 - **Save** updates the open approach, or asks for details (name, type, complexities, explanation) to create a new one.
-- **Submit** on a saved approach stores the code and verdict on it. Submitting unsaved code offers "Save as approach", which carries the verdict along.
+- **Submit** on a saved approach stores the code and verdict on it. Unsaved code that is **Accepted** is saved by itself as an approach named "Solution" ("Solution 2", …), so it reaches GitHub without another click; rename it or add details later with **Edit details**. Other verdicts offer "Save as draft approach".
 - Shortcuts: `Ctrl+Enter` run, `Ctrl+Shift+Enter` submit, `Ctrl+S` save, `Shift+Alt+F` format.
 
 ## 9. Local setup commands

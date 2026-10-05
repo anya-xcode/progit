@@ -79,8 +79,12 @@ to Option 2 and use a remote judge instead.
 
 ## Step 5 — Check
 
-Open the Vercel URL → enter your access key → open a problem → **Run** → **Submit**.
-On Accepted, the commit appears in `anya-xcode/AtoZ`.
+1. Open the Vercel URL → enter your access key.
+2. **GitHub** page → pick `anya-xcode/AtoZ` and leave auto-sync on. This is stored in
+   the database, so a new Atlas database starts with no repository selected and
+   nothing is committed until you choose one.
+3. Open a problem → **Run** → **Submit**. On Accepted, the code is saved as an
+   approach and the commit appears in `anya-xcode/AtoZ` a few seconds later.
 
 ## What the free tiers mean in practice
 

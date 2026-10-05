@@ -235,6 +235,17 @@ try {
   check("both files present", files.has(`${largestFolder}/built-in-max.py`) && files.has(`${largestFolder}/linear-scan.py`));
   check("root README lists both problems", /Two Sum/.test(files.get("README.md")) && /Largest Element in an Array/.test(files.get("README.md")));
 
+  console.log("\nAccepted unsaved code is saved as an approach (what the workspace does on Submit)");
+  const unsavedCode = largestCode.replace("return max(nums)", "return sorted(nums)[-1]");
+  const unsaved = await call("POST", "/code/submit", { problemId: lcs._id, code: unsavedCode });
+  check("submit without an approach is accepted", unsaved.data.verdict === "Accepted" && unsaved.data.solution === null, JSON.stringify(unsaved.data).slice(0, 300));
+  const auto = (await call("POST", "/solutions", { problemId: lcs._id, title: "Solution", code: unsavedCode, submissionId: unsaved.data.submissionId })).data;
+  check("saving it with its submission queues a sync", auto.verdict === "Accepted" && ["pending", "syncing", "synced"].includes(auto.githubStatus), `${auto.verdict} / ${auto.githubStatus}`);
+  await waitForSyncIdle();
+  files = mock.files(REPO);
+  check("solution.py committed", files.get(`${largestFolder}/solution.py`)?.includes("return sorted(nums)[-1]"));
+  check("commit message for the saved submission", mock.log(REPO)[0].message === "Add Largest Element in an Array - Solution solution", mock.log(REPO)[0].message);
+
   console.log("\nEmpty repository, new branch and base folder");
   mock.addRepo("ananya", "empty-repo", { autoInit: false });
   status = (await call("POST", "/github/select-repository", { fullName: "ananya/empty-repo", branch: "solutions", basePath: "dsa-solutions" })).data;
