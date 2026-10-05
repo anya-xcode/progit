@@ -90,7 +90,9 @@ async function rootReadmeFile(target, { includeIds = [], excludeIds = [] } = {})
 // ---------------------------------------------------------------------------
 
 // Marks accepted approaches as pending and queues ONE commit for them.
-// Returns the created history records.
+// Returns the created history records. `requireAccepted: false` is the
+// workspace's Push button: the user asked for this code to be committed,
+// whatever its verdict.
 export async function queueSolutionSync(solutionIds, { requireAccepted = true } = {}) {
   const target = await loadTarget();
   const solutions = await Solution.find({ _id: { $in: solutionIds } }).populate("problemId", "title");
@@ -119,13 +121,13 @@ export async function queueSolutionSync(solutionIds, { requireAccepted = true } 
       }))
     );
     allRecords.push(...records);
-    const job = enqueue(() => runUpsert(ids, records.map((r) => r._id)));
+    const job = enqueue(() => runUpsert(ids, records.map((r) => r._id), { requireAccepted }));
     if (env.serverless) await job;
   }
   return allRecords;
 }
 
-async function runUpsert(solutionIds, recordIds) {
+async function runUpsert(solutionIds, recordIds, { requireAccepted = true } = {}) {
   let solutions = [];
   try {
     const target = await loadTarget();
@@ -134,7 +136,7 @@ async function runUpsert(solutionIds, recordIds) {
 
     // Use the latest saved data; skip approaches deleted or no longer accepted.
     solutions = (await Solution.find({ _id: { $in: solutionIds } }).populate("problemId").lean()).filter(
-      (s) => s.problemId && s.verdict === VERDICTS.ACCEPTED
+      (s) => s.problemId && (!requireAccepted || s.verdict === VERDICTS.ACCEPTED)
     );
     const skippedIds = solutionIds.filter((id) => !solutions.some((s) => String(s._id) === String(id)));
     if (skippedIds.length) {

@@ -97,7 +97,7 @@ export default function GitHubSyncBadge({ solution, github, onSync, compact = fa
   return (
     <span
       className={`${base} bg-surface-2 text-muted`}
-      title={!ready ? "Connect GitHub and pick a repository on the GitHub page" : "Only accepted approaches are synced"}
+      title={!ready ? "Connect GitHub and pick a repository on the GitHub page" : "Only accepted approaches are synced automatically. Push in the editor commits any approach."}
     >
       <FolderGit2 className="size-3" />
       Not on GitHub

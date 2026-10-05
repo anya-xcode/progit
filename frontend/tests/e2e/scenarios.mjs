@@ -561,6 +561,15 @@ export const scenarios = [
       assertEqual(api_rows[0].verdict, "Wrong Answer", "API: newest submission first");
     },
   },
+  {
+    name: "Push: without a GitHub connection it says what to do and saves nothing",
+    async fn({ page, api, state }) {
+      await page.getByRole("button", { name: "Push to GitHub" }).click();
+      await page.getByText("GitHub is not connected").waitFor({ timeout: 20_000 });
+      const saved = await solutionsOf(api, state.twoSumId);
+      assertEqual(saved.length, 2, "approaches of Two Sum after the refused push");
+    },
+  },
 
   // 6 ----------------------------------------------------------------- Compare
   {

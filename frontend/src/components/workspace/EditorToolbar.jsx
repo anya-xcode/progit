@@ -1,4 +1,4 @@
-import { CloudUpload, Pencil, Play, Plus, RotateCcw, Save, WandSparkles } from "lucide-react";
+import { CloudUpload, FolderGit2, Pencil, Play, Plus, RotateCcw, Save, WandSparkles } from "lucide-react";
 import { VERDICTS } from "../../utils/constants.js";
 import Button from "../ui/Button.jsx";
 import { Select } from "../ui/Field.jsx";
@@ -16,6 +16,7 @@ export default function EditorToolbar({
   onSave,
   onRun,
   onSubmit,
+  onPush,
   githubBadge,
 }) {
   const disabled = Boolean(busy);
@@ -59,6 +60,18 @@ export default function EditorToolbar({
         </Button>
         <Button size="sm" variant="success" icon={CloudUpload} onClick={onSubmit} loading={busy === "submit"} disabled={disabled}>
           Submit
+        </Button>
+        <Button
+          size="sm"
+          variant="primary"
+          icon={FolderGit2}
+          onClick={onPush}
+          loading={busy === "push"}
+          disabled={disabled}
+          aria-label="Push to GitHub"
+          title="Commit this code, the problem statement and the test cases to your GitHub repository"
+        >
+          Push
         </Button>
       </div>
     </div>

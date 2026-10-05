@@ -166,6 +166,7 @@ function Workspace({ problem, onActivity }) {
           onSave={handleSave}
           onRun={handleRun}
           onSubmit={handleSubmit}
+          onPush={workspace.pushToGitHub}
           githubBadge={workspace.active && <GitHubSyncBadge solution={workspace.active} github={github} onSync={workspace.syncToGitHub} compact />}
         />
         <div className="min-h-0 flex-1">

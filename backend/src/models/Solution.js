@@ -6,9 +6,10 @@ export const APPROACH_TYPES = ["Brute Force", "Better", "Optimal", "Other"];
 // not-synced → pending → syncing → synced | failed; synced → outdated after edits
 export const GITHUB_STATUSES = ["not-synced", "pending", "syncing", "synced", "outdated", "failed"];
 
-// Fields that appear in the GitHub solution file. Changing them after a sync
-// makes the GitHub copy out of date.
-const SYNCED_FIELDS = ["title", "approach", "code", "timeComplexity", "spaceComplexity", "explanation"];
+// Fields that appear in the GitHub files. Changing them after a sync makes the
+// GitHub copy out of date. The verdict is in the problem README, and pushed
+// code is not always accepted yet.
+const SYNCED_FIELDS = ["title", "approach", "code", "timeComplexity", "spaceComplexity", "explanation", "verdict"];
 
 // One saved approach to a problem. A problem can have many solutions;
 // `slug` (derived from `title`) is unique per problem so approaches never

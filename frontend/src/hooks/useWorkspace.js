@@ -13,7 +13,7 @@ export function useWorkspace(problem, { initialSolutionId, onActivity }) {
   const [solutionsLoading, setSolutionsLoading] = useState(true);
   const [activeId, setActiveId] = useState(null);
   const [code, setCode] = useState("");
-  const [busy, setBusy] = useState(null); // "run" | "submit" | "save" | null
+  const [busy, setBusy] = useState(null); // "run" | "submit" | "save" | "push" | null
   const [result, setResult] = useState(null);
   const [resultError, setResultError] = useState(null);
   const [submissionsVersion, setSubmissionsVersion] = useState(0);
@@ -175,17 +175,67 @@ export function useWorkspace(problem, { initialSolutionId, onActivity }) {
     return saved;
   };
 
-  // Saves just-accepted code under the first free default name. Returns null
-  // on failure; "Save as approach" in the result panel is still there then.
-  const saveAccepted = async (submission) => {
+  // First free name for an approach that is saved without asking for details.
+  const defaultTitle = () => {
     const taken = new Set(solutions.map((s) => s.slug));
     let title = "Solution";
     for (let n = 2; taken.has(title.toLowerCase().replace(" ", "-")); n++) title = `Solution ${n}`;
+    return title;
+  };
+
+  // Saves just-accepted code under a default name. Returns null on failure;
+  // "Save as approach" in the result panel is still there then.
+  const saveAccepted = async (submission) => {
     try {
-      return await createApproach({ title }, { submission, announce: false });
+      return await createApproach({ title: defaultTitle() }, { submission, announce: false });
     } catch (error) {
       toast.error(`Accepted, but the approach was not saved: ${error.message}`);
       return null;
+    }
+  };
+
+  // Push: commits what is in the editor to GitHub, together with the problem
+  // statement and test cases, whatever its verdict. The code is saved first
+  // (as a new approach when none is open) because GitHub mirrors saved approaches.
+  const pushToGitHub = async () => {
+    if (busy) return;
+    setBusy("push");
+    try {
+      const github = await githubApi.status();
+      if (!github.ready) {
+        toast.error(
+          github.connected
+            ? "No repository is selected. Pick one on the GitHub page, then push again."
+            : github.error || "GitHub is not connected. Connect it on the GitHub page, then push again."
+        );
+        return;
+      }
+
+      let solution = active;
+      if (!solution) {
+        solution = await createApproach({ title: defaultTitle() }, { announce: false });
+      } else if (code !== solution.code) {
+        solution = await solutionsApi.update(solution._id, { code });
+        removeStorage(draftKey(solution._id));
+        onActivity?.();
+      }
+      // Saving accepted code may already have queued the commit (auto-sync).
+      if (!["pending", "syncing"].includes(solution.githubStatus)) {
+        ({ solution } = await githubApi.push(solution._id));
+      }
+      replaceSolution(solution);
+
+      if (solution.githubStatus === "synced") {
+        toast.success(`"${solution.title}" is on GitHub`, { action: solution.githubCommitUrl && { label: "View commit", href: solution.githubCommitUrl } });
+      } else if (solution.githubStatus === "failed") {
+        toast.error(`GitHub push failed for "${solution.title}": ${solution.githubSyncError}`);
+      } else {
+        toast.info(`Pushing "${solution.title}" to GitHub…`);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setBusy(null);
     }
   };
 
@@ -257,6 +307,7 @@ export function useWorkspace(problem, { initialSolutionId, onActivity }) {
 
   return {
     syncToGitHub,
+    pushToGitHub,
     solutions,
     solutionsLoading,
     active,

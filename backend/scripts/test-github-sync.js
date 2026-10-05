@@ -246,6 +246,22 @@ try {
   check("solution.py committed", files.get(`${largestFolder}/solution.py`)?.includes("return sorted(nums)[-1]"));
   check("commit message for the saved submission", mock.log(REPO)[0].message === "Add Largest Element in an Array - Solution solution", mock.log(REPO)[0].message);
 
+  console.log("\nPush commits an approach whatever its verdict");
+  const draftCode = largestCode.replace("return max(nums)", "return min(nums) - 1");
+  const draft = (await call("POST", "/solutions", { problemId: lcs._id, title: "Draft Idea", code: draftCode })).data;
+  const refused = await call("POST", `/github/sync/${draft._id}`);
+  check("a plain sync still refuses unaccepted code", refused.status === 400 && /accepted/i.test(refused.data.message));
+  const pushed = await call("POST", `/github/sync/${draft._id}`, { force: true });
+  check("push queues it (202)", pushed.status === 202 && ["pending", "syncing", "synced"].includes(pushed.data.solution?.githubStatus), JSON.stringify(pushed.data).slice(0, 200));
+  await waitForSyncIdle();
+  files = mock.files(REPO);
+  check("pushed code is committed next to the problem statement", files.get(`${largestFolder}/draft-idea.py`)?.includes("return min(nums) - 1") && files.get(`${largestFolder}/problem.md`)?.includes("## Problem Statement"));
+  check("problem README shows its real verdict", /\| Draft Idea \|[^\n]*Not Submitted/.test(files.get(`${largestFolder}/README.md`)), files.get(`${largestFolder}/README.md`));
+  check("push commit message", mock.log(REPO)[0].message === "Add Largest Element in an Array - Draft Idea solution", mock.log(REPO)[0].message);
+  check("pushed approach marked synced", (await Solution.findById(draft._id).lean()).githubStatus === "synced");
+  const judged = await call("POST", "/code/submit", { problemId: lcs._id, code: draftCode, solutionId: draft._id });
+  check("a new verdict on pushed code marks the GitHub copy out of date", judged.data.verdict === "Wrong Answer" && judged.data.solution?.githubStatus === "outdated", `${judged.data.verdict} / ${judged.data.solution?.githubStatus}`);
+
   console.log("\nEmpty repository, new branch and base folder");
   mock.addRepo("ananya", "empty-repo", { autoInit: false });
   status = (await call("POST", "/github/select-repository", { fullName: "ananya/empty-repo", branch: "solutions", basePath: "dsa-solutions" })).data;

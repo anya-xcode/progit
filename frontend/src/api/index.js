@@ -43,6 +43,8 @@ export const githubApi = {
   selectRepository: (data) => client.post("/github/select-repository", data),
   updateSettings: (data) => client.put("/github/settings", data),
   sync: (solutionId) => client.post(`/github/sync/${solutionId}`),
+  // Push: commits the approach whatever its verdict.
+  push: (solutionId) => client.post(`/github/sync/${solutionId}`, { force: true }),
   syncAll: () => client.post("/github/sync-all"),
   history: (params) => client.get("/github/syncs", { params }),
   disconnect: () => client.post("/github/disconnect"),

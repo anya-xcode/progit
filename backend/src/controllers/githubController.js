@@ -38,11 +38,12 @@ export async function settings(req, res) {
   res.json(await updateSyncSettings(req.body ?? {}));
 }
 
-// POST /api/github/sync/:solutionId — manual sync or retry
+// POST /api/github/sync/:solutionId { force? } — manual sync or retry. `force`
+// (the Push button) commits the approach even when it is not accepted.
 export async function syncSolution(req, res) {
   const exists = await Solution.exists({ _id: req.params.solutionId });
   if (!exists) throw notFound("Solution not found");
-  const [record] = await queueSolutionSync([req.params.solutionId]);
+  const [record] = await queueSolutionSync([req.params.solutionId], { requireAccepted: req.body?.force !== true });
   res.status(202).json({ record, solution: await Solution.findById(req.params.solutionId) });
 }
 

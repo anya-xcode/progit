@@ -207,7 +207,7 @@ progit/
 | POST | `/api/github/repositories` | `{ name, isPrivate }` → create a repository (auto-initialized) |
 | POST | `/api/github/select-repository` | `{ fullName, branch?, basePath? }`. Checks write access. Changing the location resets sync state |
 | PUT | `/api/github/settings` | `{ autoSync?, branch?, basePath? }` |
-| POST | `/api/github/sync/:solutionId` | Manual sync or retry of one accepted approach (202) |
+| POST | `/api/github/sync/:solutionId` | Manual sync or retry of one accepted approach (202). `{ force: true }` (the **Push** button) commits it whatever its verdict |
 | POST | `/api/github/sync-all` | Queue every accepted approach that is not synced, outdated or failed (202) |
 | GET | `/api/github/syncs?limit=` | Sync history |
 | POST | `/api/github/disconnect` | Forget the OAuth token and cached user |
@@ -288,9 +288,11 @@ The overall verdict is the first failing test's verdict. Runtime and memory are 
 - Editing the details of an accepted approach.
 - Deleting an approach, or deleting a custom problem (removes files).
 - Manual **Sync** or **Retry**, and **Sync all**.
+- **Push** in the editor toolbar.
 
-Automatic triggers only fire when auto-sync is on and a repository is selected. Only **Accepted** approaches are synced.
-Failed or unsubmitted code stays in MongoDB as a draft.
+Automatic triggers only fire when auto-sync is on and a repository is selected, and only for **Accepted** approaches.
+Failed or unsubmitted code stays in MongoDB as a draft unless it is pushed: **Push** saves what is in the editor and commits it
+whatever its verdict. The problem README shows that verdict, and a later verdict change marks the GitHub copy out of date.
 
 **One commit per sync**, via the Git Data API rather than one Contents API call per file:
 1. Resolve the branch head. For an empty repository, create an initial README commit on the default branch; for a missing branch, create it from the default branch.
@@ -342,6 +344,7 @@ the reference printed".
 - Unsaved edits are kept as local drafts per problem and approach, so navigating away never loses code.
 - **Save** updates the open approach, or asks for details (name, type, complexities, explanation) to create a new one.
 - **Submit** on a saved approach stores the code and verdict on it. Unsaved code that is **Accepted** is saved by itself as an approach named "Solution" ("Solution 2", …), so it reaches GitHub without another click; rename it or add details later with **Edit details**. Other verdicts offer "Save as draft approach".
+- **Push** saves the editor's code (as a new "Solution" approach when none is open) and commits it to GitHub with `problem.md`, `test_cases.txt` and the READMEs, without judging it. With no repository selected it only says what to set up.
 - Shortcuts: `Ctrl+Enter` run, `Ctrl+Shift+Enter` submit, `Ctrl+S` save, `Shift+Alt+F` format.
 
 ## 9. Local setup commands
